@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>Lectio - Registro</title>
+    <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap');
+        * {
+          margin: 0;
+          padding: 0;
+          box-sizing: border-box;
+          font-family: 'Poppins', sans-serif;
+        }
+
+        body {
+          background: #f2f2f2;
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          min-height: 100vh;
+          padding: 20px;
+        }
+
+        .login-wrapper {
+          display: flex;
+          width: 100%;
+          max-width: 950px;
+          background: rgba(255, 255, 255, 0.9);
+          border-radius: 20px;
+          box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+          overflow: hidden;
+        }
+
+        .login-info {
+          flex: 1;
+          background-color: #ffffff;
+          padding: 50px 40px;
+          display: flex;
+          flex-direction: column;
+          justify-content: center;
+          text-align: center;
+        }
+
+        .login-info h1 {
+          font-size: 48px;
+          color: #333;
+          margin-bottom: 20px;
+        }
+
+        .login-info p {
+          font-size: 16px;
+          color: #666;
+        }
+
+        .login-form {
+          flex: 1;
+          padding: 50px 30px;
+          background: #fafafa;
+          display: flex;
+          justify-content: center;
+          align-items: center;
+        }
+
+        .container {
+          width: 100%;
+          max-width: 350px;
+        }
+
+        .top-header {
+          text-align: center;
+          margin-bottom: 25px;
+        }
+
+        .top-header span {
+          color: #888;
+          font-size: 14px;
+        }
+
+        .top-header header {
+          color: #333;
+          font-size: 28px;
+          margin-top: 5px;
+        }
+
+        .input-field {
+          position: relative;
+          margin-bottom: 15px;
+        }
+
+        .input-field .input {
+          height: 45px;
+          width: 100%;
+          padding-left: 40px;
+          border: 1px solid #ccc;
+          border-radius: 30px;
+          background-color: #fff;
+          color: #333;
+        }
+
+        .input-field i {
+          position: absolute;
+          left: 15px;
+          top: 50%;
+          transform: translateY(-50%);
+          color: #888;
+          font-size: 20px;
+          line-height: 1;
+          transform-origin: center;
+          transform: translateY(-50%) rotate(0deg);
+        }
+
+        ::placeholder {
+          color: #aaa;
+        }
+
+        .submit {
+          border: none;
+          border-radius: 30px;
+          font-size: 15px;
+          height: 45px;
+          width: 100%;
+          background: #4CAF50;
+          color: white;
+          cursor: pointer;
+          margin-top: 10px;
+          transition: background 0.3s ease;
+        }
+
+        .submit:hover {
+          background: #45a049;
+        }
+
+        .bottom {
+          display: flex;
+          justify-content: center;
+          font-size: 13px;
+          color: #333;
+          margin-top: 15px;
+        }
+
+        .bottom a {
+          color: #007BFF;
+          text-decoration: none;
+        }
+
+        .bottom a:hover {
+          text-decoration: underline;
+        }
+
+        .alert {
+          padding: 10px;
+          border-radius: 5px;
+          margin-bottom: 15px;
+          font-size: 14px;
+          text-align: center;
+        }
+
+        .alert-error {
+          background-color: #f44336;
+          color: white;
+        }
+
+        .alert-success {
+          background-color: #4CAF50;
+          color: white;
+        }
+
+        .error-message {
+          color: #f44336;
+          font-size: 12px;
+          margin-top: 5px;
+          display: none;
+        }
+
+        @media (max-width: 768px) {
+          .login-wrapper {
+            flex-direction: column;
+          }
+          .login-info {
+            padding: 30px;
+          }
+          .login-form {
+            padding: 30px;
+          }
+        }
+    </style>
+</head>
+<body>
+<main class="login-wrapper">
+    <section class="login-info">
+        <h1>Lectio</h1>
+        <p>Únete a nuestra biblioteca virtual. Empieza tu viaje hoy.</p>
+    </section>
+
+    <section class="login-form">
+        <div class="container">
+            <div class="top-header">
+                <header>Registro</header>
+            </div>
+
+            <!-- Alertas -->
+            <div id="alertBox"></div>
+
+            <form id="registroForm" th:action="@{/api/register}" method="post">
+                <div class="input-field">
+                    <label for="username">Usuario</label>
+                    <input type="text" name="username" id="username" class="input" placeholder="Ingrese su usuario" required>
+                    <i class="bx bx-user"></i>
+                    <div id="usernameError" class="error-message"></div>
+                </div>
+
+                <div class="input-field">
+                    <label for="password">Contraseña</label>
+                    <input type="password" name="password" id="password" class="input" placeholder="Ingrese su contraseña" required>
+                    <i class="bx bx-lock-alt"></i>
+                    <div id="passwordError" class="error-message"></div>
+                </div>
+
+                <div class="input-field">
+                    <label for="confirmPassword">Confirmar Contraseña</label>
+                    <input type="password" id="confirmPassword" class="input" placeholder="Confirme su contraseña" required>
+                    <i class="bx bx-lock-alt"></i>
+                    <div id="confirmPasswordError" class="error-message"></div>
+                </div>
+
+                <input type="submit" class="submit" value="Registrarse">
+            </form>
+
+            <div class="bottom">
+                <a href="/api/login">¿Ya tienes cuenta? Inicia sesión</a>
+            </div>
+        </div>
+    </section>
+</main>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+      const registerForm = document.getElementById('registroForm');
+      const usernameInput = document.getElementById('username');
+      const emailInput = document.getElementById('email');
+      const passwordInput = document.getElementById('password');
+      const confirmPasswordInput = document.getElementById('confirmPassword');
+      const usernameError = document.getElementById('usernameError');
+      const emailError = document.getElementById('emailError');
+      const passwordError = document.getElementById('passwordError');
+      const confirmPasswordError = document.getElementById('confirmPasswordError');
+      const alertBox = document.getElementById('alertBox');
+
+      // Mostrar alertas enviadas desde el backend por parámetros GET
+      function showAlert(message, type) {
+        alertBox.innerHTML = `<div class="alert alert-${type}">${message}</div>`;
+        setTimeout(() => alertBox.innerHTML = '', 5000);
+      }
+
+      // Lee el parámetro 'error' de la URL para mostrarlo como alerta
+      function getQueryParam(param) {
+        const params = new URLSearchParams(window.location.search);
+        return params.get(param);
+      }
+
+      const errorMessage = getQueryParam('error');
+      if (errorMessage) {
+        showAlert(errorMessage, 'error');
+        // Reiniciar formulario tras mostrar error
+        registerForm.reset();
+        // Limpiar parámetros de URL para evitar re-mostrar mensaje
+        if (window.history.replaceState) {
+          const url = window.location.protocol + "//" + window.location.host + window.location.pathname;
+          window.history.replaceState({path:url}, '', url);
+        }
+      }
+
+      registerForm.addEventListener('submit', (e) => {
+        let isValid = true;
+
+        if (usernameInput.value.trim() === '') {
+          usernameError.style.display = 'block';
+          isValid = false;
+        } else {
+          usernameError.style.display = 'none';
+        }
+
+        if (emailInput && emailInput.value.trim() === '') {
+          emailError.style.display = 'block';
+          isValid = false;
+        } else if (emailError) {
+          emailError.style.display = 'none';
+        }
+
+        if (passwordInput.value.trim() === '') {
+          passwordError.style.display = 'block';
+          isValid = false;
+        } else {
+          passwordError.style.display = 'none';
+        }
+
+        // Validar que la confirmación de contraseña sea igual a la contraseña
+        if (confirmPasswordInput.value.trim() === '') {
+          confirmPasswordError.textContent = 'Por favor confirme su contraseña';
+          confirmPasswordError.style.display = 'block';
+          isValid = false;
+        } else if (passwordInput.value !== confirmPasswordInput.value) {
+          confirmPasswordError.textContent = 'Las contraseñas no coinciden';
+          confirmPasswordError.style.display = 'block';
+          isValid = false;
+        } else {
+          confirmPasswordError.style.display = 'none';
+        }
+
+        if (!isValid) {
+          e.preventDefault();
+          showAlert('Por favor corrija los errores en el formulario', 'error');
+        }
+      });
+    });
+</script>
+</body>
+</html>

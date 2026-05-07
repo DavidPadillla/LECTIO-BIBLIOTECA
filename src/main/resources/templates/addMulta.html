@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+  <meta charset="UTF-8">
+  <title>Lectio Admin</title>
+  <style>
+    body {
+        font-family: 'Segoe UI', sans-serif;
+        background-color: #f0f2f5;
+        margin: 0;
+        padding: 0;
+    }
+
+    .container {
+        max-width: 600px;
+        margin: 50px auto;
+        padding: 30px;
+        background-color: #fff;
+        border-radius: 12px;
+        box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+    }
+
+    h1 {
+        text-align: center;
+        color: #333;
+        margin-bottom: 30px;
+    }
+
+    form {
+        display: flex;
+        flex-direction: column;
+    }
+
+    label {
+        margin-top: 15px;
+        margin-bottom: 5px;
+        color: #555;
+        font-weight: 600;
+    }
+
+    input[type="text"],
+    input[type="date"],
+    input[type="number"] {
+        padding: 10px;
+        border: 1px solid #ccc;
+        border-radius: 6px;
+        font-size: 16px;
+    }
+
+    button {
+        margin-top: 25px;
+        background-color: #4CAF50;
+        color: white;
+        border: none;
+        padding: 12px;
+        border-radius: 6px;
+        cursor: pointer;
+        font-size: 16px;
+        transition: background-color 0.3s ease;
+    }
+
+    button:hover {
+        background-color: #45a049;
+    }
+
+    .mensaje {
+        text-align: center;
+        margin-top: 20px;
+        color: green;
+        font-weight: bold;
+    }
+
+    .error {
+        color: red;
+        text-align: center;
+        margin-top: 20px;
+    }
+  </style>
+</head>
+<body>
+<div class="container">
+  <h1>Registrar Nueva Multa</h1>
+
+  <form th:action="@{/api/registrarMulta}" method="post">
+
+    <label for="dni">DNI del Usuario:</label>
+    <input type="text" id="dni" name="dni" required>
+
+
+    <label for="nombre">Nombre del Usuario:</label>
+    <input type="text" id="nombre" name="nombre" required>
+
+
+    <label for="fechaSalida">Fecha de Salida (Alquiler):</label>
+    <input type="date" id="fechaSalida" name="fechaSalida" required>
+
+
+    <label for="fechaEntrada">Fecha de Entrada (Devolución):</label>
+    <input type="date" id="fechaEntrada" name="fechaEntrada" required>
+
+
+    <label for="monto">Monto de la Multa (Bs):</label>
+    <input type="number" id="monto" name="monto" step="0.01" readonly>
+
+
+    <button type="submit">Registrar Multa</button>
+  </form>
+
+
+  <div class="mensaje" th:if="${mensaje}">
+    <span th:text="${mensaje}"></span>
+  </div>
+  <div class="error" th:if="${error}">
+    <span th:text="${error}"></span>
+  </div>
+</div>
+
+<script>
+  document.querySelector("form").addEventListener("submit", function(event) {
+
+      event.preventDefault();
+
+      const fechaSalida = document.getElementById("fechaSalida").value;
+      const fechaEntrada = document.getElementById("fechaEntrada").value;
+
+      if (fechaSalida && fechaEntrada) {
+          const diffTime = new Date(fechaEntrada) - new Date(fechaSalida);
+          const diasRetraso = diffTime / (1000 * 3600 * 24); // Calculando los días de retraso
+
+          if (diasRetraso > 7) {
+              const montoMulta = diasRetraso * 5; // Multa de 5 Bs por cada día de retraso
+              document.getElementById("monto").value = montoMulta.toFixed(2); // Mostrar multa calculada
+              this.submit(); // Enviar formulario después de calcular la multa
+          } else {
+              document.getElementById("monto").value = 0; // No hay multa si no hay retraso
+              this.submit();
+          }
+      } else {
+          alert("Por favor, completa todas las fechas.");
+      }
+  });
+</script>
+
+</body>
+</html>
+

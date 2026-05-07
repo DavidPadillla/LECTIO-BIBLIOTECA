@@ -1,0 +1,551 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lectio Admin</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: #f5f6fa;
+            color: #2c3e50;
+        }
+
+        /* Header Sticky */
+        .navbar {
+            background: #fff;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px 60px;
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+
+        .logo h1 {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #2c3e50;
+        }
+
+        .logo span {
+            color: #27ae60;
+            font-weight: 600;
+        }
+
+        .back-btn {
+            background: #27ae60;
+            color: #fff;
+            padding: 10px 25px;
+            border: none;
+            border-radius: 30px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 14px;
+        }
+
+        .back-btn:hover {
+            background: #219150;
+            transform: translateY(-3px) scale(1.05);
+            box-shadow: 0 8px 20px rgba(39, 174, 96, 0.4);
+        }
+
+        /* Container */
+        .container {
+            max-width: 1400px;
+            margin: 40px auto;
+            padding: 0 40px;
+        }
+
+        .page-header {
+            margin-bottom: 30px;
+            animation: fadeInDown 0.6s ease;
+        }
+
+        @keyframes fadeInDown {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .page-title {
+            font-size: 24px;
+            font-weight: 700;
+            color: #2c3e50;
+            margin-bottom: 5px;
+        }
+
+        .page-subtitle {
+            font-size: 14px;
+            color: #7f8c8d;
+        }
+
+        /* Stats Card */
+        .stats-card {
+            background: white;
+            padding: 20px;
+            border-radius: 12px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.06);
+            margin-bottom: 25px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            border-left: 4px solid #27ae60;
+            animation: fadeInUp 0.6s ease;
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .stats-card i {
+            font-size: 2.5rem;
+            color: #27ae60;
+        }
+
+        .stats-card-content h3 {
+            font-size: 2rem;
+            font-weight: 700;
+            color: #2c3e50;
+        }
+
+        .stats-card-content p {
+            color: #7f8c8d;
+            font-size: 14px;
+        }
+
+        /* Table Card */
+        .table-card {
+            background: white;
+            border-radius: 12px;
+            padding: 25px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.06);
+            border: 2px solid transparent;
+            transition: all 0.3s ease;
+            animation: fadeInUp 0.6s ease 0.2s both;
+        }
+
+        .table-card:hover {
+            border-color: #27ae60;
+            box-shadow: 0 8px 16px rgba(39, 174, 96, 0.15);
+        }
+
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid #f0f0f0;
+        }
+
+        .card-header-left {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .card-header i {
+            font-size: 1.3rem;
+            color: #27ae60;
+        }
+
+        .card-header h3 {
+            font-size: 18px;
+            font-weight: 600;
+            color: #2c3e50;
+        }
+
+        /* Search */
+        .search-input {
+            padding: 10px 16px 10px 45px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-family: 'Poppins', sans-serif;
+            font-size: 14px;
+            width: 300px;
+            transition: all 0.3s ease;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='20' height='20' viewBox='0 0 24 24' fill='none' stroke='%2327ae60' stroke-width='2'%3E%3Ccircle cx='11' cy='11' r='8'/%3E%3Cpath d='m21 21-4.35-4.35'/%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: 12px center;
+        }
+
+        .search-input:focus {
+            outline: none;
+            border-color: #27ae60;
+            box-shadow: 0 0 0 4px rgba(39, 174, 96, 0.1);
+        }
+
+        /* Table */
+        .table-container {
+            overflow-x: auto;
+        }
+
+        .table {
+            width: 100%;
+            border-collapse: separate;
+            border-spacing: 0;
+        }
+
+        .table thead {
+            background: #27ae60;
+            color: white;
+        }
+
+        .table th {
+            padding: 16px;
+            text-align: left;
+            font-weight: 600;
+            font-size: 14px;
+        }
+
+        .table th:first-child {
+            border-radius: 8px 0 0 0;
+        }
+
+        .table th:last-child {
+            border-radius: 0 8px 0 0;
+        }
+
+        .table td {
+            padding: 16px;
+            border-bottom: 1px solid #e0e0e0;
+            font-size: 14px;
+        }
+
+        .table tbody tr {
+            transition: all 0.3s ease;
+        }
+
+        .table tbody tr:hover {
+            background: rgba(39, 174, 96, 0.05);
+            transform: scale(1.01);
+        }
+
+        /* Review Cards (Alternative View) */
+        .reviews-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+            gap: 20px;
+            margin-top: 20px;
+        }
+
+        .review-card {
+            background: #f8f9fa;
+            border-radius: 10px;
+            padding: 20px;
+            border-left: 4px solid #27ae60;
+            transition: all 0.3s ease;
+        }
+
+        .review-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 8px 16px rgba(39, 174, 96, 0.15);
+        }
+
+        .review-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 15px;
+        }
+
+        .review-avatar {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #27ae60 0%, #229954 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 1.3rem;
+            font-weight: 600;
+        }
+
+        .review-user {
+            flex: 1;
+        }
+
+        .review-user h4 {
+            font-size: 16px;
+            font-weight: 600;
+            color: #2c3e50;
+            margin-bottom: 3px;
+        }
+
+        .review-date {
+            font-size: 12px;
+            color: #7f8c8d;
+        }
+
+        .review-comment {
+            color: #2c3e50;
+            font-size: 14px;
+            line-height: 1.6;
+        }
+
+        /* Empty State */
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+            color: #95a5a6;
+        }
+
+        .empty-state i {
+            font-size: 4rem;
+            margin-bottom: 20px;
+        }
+
+        .empty-state h3 {
+            font-size: 18px;
+            margin-bottom: 10px;
+        }
+
+        /* Toggle View */
+        .view-toggle {
+            display: flex;
+            gap: 10px;
+        }
+
+        .toggle-btn {
+            padding: 8px 16px;
+            border: 2px solid #e0e0e0;
+            background: white;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .toggle-btn:hover {
+            border-color: #27ae60;
+            color: #27ae60;
+        }
+
+        .toggle-btn.active {
+            background: #27ae60;
+            color: white;
+            border-color: #27ae60;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .navbar {
+                flex-direction: column;
+                gap: 15px;
+                padding: 15px 20px;
+            }
+
+            .container {
+                padding: 0 20px;
+                margin: 30px auto;
+            }
+
+            .card-header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 15px;
+            }
+
+            .search-input,
+            .view-toggle {
+                width: 100%;
+            }
+
+            .page-title {
+                font-size: 20px;
+            }
+
+            .reviews-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* Footer */
+        footer {
+            background: #2c3e50;
+            color: #fff;
+            text-align: center;
+            padding: 20px;
+            font-size: 0.9rem;
+            margin-top: 60px;
+        }
+    </style>
+</head>
+<body>
+<!-- Header -->
+<header class="navbar">
+    <div class="logo">
+        <h1>Lectio <span>Admin</span></h1>
+    </div>
+    <a href="/api/admin" class="back-btn">
+        <i class="fas fa-arrow-left"></i> Volver al Panel
+    </a>
+</header>
+
+<!-- Container -->
+<div class="container">
+    <div class="page-header">
+        <h1 class="page-title">Gestión de Reseñas</h1>
+        <p class="page-subtitle">Visualiza y modera las reseñas y comentarios de los usuarios</p>
+    </div>
+
+    <!-- Stats -->
+    <div class="stats-card">
+        <i class="fas fa-comments"></i>
+        <div class="stats-card-content">
+            <h3 th:text="${resenas.size()}">48</h3>
+            <p>Total de Reseñas</p>
+        </div>
+    </div>
+
+    <!-- Table Card -->
+    <div class="table-card">
+        <div class="card-header">
+            <div class="card-header-left">
+                <i class="fas fa-list"></i>
+                <h3>Lista de Reseñas</h3>
+            </div>
+            <div style="display: flex; gap: 15px; align-items: center;">
+                <input type="text" id="searchInput" class="search-input" placeholder="Buscar reseña...">
+                <div class="view-toggle">
+                    <button class="toggle-btn active" id="tableView">
+                        <i class="fas fa-table"></i> Tabla
+                    </button>
+                    <button class="toggle-btn" id="cardView">
+                        <i class="fas fa-th-large"></i> Cards
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Table View -->
+        <div class="table-container" id="tableContainer">
+            <table class="table">
+                <thead>
+                <tr>
+                    <th>Usuario</th>
+                    <th>Comentario</th>
+                </tr>
+                </thead>
+                <tbody id="tableBody">
+                <tr th:each="resena : ${resenas}">
+                    <td>
+                        <div style="display: flex; align-items: center; gap: 10px;">
+                            <i class="fas fa-user-circle" style="font-size: 1.5rem; color: #27ae60;"></i>
+                            <strong th:text="${resena.nombre}">Nombre Usuario</strong>
+                        </div>
+                    </td>
+                    <td th:text="${resena.comentario}">Comentario de la reseña...</td>
+                </tr>
+                </tbody>
+            </table>
+
+            <div class="empty-state" id="emptyState" style="display: none;">
+                <i class="fas fa-search"></i>
+                <h3>No se encontraron reseñas</h3>
+                <p>Intenta con otro término de búsqueda</p>
+            </div>
+        </div>
+
+        <!-- Card View (Hidden by default) -->
+        <div class="reviews-grid" id="cardsContainer" style="display: none;">
+            <div class="review-card" th:each="resena : ${resenas}">
+                <div class="review-header">
+                    <div class="review-avatar" th:text="${#strings.substring(resena.nombre, 0, 1)}">U</div>
+                    <div class="review-user">
+                        <h4 th:text="${resena.nombre}">Nombre Usuario</h4>
+                        <span class="review-date">Hace 2 días</span>
+                    </div>
+                </div>
+                <p class="review-comment" th:text="${resena.comentario}">
+                    Comentario de la reseña del usuario sobre el servicio de la biblioteca...
+                </p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Footer -->
+<footer>
+    <p>&copy; 2025 Lectio Biblioteca. Todos los derechos reservados.</p>
+</footer>
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+    $(document).ready(function() {
+        // Toggle between table and card view
+        $('#tableView').click(function() {
+            $(this).addClass('active');
+            $('#cardView').removeClass('active');
+            $('#tableContainer').show();
+            $('#cardsContainer').hide();
+        });
+
+        $('#cardView').click(function() {
+            $(this).addClass('active');
+            $('#tableView').removeClass('active');
+            $('#tableContainer').hide();
+            $('#cardsContainer').show();
+        });
+
+        // Search functionality
+        $("#searchInput").on("keyup", function() {
+            const value = $(this).val().toLowerCase();
+            let visibleCount = 0;
+
+            // Search in table
+            $("#tableBody tr").filter(function() {
+                const matches = $(this).text().toLowerCase().indexOf(value) > -1;
+                $(this).toggle(matches);
+                if (matches) visibleCount++;
+            });
+
+            // Search in cards
+            $(".review-card").filter(function() {
+                const matches = $(this).text().toLowerCase().indexOf(value) > -1;
+                $(this).toggle(matches);
+            });
+
+            // Show/hide empty state
+            if (visibleCount === 0 && $('#tableContainer').is(':visible')) {
+                $("#emptyState").show();
+            } else {
+                $("#emptyState").hide();
+            }
+        });
+    });
+</script>
+</body>
+</html>

@@ -1,0 +1,683 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
+  <title>Desafío - El Principito</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;500;700&display=swap" rel="stylesheet" />
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    body {
+      font-family: 'Poppins', sans-serif;
+      min-height: 100vh;
+      color: #EAEAEA;
+      background: linear-gradient(to bottom, #1b2735 0%, #0d121c 100%);
+      position: relative;
+      overflow-x: hidden;
+      display: flex;
+      flex-direction: column;
+      padding-right: 0; /* Removed fixed margin for mobile support */
+    }
+
+    .background-stars {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: 0;
+      overflow: hidden;
+    }
+
+    .estrella {
+      position: absolute;
+      width: 3px;
+      height: 3px;
+      background: #FFECB3;
+      border-radius: 50%;
+      opacity: 0;
+      animation: brillar 12s linear infinite;
+      box-shadow: 0 0 5px rgba(255, 236, 179, 0.8);
+      z-index: 1;
+    }
+
+    .estrella.planeta {
+      width: 20px;
+      height: 20px;
+      background: radial-gradient(#FBC02D, #FF8A65);
+      opacity: 0.7;
+      animation: flotar-planeta 25s linear infinite;
+      box-shadow: 0 0 15px rgba(251, 192, 45, 0.8);
+    }
+
+    @keyframes brillar {
+      0% { transform: translate(0,0); opacity: 0; }
+      50% { opacity: 1; }
+      100% { transform: translate(100vw, -100vh); opacity: 0; }
+    }
+
+    @keyframes flotar-planeta {
+      0% { transform: translate(-50px, 50px) rotate(0deg); opacity: 0.5; }
+      50% { transform: translate(50px, -100px) rotate(180deg); opacity: 0.9; }
+      100% { transform: translate(-50px, 50px) rotate(360deg); opacity: 0.5; }
+    }
+
+    .layout {
+      width: 100%;
+      z-index: 2;
+      display: flex;
+      flex: 1;
+      position: relative;
+    }
+
+    .center {
+      flex: 1;
+      padding: 100px 40px 40px 40px;
+      text-align: center;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      color: #EAEAEA;
+      position: relative;
+      max-width: 700px;
+      margin: 0 auto;
+    }
+
+    h1 {
+      color: #FBC02D;
+      margin-bottom: 10px;
+      text-shadow: 0 0 10px rgba(251, 192, 45, 0.7);
+      position: relative;
+      z-index: 2;
+      font-size: 2.6rem;
+      letter-spacing: 1.2px;
+      font-weight: 700;
+    }
+
+    .portada {
+      width: 200px;
+      height: 280px;
+      border-radius: 6px;
+      box-shadow: 0 8px 20px rgba(0,0,0,0.5);
+      background-image: url('/img/principito.jpg');
+      background-size: cover;
+      background-position: center;
+      margin-bottom: 15px;
+      border: 3px solid #FF8A65;
+      position: relative;
+      z-index: 2;
+      flex-shrink: 0;
+    }
+
+    p {
+      max-width: 700px;
+      line-height: 1.6;
+      color: #CFCFCF;
+      font-size: 1rem;
+      position: relative;
+      z-index: 2;
+      margin-bottom: 32px;
+    }
+
+    .capitulos {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 18px;
+      margin-top: 30px;
+      margin-bottom: 60px;
+      padding-bottom: 100px;
+      position: relative;
+      z-index: 2;
+    }
+
+    .capitulo-nodo {
+      width: 85px;
+      height: 85px;
+      border-radius: 50%;
+      background: #FF8A65;
+      border: 3px solid #FBC02D;
+      color: #fff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+      box-shadow: 0 0 15px rgba(255, 138, 101, 0.5);
+      cursor: pointer;
+      transition: all 0.3s ease;
+      position: relative;
+      font-size: 1.2rem;
+      user-select: none;
+    }
+
+    .capitulo-nodo.locked {
+      opacity: 0.6;
+      cursor: not-allowed;
+      background: #2980b9;
+      border-color: #A0A0A0;
+    }
+
+    .capitulo-nodo.locked::after {
+      content: "🌌";
+      position: absolute;
+      font-size: 1.2rem;
+      opacity: 0.8;
+    }
+
+    .capitulo-nodo.leido {
+      background: #FBC02D;
+      color: #333;
+      transform: scale(1.1);
+      box-shadow: 0 0 20px #FBC02D;
+    }
+
+    .flecha {
+      color: #FBC02D;
+      margin: 6px 0;
+      font-size: 1.2rem;
+      opacity: 0.8;
+      animation: arrow-pulse 1s infinite alternate;
+      user-select: none;
+    }
+
+    @keyframes arrow-pulse {
+      from { opacity: 0.5; }
+      to { opacity: 1; }
+    }
+
+    /* Sidebar styling for desktop with background matching page */
+    .sidebar {
+      width: 270px;
+      background: linear-gradient(to bottom, #1b2735 0%, #0d121c 100%);
+      box-shadow: -4px 0 20px rgba(0, 0, 0, 0.4);
+      border-radius: 25px 0 0 25px;
+      padding: 30px 25px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      color: #fff;
+      position: fixed;
+      top: 60px;
+      right: 0;
+      height: calc(100vh - 60px);
+      z-index: 90;
+      transition: transform 0.35s ease;
+      user-select: none;
+      transform: translateX(0);
+    }
+    .sidebar.hide {
+      transform: translateX(100%);
+    }
+    .sidebar h2 {
+      text-align: center;
+      color: #FBC02D;
+      font-weight: 700;
+      font-size: 1.8rem;
+      letter-spacing: 1px;
+      margin-bottom: 35px;
+      user-select: none;
+      text-shadow: 0 0 8px rgba(251, 192, 45, 0.5);
+    }
+    .sidebar ul {
+      list-style: none;
+      padding: 0;
+    }
+    .sidebar li {
+      color: #EAEAEA;
+      font-weight: 600;
+      font-size: 1.1rem;
+      padding: 12px 20px;
+      margin: 18px 0;
+      border-radius: 14px;
+      background: rgba(255, 255, 255, 0.1);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      transition: background 0.3s ease, transform 0.3s ease;
+      user-select: none;
+    }
+    .sidebar li:hover {
+      background: rgba(255, 255, 255, 0.25);
+      transform: translateX(-6px);
+    }
+    .footer {
+      color: #7f8c8d;
+      font-size: 0.85rem;
+      text-align: center;
+      margin-top: 20px;
+      opacity: 0.8;
+      user-select: none;
+    }
+
+    /* Header and hamburger */
+    header {
+      background: linear-gradient(to bottom, #1b2735 0%, #0d121c 100%);
+      color: #fff;
+      padding: 15px 20px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      position: fixed;
+      width: 100%;
+      top: 0;
+      left: 0;
+      z-index: 100;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.4);
+      user-select: none;
+    }
+    header h1 {
+      font-weight: 700;
+      font-size: 1.5rem;
+    }
+    .menu-toggle {
+      background: none;
+      border: none;
+      cursor: pointer;
+      width: 28px;
+      height: 28px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      padding: 0;
+    }
+    .menu-toggle span {
+      display: block;
+      height: 3px;
+      background: white;
+      border-radius: 2px;
+      transition: all 0.3s ease;
+    }
+    .menu-toggle.open span:nth-child(1) {
+      transform: rotate(45deg) translate(5px, 5px);
+    }
+    .menu-toggle.open span:nth-child(2) {
+      opacity: 0;
+    }
+    .menu-toggle.open span:nth-child(3) {
+      transform: rotate(-45deg) translate(6px, -6px);
+    }
+
+    /* Modal styles */
+    .modal {
+      display: none;
+      position: fixed;
+      z-index: 200;
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0,0,0,0.8);
+      justify-content: center;
+      align-items: center;
+    }
+    .modal-content {
+      background: #F8F8F8;
+      padding: 25px;
+      border-radius: 10px;
+      max-width: 600px;
+      text-align: left;
+      box-shadow: 0 8px 24px rgba(0,0,0,0.3);
+      max-height: 80vh;
+      overflow-y: auto;
+      color: #222;
+    }
+    .modal-content h3 {
+      color: #FF8A65;
+      margin-bottom: 15px;
+      text-align: center;
+    }
+    .modal-content button {
+      background: #FF8A65;
+      color: #fff;
+      border: none;
+      border-radius: 4px;
+      padding: 10px 18px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      margin-top: 15px;
+      display: block;
+      margin-left: auto;
+      margin-right: auto;
+    }
+    .modal-content button:hover {
+      background: #FF7043;
+    }
+
+    .mensaje-motivacional {
+      display: none;
+      position: fixed;
+      bottom: 30px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: #FF8A65;
+      color: #FBC02D;
+      padding: 15px 25px;
+      border-radius: 10px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+      z-index: 210;
+      font-weight: 600;
+      opacity: 0;
+      transition: opacity 0.5s ease;
+      border: 2px solid #FBC02D;
+    }
+    .mensaje-motivacional.show {
+      display: block;
+      opacity: 1;
+    }
+
+    /* Responsive for mobile */
+    @media (max-width: 900px) {
+      header h1 {
+        font-size: 1.3rem;
+      }
+      .sidebar {
+        width: 220px;
+        height: calc(100vh - 60px);
+        border-radius: 0 0 0 25px;
+        box-shadow: 0 -4px 20px rgba(0,0,0,0.4);
+        top: 60px;
+        right: 0;
+        position: fixed;
+        background: linear-gradient(to bottom, #1b2735 0%, #0d121c 100%);
+        padding: 25px 20px;
+        transform: translateX(100%);
+        transition: transform 0.3s ease;
+        user-select: none;
+      }
+      .sidebar.show {
+        transform: translateX(0);
+        z-index: 200;
+      }
+      .layout {
+        flex-direction: column;
+        padding-right: 0;
+      }
+      .center {
+        padding: 80px 20px 40px 20px;
+        max-width: 100%;
+        width: 100%;
+      }
+      .capitulo-nodo {
+        width: 70px;
+        height: 70px;
+        font-size: 1rem;
+      }
+      .flecha {
+        font-size: 1rem;
+        margin: 4px 0;
+      }
+      p {
+        max-width: 100%;
+      }
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <h1>El Principito</h1>
+  <button aria-label="Abrir menú" aria-expanded="false" aria-controls="sidebar" class="menu-toggle" id="menu-toggle" type="button">
+    <span></span>
+    <span></span>
+    <span></span>
+  </button>
+</header>
+
+<div class="background-stars" aria-hidden="true">
+  <div class="estrella" style="top: 10%; left: 30%; animation-delay: 1s;"></div>
+  <div class="estrella" style="top: 50%; left: 80%; animation-delay: 3s;"></div>
+  <div class="estrella" style="top: 90%; left: 10%; animation-delay: 5s;"></div>
+  <div class="estrella" style="top: 5%; left: 50%; animation-delay: 2s;"></div>
+  <div class="estrella" style="top: 85%; left: 70%; animation-delay: 4s;"></div>
+  <div class="estrella planeta" style="top: 30%; left: 60%; animation-delay: 7s;"></div>
+  <div class="estrella planeta" style="top: 70%; left: 40%; animation-delay: 10s; width:15px; height:15px;"></div>
+</div>
+
+<div class="layout">
+  <main class="center" role="main">
+    <div class="portada" aria-label="Portada del libro El Principito"></div>
+    <h1>El Principito</h1>
+    <p>Una aventura poética en el desierto que te invita a redescubrir lo esencial que es invisible a los ojos.</p>
+    <div class="capitulos" id="capitulosList"></div>
+  </main>
+
+  <aside id="sidebar" class="sidebar hide" role="navigation" aria-label="Menú principal">
+    <div>
+      <h2>LECTIO</h2>
+      <ul>
+        <li onclick="location.href='/api/inicio'" tabindex="0" role="link" aria-label="Inicio">🏠 Inicio</li>
+        <li onclick="location.href='/api/libros'" tabindex="0" role="link" aria-label="Biblioteca">📚 Biblioteca</li>
+        <li onclick="location.href='/api/historia_pensamiento'" tabindex="0" role="link" aria-label="Historia del Pensamiento">💡 Historia del Pensamiento</li>
+        <li onclick="location.href='/api/logiado'" tabindex="0" role="link" aria-label="Volver a Lectio">🏠 Volver a Lectio</li>
+      </ul>
+    </div>
+    <div class="footer">© 2025 Lectio</div>
+  </aside>
+</div>
+
+<div id="modal" class="modal" onclick="if(event.target===this)closeModal()" role="dialog" aria-modal="true" aria-labelledby="modal-title" aria-describedby="modal-body">
+  <div class="modal-content">
+    <h3 id="modal-title">Capítulo</h3>
+    <div id="modal-body" style="white-space:pre-wrap;color:#333"></div>
+    <button id="modal-button" type="button" onclick="handleModalButtonClick()">Completar</button>
+  </div>
+</div>
+
+<div id="mensaje" class="mensaje-motivacional" role="alert" aria-live="assertive" aria-atomic="true"></div>
+
+<script>
+  const menuToggle = document.getElementById('menu-toggle');
+  const sidebar = document.getElementById('sidebar');
+
+  // Toggle menu open/close
+  function toggleMenu() {
+    const isOpen = sidebar.classList.toggle('show');
+    sidebar.classList.toggle('hide', !isOpen);
+    menuToggle.classList.toggle('open', isOpen);
+    menuToggle.setAttribute('aria-expanded', isOpen.toString());
+    if (isOpen) {
+      sidebar.focus();
+    }
+  }
+
+  menuToggle.addEventListener('click', toggleMenu);
+
+  // Close menu when clicking outside or pressing Escape
+  document.addEventListener('click', (e) => {
+    if (!sidebar.contains(e.target) && !menuToggle.contains(e.target)) {
+      if (sidebar.classList.contains('show')) {
+        sidebar.classList.remove('show');
+        sidebar.classList.add('hide');
+        menuToggle.classList.remove('open');
+        menuToggle.setAttribute('aria-expanded', 'false');
+      }
+    }
+  });
+
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && sidebar.classList.contains('show')) {
+      sidebar.classList.remove('show');
+      sidebar.classList.add('hide');
+      menuToggle.classList.remove('open');
+      menuToggle.setAttribute('aria-expanded', 'false');
+      menuToggle.focus();
+    }
+  });
+
+  const capitulos = [
+    `Capítulo 1: El aviador y el cordero.
+
+El narrador comienza explicando por qué dejó de dibujar a la edad de seis años: los adultos no entendían su dibujo de un elefante dentro de una boa. Años después, se convierte en aviador y sufre una avería en el desierto del Sahara, lejos de toda civilización. Allí, se encuentra con un pequeño muchacho de cabello dorado. El niño le pide algo inusual: "Por favor... ¡dibújame un cordero!". El aviador, desconcertado por la aparición del niño y su insólito pedido en medio de la nada, traza un cordero fallido tras otro. Finalmente, dibuja una caja. El niño exclama con asombro: "¡Es justo lo que quería! Mi cordero dormirá en ella." Este encuentro marca la diferencia fundamental entre la mente práctica del adulto y la imaginación pura de los niños.`,
+
+    `Capítulo 2: El planeta B-612 y la flor.
+
+El aviador descubre que el Principito viene de un planeta apenas más grande que una casa, el asteroide B-612. El Principito pasa sus días cuidándolo: limpia los volcanes (dos activos y uno extinto, que usa para calentar) y arranca los peligrosos **baobabs** antes de que sus raíces destruyan el planeta. Un día, una flor muy vanidosa y hermosa nace en el B-612. La **rosa**, con sus cuatro espinas y su orgullo, pronto se vuelve insoportable para el Principito. Su vanidad, sus quejas y sus demandas constantes lo hacen sentir infeliz. El Principito, confundido por las palabras y el orgullo de la flor, decide abandonar su planeta. En este capítulo se siembra el tema de la responsabilidad y el error de huir de las propias ataduras.`,
+
+    `Capítulo 3: El rey, el vanidoso y el bebedor.
+
+En su viaje, el Principito visita varios asteroides habitados por adultos singulares. Primero, un **Rey** que reina sobre nada y ordena solo cosas razonables. Luego, un **Vanidoso** que solo quiere ser admirado, sin importar si lo que dicen de él es verdad. Finalmente, un **Bebedor** que bebe para olvidar que le da vergüenza beber. El Principito se siente profundamente perplejo por la lógica de estos adultos, encontrando sus existencias absurdas y solitarias. Aprende que los adultos están tan ocupados con cosas serias e importantes que pierden el sentido de la belleza y de lo verdaderamente esencial.`,
+
+    `Capítulo 4: El farolero, el geógrafo y la Tierra.
+
+En el cuarto asteroide, el Principito conoce a un **Farolero** que obedece una consigna ridícula: debe encender y apagar su farol cada minuto. El Principito lo respeta porque, a diferencia de los otros, el Farolero se ocupa de algo distinto a sí mismo. Luego encuentra a un **Geógrafo** que sabe todo sobre su planeta pero no conoce ni la geografía de su propio hogar. El Geógrafo le aconseja visitar la Tierra, describiéndola como un planeta con "un centenar de once reyes... y setecientos mil geógrafos". El Principito llega a la Tierra (el séptimo planeta) y queda asombrado por su inmensidad y, más tarde, por el dolor que le causa descubrir que su rosa no era única al ver un jardín de miles de rosas.`,
+
+    `Capítulo 5: El zorro, la amistad y lo invisible.
+
+En la Tierra, el Principito conoce al **Zorro**, quien le enseña el significado de la amistad y la **domesticación**. El Zorro explica: "Tú no eres para mí todavía más que un muchachito semejante a cien mil muchachitos. Y no te necesito. Tampoco tú tienes necesidad de mí. No soy para ti más que un zorro semejante a cien mil zorros. Pero si me domesticas, tendremos necesidad el uno del otro." El Zorro le revela el secreto: **"Lo esencial es invisible a los ojos"** y le pide que sea responsable de su rosa, recordándole que el tiempo que perdió en su flor es lo que la hace importante. Finalmente, el Principito y el aviador se despiden. El Principito regresa a su planeta, y el aviador, ya adulto, mantiene la esperanza de volver a ver a su pequeño amigo en las estrellas.`
+  ];
+
+  const mensajesMotivacionales = [
+    "Has dado el primer paso: lo importante no es lo que dibujas, sino lo que ves. ¡Mantén tu mente de niño!",
+    "Recuerda tu rosa: el tiempo que pierdes en ella es lo que la hace importante. ¡Sé responsable de lo que has domesticado!",
+    "No seas como los adultos absurdos. La verdadera sabiduría no está en las cifras, sino en la conexión. ¡Sigue tu corazón!",
+    "Viaja, observa y honra a quien se ocupa de los demás, como el farolero. ¡El valor está en el deber cumplido!",
+    "Has aprendido el secreto del Zorro: **Lo esencial es invisible a los ojos**. ¡Mira con el corazón! 🧡"
+  ];
+
+  const LIBRO_ID = 'principito';
+  const cont = document.getElementById('capitulosList');
+  let currentReadingChapterIndex = -1;
+  let capitulosLeidos = [];
+
+  async function cargarProgreso() {
+    try {
+      const response = await fetch('/api/progreso/mi-progreso', {
+        method: 'GET',
+        credentials: 'include'
+      });
+
+      if (!response.ok) {
+        desbloquearSiguientes();
+        return;
+      }
+
+      const data = await response.json();
+
+      if (data.capitulosPorLibro && data.capitulosPorLibro[LIBRO_ID]) {
+        capitulosLeidos = Array.from(data.capitulosPorLibro[LIBRO_ID]);
+      }
+
+      desbloquearSiguientes();
+    } catch (error) {
+      desbloquearSiguientes();
+    }
+  }
+
+  async function guardarProgreso(capituloIndex) {
+    try {
+      const response = await fetch('/api/progreso/guardar-capitulo', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        credentials: 'include',
+        body: JSON.stringify({
+          libroId: LIBRO_ID,
+          capitulo: capituloIndex,
+          totalCapitulos: capitulos.length
+        })
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        if (capitulosLeidos.length === capitulos.length) {
+          mostrarMensaje('🎉 ¡Felicitaciones! Has completado El Principito. +100 puntos 🌟');
+        }
+      }
+    } catch (error) {
+      console.error('Error guardando progreso:', error);
+    }
+  }
+
+  // Render chapters
+  function renderChapters() {
+    capitulos.forEach((txt, i) => {
+      const nodo = document.createElement('div');
+      nodo.className = 'capitulo-nodo locked';
+      nodo.textContent = i + 1;
+      nodo.tabIndex = 0;
+      nodo.setAttribute('role', 'button');
+      nodo.setAttribute('aria-label', `Capítulo ${i + 1}`);
+      nodo.onclick = () => openModal(i);
+      nodo.onkeypress = (e) => { if(e.key === 'Enter' || e.key === ' ') openModal(i); };
+      cont.appendChild(nodo);
+
+      if (i < capitulos.length - 1) {
+        const f = document.createElement('div');
+        f.className = 'flecha';
+        f.innerHTML = '↓';
+        cont.appendChild(f);
+      }
+    });
+  }
+
+  function desbloquearSiguientes() {
+    const nodos = document.querySelectorAll('.capitulo-nodo');
+    nodos.forEach((n, i) => {
+      if (i === 0 || capitulosLeidos.includes(i - 1)) {
+        n.classList.remove('locked');
+      }
+      if (capitulosLeidos.includes(i)) n.classList.add('leido');
+    });
+  }
+
+  function openModal(i) {
+    const nodo = document.querySelectorAll('.capitulo-nodo')[i];
+    if (nodo.classList.contains('locked')) return;
+
+    document.getElementById('modal-title').innerText = `Capítulo ${i + 1}`;
+    document.getElementById('modal-body').innerText = capitulos[i];
+    const modalButton = document.getElementById('modal-button');
+    if (capitulosLeidos.includes(i)) {
+      modalButton.innerText = 'Cerrar';
+      modalButton.onclick = () => closeModal();
+    } else {
+      modalButton.innerText = 'Completar';
+      modalButton.onclick = () => handleModalButtonClick();
+    }
+
+    document.getElementById('modal').style.display = 'flex';
+    currentReadingChapterIndex = i;
+  }
+
+  function handleModalButtonClick() {
+    if (document.getElementById('modal-button').innerText === 'Completar') {
+      closeModal();
+    } else {
+      document.getElementById('modal').style.display = 'none';
+    }
+  }
+
+  function closeModal() {
+    document.getElementById('modal').style.display = 'none';
+    const i = currentReadingChapterIndex;
+    if (i >= 0 && !capitulosLeidos.includes(i)) {
+      capitulosLeidos.push(i);
+      guardarProgreso(i);
+      mostrarMensaje(mensajesMotivacionales[i % mensajesMotivacionales.length]);
+      const nodo = document.querySelectorAll('.capitulo-nodo')[i];
+      nodo.classList.add('leido');
+      desbloquearSiguientes();
+    }
+    currentReadingChapterIndex = -1;
+  }
+
+  function mostrarMensaje(text) {
+    const mensaje = document.getElementById('mensaje');
+    mensaje.textContent = text;
+    mensaje.classList.add('show');
+    setTimeout(() => { mensaje.classList.remove('show'); }, 4000);
+  }
+
+  window.onload = () => {
+    renderChapters();
+    cargarProgreso();
+  };
+</script>
+
+</body>
+</html>

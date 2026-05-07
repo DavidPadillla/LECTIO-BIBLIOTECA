@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Editar Reserva - Administración Lectio</title>
+  <link rel="stylesheet" href="/estilos/Admin.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+</head>
+<body>
+
+<header>
+  <nav>
+    <div class="logo">
+      <h1>BookLab - Admin</h1>
+    </div>
+    <ul class="nav-links">
+      <li><a href="/api/admin">Inicio</a></li>
+      <li><a href="/api/reservaAdmin">Reservas</a></li>
+      <li><a href="/api/usuariosAdmin">Usuarios</a></li>
+      <li><a href="/api/noAdminConfig">Configuración</a></li>
+    </ul>
+  </nav>
+</header>
+
+<section class="section reserva" id="reserva">
+  <h2 class="section-title">Editar Reserva</h2>
+
+  <div class="reserva-container">
+
+
+    <div class="form-nueva-reserva">
+      <h3>Editar Reserva</h3>
+      <form action="/api/actualizarReserva" method="post">
+        <input type="hidden" name="id" value="${reserva.id}">
+
+        <label for="usuario">Usuario:</label>
+        <input type="text" id="usuario" name="usuario" value="${reserva.usuario}" placeholder="Nombre de usuario" required>
+
+        <label for="libro">Libro:</label>
+        <input type="text" id="libro" name="libro" value="${reserva.libro}" placeholder="Nombre del libro" required>
+
+        <label for="fecha">Fecha de Reserva:</label>
+        <input type="date" id="fecha" name="fecha" value="${#dates.format(reserva.fecha, 'yyyy-MM-dd')}" required>
+
+        <button type="submit" class="btn">Actualizar Reserva</button>
+      </form>
+    </div>
+
+  </div>
+</section>
+
+<footer>
+  <p>&copy; 2024 NexGet Biblioteca. Todos los derechos reservados.</p>
+</footer>
+
+</body>
+</html>

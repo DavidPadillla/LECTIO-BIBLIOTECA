@@ -1,0 +1,568 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lectio Admin</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: #f5f6fa;
+            color: #2c3e50;
+        }
+
+        /* Header Sticky */
+        .navbar {
+            background: #fff;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px 60px;
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+
+        .logo h1 {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #2c3e50;
+        }
+
+        .logo span {
+            color: #27ae60;
+            font-weight: 600;
+        }
+
+        .back-btn {
+            background: #27ae60;
+            color: #fff;
+            padding: 10px 25px;
+            border: none;
+            border-radius: 30px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 14px;
+        }
+
+        .back-btn:hover {
+            background: #219150;
+            transform: translateY(-3px) scale(1.05);
+            box-shadow: 0 8px 20px rgba(39, 174, 96, 0.4);
+        }
+
+        /* Container */
+        .container {
+            max-width: 1600px;
+            margin: 40px auto;
+            padding: 0 40px;
+        }
+
+        .page-header {
+            margin-bottom: 30px;
+            animation: fadeInDown 0.6s ease;
+        }
+
+        @keyframes fadeInDown {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .page-title {
+            font-size: 24px;
+            font-weight: 700;
+            color: #2c3e50;
+            margin-bottom: 5px;
+        }
+
+        .page-subtitle {
+            font-size: 14px;
+            color: #7f8c8d;
+        }
+
+        /* Stats Cards */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+            animation: fadeInUp 0.6s ease;
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .stat-card {
+            background: white;
+            padding: 25px;
+            border-radius: 12px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.06);
+            transition: all 0.3s ease;
+            border-left: 4px solid #27ae60;
+            position: relative;
+            overflow: hidden;
+            animation: fadeInUp 0.6s ease forwards;
+        }
+
+        .stat-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 100px;
+            height: 100px;
+            background: rgba(39, 174, 96, 0.05);
+            border-radius: 50%;
+            transform: translate(30%, -30%);
+        }
+
+        .stat-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 8px 16px rgba(39, 174, 96, 0.15);
+        }
+
+        .stat-card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 15px;
+        }
+
+        .stat-icon {
+            width: 50px;
+            height: 50px;
+            background: linear-gradient(135deg, #27ae60 0%, #229954 100%);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 1.5rem;
+            transition: transform 0.3s ease;
+        }
+
+        .stat-card:hover .stat-icon {
+            transform: scale(1.1) rotate(5deg);
+        }
+
+        .stat-number {
+            font-size: 2rem;
+            font-weight: 700;
+            color: #2c3e50;
+            margin-bottom: 5px;
+            display: block;
+        }
+
+        .stat-label {
+            color: #7f8c8d;
+            font-size: 14px;
+        }
+
+        /* Charts Section */
+        .charts-section {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 25px;
+            margin-bottom: 30px;
+        }
+
+        .chart-card {
+            background: white;
+            border-radius: 12px;
+            padding: 25px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.06);
+            animation: fadeInUp 0.6s ease 0.3s both;
+            transition: all 0.3s ease;
+        }
+
+        .chart-card:hover {
+            box-shadow: 0 8px 16px rgba(39, 174, 96, 0.15);
+        }
+
+        .chart-card h3 {
+            font-size: 18px;
+            font-weight: 600;
+            color: #2c3e50;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .chart-card h3 i {
+            color: #27ae60;
+        }
+
+        /* Power BI Section */
+        .powerbi-section {
+            background: white;
+            border-radius: 12px;
+            padding: 25px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.06);
+            animation: fadeInUp 0.6s ease 0.4s both;
+            transition: all 0.3s ease;
+        }
+
+        .powerbi-section:hover {
+            box-shadow: 0 8px 16px rgba(39, 174, 96, 0.15);
+        }
+
+        .powerbi-section h3 {
+            font-size: 18px;
+            font-weight: 600;
+            color: #2c3e50;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .powerbi-section h3 i {
+            color: #27ae60;
+        }
+
+        .powerbi-container {
+            position: relative;
+            width: 100%;
+            padding-bottom: 56.25%;
+            height: 0;
+            overflow: hidden;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+
+        .powerbi-container iframe {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            border: none;
+        }
+
+        /* Responsive */
+        @media (max-width: 1024px) {
+            .charts-section {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .navbar {
+                flex-direction: column;
+                gap: 15px;
+                padding: 15px 20px;
+            }
+
+            .container {
+                padding: 0 20px;
+                margin: 30px auto;
+            }
+
+            .page-title {
+                font-size: 20px;
+            }
+
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .powerbi-container {
+                padding-bottom: 75%;
+            }
+        }
+
+        /* Footer */
+        footer {
+            background: #2c3e50;
+            color: #fff;
+            text-align: center;
+            padding: 20px;
+            font-size: 0.9rem;
+            margin-top: 60px;
+        }
+
+        /* Stagger animation */
+        .stat-card:nth-child(1) { animation-delay: 0.1s; }
+        .stat-card:nth-child(2) { animation-delay: 0.15s; }
+        .stat-card:nth-child(3) { animation-delay: 0.2s; }
+        .stat-card:nth-child(4) { animation-delay: 0.25s; }
+        .stat-card:nth-child(5) { animation-delay: 0.3s; }
+        .stat-card:nth-child(6) { animation-delay: 0.35s; }
+    </style>
+</head>
+<body>
+<!-- Header -->
+<header class="navbar">
+    <div class="logo">
+        <h1>Lectio <span>Admin</span></h1>
+    </div>
+    <a href="/api/admin" class="back-btn">
+        <i class="fas fa-arrow-left"></i> Volver al Panel
+    </a>
+</header>
+
+<!-- Container -->
+<div class="container">
+    <div class="page-header">
+        <h1 class="page-title">Dashboard</h1>
+        <p class="page-subtitle">Visualiza las estadísticas generales del sistema Lectio</p>
+    </div>
+
+    <!-- Stats Cards -->
+    <div class="stats-grid">
+        <!-- Total Usuarios -->
+        <div class="stat-card">
+            <div class="stat-card-header">
+                <div class="stat-icon">
+                    <i class="fas fa-users"></i>
+                </div>
+            </div>
+            <span class="stat-number" data-target="[[${totalUsuarios}]]" th:text="${totalUsuarios}">0</span>
+            <div class="stat-label">Usuarios Registrados</div>
+        </div>
+
+        <!-- Total Libros -->
+        <div class="stat-card">
+            <div class="stat-card-header">
+                <div class="stat-icon">
+                    <i class="fas fa-book"></i>
+                </div>
+            </div>
+            <span class="stat-number" data-target="[[${totalLibros}]]" th:text="${totalLibros}">0</span>
+            <div class="stat-label">Total de Libros</div>
+        </div>
+
+        <!-- Total Reservas -->
+        <div class="stat-card">
+            <div class="stat-card-header">
+                <div class="stat-icon">
+                    <i class="fas fa-calendar-check"></i>
+                </div>
+            </div>
+            <span class="stat-number" data-target="[[${totalReservas}]]" th:text="${totalReservas}">0</span>
+            <div class="stat-label">Reservas Activas</div>
+        </div>
+
+        <!-- Total Multas -->
+        <div class="stat-card">
+            <div class="stat-card-header">
+                <div class="stat-icon">
+                    <i class="fas fa-exclamation-triangle"></i>
+                </div>
+            </div>
+            <span class="stat-number" data-target="[[${totalMultas}]]" th:text="${totalMultas}">0</span>
+            <div class="stat-label">Total de Multas</div>
+        </div>
+
+        <!-- Multas Pendientes -->
+        <div class="stat-card">
+            <div class="stat-card-header">
+                <div class="stat-icon">
+                    <i class="fas fa-dollar-sign"></i>
+                </div>
+            </div>
+            <span class="stat-number" data-target="[[${multasPendientes}]]" th:text="${multasPendientes}">0</span>
+            <div class="stat-label">Multas Pendientes</div>
+        </div>
+
+        <!-- Total Reseñas -->
+        <div class="stat-card">
+            <div class="stat-card-header">
+                <div class="stat-icon">
+                    <i class="fas fa-comments"></i>
+                </div>
+            </div>
+            <span class="stat-number" data-target="[[${totalResenas}]]" th:text="${totalResenas}">0</span>
+            <div class="stat-label">Reseñas Totales</div>
+        </div>
+    </div>
+
+    <!-- Charts -->
+    <div class="charts-section">
+        <!-- Gráfico de Barras -->
+        <div class="chart-card">
+            <h3>
+                <i class="fas fa-chart-bar"></i>
+                Reservas por Categoría
+            </h3>
+            <canvas id="categoriasChart"></canvas>
+        </div>
+
+        <!-- Gráfico de Pastel -->
+        <div class="chart-card">
+            <h3>
+                <i class="fas fa-chart-pie"></i>
+                Distribución de Reservas
+            </h3>
+            <canvas id="distribucionChart"></canvas>
+        </div>
+    </div>
+
+    <!-- Power BI Dashboard -->
+    <div class="powerbi-section">
+        <h3>
+            <i class="fas fa-chart-line"></i>
+            Dashboard de Power BI - Análisis Completo
+        </h3>
+        <div class="powerbi-container">
+            <iframe
+                    title="Dashboard Lectio"
+                    src="https://app.powerbi.com/view?r=eyJrIjoiNzcwZDRhYjMtMGQyYS00ZDc1LWJjODQtM2ExY2NlMjI1NTYwIiwidCI6IjlkMTJiZjNmLWU0ZjYtNDdhYi05MTJmLTFhMmYwZmM0OGFhNCIsImMiOjR9"
+                    frameborder="0"
+                    allowFullScreen="true">
+            </iframe>
+        </div>
+    </div>
+</div>
+
+<!-- Footer -->
+<footer>
+    <p>&copy; 2025 Lectio Biblioteca. Todos los derechos reservados.</p>
+</footer>
+
+<script th:inline="javascript">
+    /*<![CDATA[*/
+    // Animated Counter
+    document.addEventListener('DOMContentLoaded', function() {
+        const counters = document.querySelectorAll('.stat-number');
+
+        counters.forEach(counter => {
+            const target = parseInt(counter.textContent);
+            const duration = 2000;
+            const increment = target / (duration / 16);
+            let current = 0;
+
+            const updateCounter = () => {
+                current += increment;
+                if (current < target) {
+                    counter.textContent = Math.floor(current);
+                    requestAnimationFrame(updateCounter);
+                } else {
+                    counter.textContent = target;
+                }
+            };
+
+            setTimeout(updateCounter, 500);
+        });
+    });
+
+    // Charts Data
+    const estadisticas = /*[[${estadisticasCategorias}]]*/ {};
+    const categorias = Object.keys(estadisticas);
+    const valores = Object.values(estadisticas);
+
+    const colores = [
+        'rgba(39, 174, 96, 0.8)',
+        'rgba(52, 152, 219, 0.8)',
+        'rgba(231, 76, 60, 0.8)',
+        'rgba(241, 196, 15, 0.8)',
+        'rgba(155, 89, 182, 0.8)',
+        'rgba(26, 188, 156, 0.8)'
+    ];
+
+    const coloresBorde = [
+        'rgba(39, 174, 96, 1)',
+        'rgba(52, 152, 219, 1)',
+        'rgba(231, 76, 60, 1)',
+        'rgba(241, 196, 15, 1)',
+        'rgba(155, 89, 182, 1)',
+        'rgba(26, 188, 156, 1)'
+    ];
+
+    // Bar Chart
+    const ctxBarras = document.getElementById('categoriasChart').getContext('2d');
+    new Chart(ctxBarras, {
+        type: 'bar',
+        data: {
+            labels: categorias,
+            datasets: [{
+                label: 'Número de Reservas',
+                data: valores,
+                backgroundColor: colores,
+                borderColor: coloresBorde,
+                borderWidth: 2,
+                borderRadius: 8
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: true,
+            plugins: {
+                legend: {
+                    display: false
+                }
+            },
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    ticks: {
+                        stepSize: 1
+                    }
+                }
+            }
+        }
+    });
+
+    // Doughnut Chart
+    const ctxPastel = document.getElementById('distribucionChart').getContext('2d');
+    new Chart(ctxPastel, {
+        type: 'doughnut',
+        data: {
+            labels: categorias,
+            datasets: [{
+                data: valores,
+                backgroundColor: colores,
+                borderColor: coloresBorde,
+                borderWidth: 2
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: true,
+            plugins: {
+                legend: {
+                    position: 'bottom',
+                    labels: {
+                        padding: 15,
+                        font: {
+                            size: 12
+                        }
+                    }
+                }
+            }
+        }
+    });
+    /*]]>*/
+</script>
+</body>
+</html>

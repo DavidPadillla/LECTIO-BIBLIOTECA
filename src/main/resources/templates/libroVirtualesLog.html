@@ -1,0 +1,937 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Libros Virtuales</title>
+    <link rel="stylesheet" href="/estilos/libros.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Bootstrap 5 CDN -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        /* Estilos base */
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: #f5f6fa;
+            color: #2c3e50;
+            margin:0;
+        }
+
+        /* Header y navegación */
+        header {
+            background: #fff;
+            padding: 20px 40px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            position: sticky;
+            top:0;
+            z-index:1000;
+        }
+
+        nav {
+            display:flex;
+            justify-content: space-between;
+            align-items: center;
+            max-width:1400px;
+            margin:0 auto;
+            flex-wrap:wrap;
+        }
+
+        .logo h1 {
+            font-size:2rem;
+            font-weight:700;
+            color:#2c3e50;
+        }
+
+        .logo span {
+            color:#27ae60;
+        }
+
+        .nav-links {
+            list-style:none;
+            display:flex;
+            gap:25px;
+            flex-wrap:wrap;
+            margin:0;
+            padding:0;
+        }
+
+        .nav-links li a {
+            text-decoration:none;
+            color:#2c3e50;
+            font-weight:500;
+            padding:8px 15px;
+            border-radius:25px;
+            transition: all 0.3s;
+        }
+
+        .nav-links li a:hover, .nav-links li a.active {
+            background:#27ae60;
+            color:#fff;
+        }
+
+        /* Búsqueda y filtros */
+        .search-container {
+            max-width:1200px;
+            margin:40px auto;
+            padding:0 20px;
+        }
+
+        .search-box {
+            display:flex;
+            gap:15px;
+            margin-bottom:30px;
+            flex-wrap:wrap;
+        }
+
+        .search-input-container {
+            position:relative;
+            flex:1;
+        }
+
+        .search-input {
+            width:100%;
+            padding:15px 20px;
+            border:2px solid #e0e0e0;
+            border-radius:50px;
+            font-size:1rem;
+            transition:all 0.3s;
+        }
+
+        .search-input:focus {
+            outline:none;
+            border-color:#27ae60;
+            box-shadow:0 2px 15px rgba(39,174,96,0.2);
+        }
+
+        .search-filters {
+            display:flex;
+            gap:15px;
+            flex-wrap:wrap;
+            justify-content:center;
+            margin-bottom:30px;
+        }
+
+        .filter-option {
+            display:flex;
+            align-items:center;
+            gap:8px;
+            background:#fff;
+            padding:10px 20px;
+            border-radius:50px;
+            box-shadow:0 2px 8px rgba(0,0,0,0.1);
+            cursor:pointer;
+            transition:all 0.3s;
+        }
+
+        .filter-option:hover {
+            transform:translateY(-2px);
+            box-shadow:0 4px 10px rgba(0,0,0,0.15);
+        }
+
+        .filter-option input[type="checkbox"] {
+            width:18px;
+            height:18px;
+            accent-color:#27ae60;
+            cursor:pointer;
+        }
+
+        .filter-option label {
+            font-size:0.95rem;
+            font-weight:500;
+            color:#2c3e50;
+            cursor:pointer;
+        }
+
+        /* Grid de libros */
+        .books-grid {
+            display:grid;
+            grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
+            gap:25px;
+            padding:20px;
+        }
+
+        .book-card {
+            background: linear-gradient(145deg, #ffffff, #ecf0f1);
+            border-radius:20px;
+            box-shadow:0 8px 20px rgba(0,0,0,0.1);
+            transition: transform 0.3s, box-shadow 0.3s;
+            display:flex;
+            flex-direction:column;
+            justify-content:space-between;
+            overflow:hidden;
+            padding:20px;
+        }
+
+        .book-card:hover {
+            transform:translateY(-5px);
+            box-shadow:0 12px 25px rgba(0,0,0,0.2);
+        }
+
+        .card-content {
+            flex:1;
+            display:flex;
+            flex-direction:column;
+            justify-content:space-between;
+        }
+
+        .card-content h3 {
+            font-size:1.3rem;
+            margin-bottom:5px;
+            color:#2c3e50;
+            word-break: break-word;
+        }
+
+        .card-content .author {
+            font-size:0.95rem;
+            color:#7f8c8d;
+            margin-bottom:5px;
+            word-break: break-word;
+        }
+
+        .card-content .desc {
+            font-size:0.9rem;
+            color:#34495e;
+            margin-bottom:10px;
+            min-height:55px;
+            overflow:hidden;
+            word-break: break-word;
+        }
+
+        .card-content .category {
+            display:inline-block;
+            background:#27ae60;
+            color:#fff;
+            font-size:0.8rem;
+            padding:4px 10px;
+            border-radius:50px;
+            margin-bottom:10px;
+        }
+
+        .read-btn {
+            display:inline-block;
+            text-align:center;
+            padding:8px 16px;
+            background:#27ae60;
+            color:#fff;
+            border-radius:50px;
+            text-decoration:none;
+            font-weight:600;
+            transition:all 0.3s;
+        }
+
+        .read-btn:hover {
+            background:#219150;
+            transform:translateY(-2px);
+        }
+
+        /* Sin resultados */
+        .no-results {
+            text-align:center;
+            padding:60px 20px;
+            font-size:1.2rem;
+            color:#7f8c8d;
+            display:none;
+            background:#fff;
+            border-radius:10px;
+            margin:20px 0;
+            box-shadow:0 2px 10px rgba(0,0,0,0.05);
+        }
+
+        /* Paginación */
+        .pagination {
+            display:flex;
+            justify-content:center;
+            align-items:center;
+            gap:10px;
+            margin:30px 0;
+            flex-wrap:wrap;
+        }
+
+        .pagination button {
+            padding:8px 15px;
+            border:none;
+            border-radius:50px;
+            background:#27ae60;
+            color:#fff;
+            font-weight:600;
+            cursor:pointer;
+            transition:all 0.3s;
+        }
+
+        .pagination button:hover {
+            background:#219150;
+            transform:translateY(-2px);
+        }
+
+        .pagination button.disabled {
+            background:#bdc3c7;
+            cursor:not-allowed;
+        }
+
+        /* Buscador de páginas */
+        .page-jumper {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 10px;
+            margin: 15px 0;
+            flex-wrap: wrap;
+        }
+
+        .page-jumper input {
+            width: 60px;
+            padding: 8px 12px;
+            border: 2px solid #e0e0e0;
+            border-radius: 50px;
+            text-align: center;
+        }
+
+        .page-jumper input:focus {
+            outline: none;
+            border-color: #27ae60;
+        }
+
+        .page-jumper button {
+            padding: 8px 15px;
+            border: none;
+            border-radius: 50px;
+            background: #2c3e50;
+            color: #fff;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .page-jumper button:hover {
+            background: #1a252f;
+            transform: translateY(-2px);
+        }
+
+        /* Modal de error */
+        .page-error-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.7);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 2000;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+        }
+
+        .page-error-modal.active {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .page-error-content {
+            background: white;
+            padding: 30px;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            text-align: center;
+            max-width: 400px;
+            width: 90%;
+            transform: scale(0.8);
+            transition: transform 0.3s ease;
+        }
+
+        .page-error-modal.active .page-error-content {
+            transform: scale(1);
+        }
+
+        .page-error-icon {
+            font-size: 3rem;
+            color: #e74c3c;
+            margin-bottom: 15px;
+        }
+
+        .page-error-title {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: #2c3e50;
+            margin-bottom: 10px;
+        }
+
+        .page-error-message {
+            font-size: 1rem;
+            color: #7f8c8d;
+            margin-bottom: 20px;
+            line-height: 1.5;
+        }
+
+        .page-error-close {
+            padding: 10px 25px;
+            background: #27ae60;
+            color: white;
+            border: none;
+            border-radius: 50px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .page-error-close:hover {
+            background: #219150;
+            transform: translateY(-2px);
+        }
+
+        footer {
+            background:#2c3e50;
+            color:#fff;
+            text-align:center;
+            padding:25px;
+            font-size:0.95rem;
+            margin-top:60px;
+        }
+
+        /* ===== RESPONSIVE DESIGN ===== */
+
+        /* Menú hamburguesa para móviles */
+        .menu-toggle {
+            display: none;
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            color: #2c3e50;
+            cursor: pointer;
+            padding: 5px;
+        }
+
+        .nav-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            z-index: 998;
+        }
+
+        .nav-overlay.active {
+            display: block;
+        }
+
+        /* Tablet (768px - 1024px) */
+        @media (max-width: 1024px) {
+            header {
+                padding: 15px 20px;
+            }
+
+            .logo h1 {
+                font-size: 1.7rem;
+            }
+
+            .search-container {
+                margin: 30px auto;
+            }
+
+            .books-grid {
+                grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+                gap: 20px;
+                padding: 15px;
+            }
+
+            .book-card {
+                padding: 15px;
+            }
+
+            .card-content h3 {
+                font-size: 1.2rem;
+            }
+        }
+
+        /* Móviles (hasta 768px) */
+        @media (max-width: 768px) {
+            /* Header y navegación móvil */
+            header {
+                padding: 15px;
+            }
+
+            nav {
+                position: relative;
+                flex-wrap: nowrap;
+            }
+
+            .menu-toggle {
+                display: block;
+                order: 2;
+            }
+
+            .logo {
+                order: 1;
+                flex: 1;
+            }
+
+            .logo h1 {
+                font-size: 1.5rem;
+            }
+
+            .nav-links {
+                position: fixed;
+                top: 0;
+                right: -100%;
+                width: 70%;
+                height: 100vh;
+                background: #fff;
+                flex-direction: column;
+                justify-content: flex-start;
+                padding-top: 80px;
+                transition: right 0.3s ease;
+                box-shadow: -5px 0 15px rgba(0,0,0,0.1);
+                z-index: 999;
+                gap: 0;
+            }
+
+            .nav-links.active {
+                right: 0;
+            }
+
+            .nav-links li {
+                width: 100%;
+                text-align: center;
+            }
+
+            .nav-links li a {
+                display: block;
+                width: 100%;
+                padding: 15px;
+                border-radius: 0;
+                margin: 0;
+            }
+
+            .user-info-mobile {
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                padding: 20px;
+                border-top: 1px solid #eee;
+                margin-top: 20px;
+            }
+
+            .user-info-mobile p {
+                margin-bottom: 10px;
+                text-align: center;
+            }
+
+            /* Búsqueda y filtros móviles */
+            .search-container {
+                padding: 0 15px;
+                margin: 20px auto;
+            }
+
+            .search-box {
+                flex-direction: column;
+                gap: 10px;
+            }
+
+            .search-filters {
+                flex-direction: column;
+                gap: 10px;
+                align-items: stretch;
+            }
+
+            .filter-option {
+                justify-content: center;
+                padding: 12px 15px;
+            }
+
+            /* Grid de libros móvil */
+            .books-grid {
+                grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+                gap: 15px;
+                padding: 10px;
+            }
+
+            .book-card {
+                padding: 15px;
+            }
+
+            .card-content h3 {
+                font-size: 1.1rem;
+            }
+
+            .card-content .author {
+                font-size: 0.9rem;
+            }
+
+            .card-content .desc {
+                font-size: 0.85rem;
+                min-height: 50px;
+            }
+
+            .read-btn {
+                padding: 7px 14px;
+                font-size: 0.9rem;
+            }
+
+            /* Paginación móvil */
+            .pagination {
+                gap: 5px;
+                margin: 20px 0;
+            }
+
+            .pagination button {
+                padding: 6px 12px;
+                font-size: 0.9rem;
+            }
+
+            .page-jumper {
+                flex-direction: column;
+                gap: 8px;
+            }
+
+            .page-jumper input {
+                width: 80px;
+            }
+
+            footer {
+                padding: 20px 15px;
+                font-size: 0.9rem;
+            }
+        }
+
+        /* Móviles pequeños (hasta 480px) */
+        @media (max-width: 480px) {
+            .books-grid {
+                grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+                gap: 12px;
+            }
+
+            .book-card {
+                padding: 12px;
+            }
+
+            .card-content h3 {
+                font-size: 1rem;
+            }
+
+            .card-content .desc {
+                min-height: 45px;
+            }
+
+            .search-input {
+                padding: 12px 15px;
+            }
+
+            .filter-option {
+                padding: 10px 12px;
+            }
+
+            .filter-option label {
+                font-size: 0.9rem;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<header>
+    <nav>
+        <div class="logo"><h1>Lectio <span>Biblioteca</span></h1></div>
+
+        <!-- Menú hamburguesa para móviles -->
+        <button class="menu-toggle" aria-label="Abrir menú de navegación">
+            <i class="fas fa-bars"></i>
+        </button>
+
+        <div class="nav-overlay"></div>
+
+        <ul class="nav-links">
+            <li><a href="/api/logiado">Inicio</a></li>
+            <li><a href="/api/libroVirtualesLog" class="active">Libros Virtuales</a></li>
+            <li><a href="/api/reservaLibro">Reserva de Libros</a></li>
+
+
+        </ul>
+    </nav>
+</header>
+
+<div class="container search-container">
+    <div class="search-box">
+        <input type="text" id="searchInput" class="search-input" placeholder="Buscar libros por título...">
+    </div>
+    <div class="search-filters">
+        <div class="filter-option"><input type="checkbox" id="filterNovelas" checked><label for="filterNovelas">Novelas</label></div>
+        <div class="filter-option"><input type="checkbox" id="filterCiencia" checked><label for="filterCiencia">Ciencia</label></div>
+        <div class="filter-option"><input type="checkbox" id="filterHistoria" checked><label for="filterHistoria">Historia</label></div>
+        <div class="filter-option"><input type="checkbox" id="filterArte" checked><label for="filterArte">Arte</label></div>
+        <div class="filter-option"><input type="checkbox" id="filterFantasía" checked><label for="filterFantasía">Fantasía</label></div>
+        <div class="filter-option"><input type="checkbox" id="filterFilosofia" checked><label for="filterFilosofia">Filosofía</label></div>
+    </div>
+</div>
+
+<div id="noResults" class="no-results">
+    <p>No se encontraron libros que coincidan con tu búsqueda</p>
+</div>
+
+<section class="books-section">
+    <div class="container books-grid" id="booksGrid">
+        <div th:each="libro,iterStat : ${libros}" class="book-card"
+             th:data-title="${libro.titulo.toLowerCase()}"
+             th:data-category="${libro.categoria}"
+             th:data-index="${iterStat.index}">
+            <div class="card-content">
+                <h3 th:text="${libro.titulo}">Título</h3>
+                <p class="author" th:text="${libro.autor}">Autor</p>
+                <p class="desc" th:text="${libro.descripcion}">Descripción...</p>
+                <span class="category" th:text="${libro.categoria}">Categoría</span>
+                <a th:href="${libro.url}" target="_blank" class="read-btn">Leer</a>
+            </div>
+        </div>
+    </div>
+</section>
+
+<div class="pagination" id="pagination"></div>
+
+<!-- Buscador de páginas -->
+<div class="page-jumper" id="pageJumper">
+    <span>Ir a la página:</span>
+    <input type="number" id="pageInput" min="1" value="1">
+    <button id="goToPageBtn">Ir</button>
+</div>
+
+<!-- Modal de error para páginas no existentes -->
+<div class="page-error-modal" id="pageErrorModal">
+    <div class="page-error-content">
+        <div class="page-error-icon">⚠️</div>
+        <h2 class="page-error-title">Página no encontrada</h2>
+        <p class="page-error-message" id="pageErrorMessage">
+            El número de página que ingresaste no existe.
+        </p>
+        <button class="page-error-close" id="pageErrorClose">Entendido</button>
+    </div>
+</div>
+
+<footer>
+    <p>&copy; 2025 BookLab Biblioteca. Todos los derechos reservados.</p>
+</footer>
+
+<!-- Font Awesome para iconos -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/js/all.min.js"></script>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const searchInput = document.getElementById('searchInput');
+        const noResults = document.getElementById('noResults');
+        const booksGrid = document.getElementById('booksGrid');
+        const bookCards = Array.from(booksGrid.children);
+        const paginationContainer = document.getElementById('pagination');
+        const pageInput = document.getElementById('pageInput');
+        const goToPageBtn = document.getElementById('goToPageBtn');
+        const pageErrorModal = document.getElementById('pageErrorModal');
+        const pageErrorMessage = document.getElementById('pageErrorMessage');
+        const pageErrorClose = document.getElementById('pageErrorClose');
+
+        // Elementos del menú móvil
+        const menuToggle = document.querySelector('.menu-toggle');
+        const navLinks = document.querySelector('.nav-links');
+        const navOverlay = document.querySelector('.nav-overlay');
+
+        const itemsPerPage = 12;
+        let currentPage = 1;
+        let filteredBooks = bookCards;
+        let totalPages = 0;
+
+        const categoryFilters = {
+            novelas: document.getElementById('filterNovelas'),
+            ciencia: document.getElementById('filterCiencia'),
+            historia: document.getElementById('filterHistoria'),
+            arte: document.getElementById('filterArte'),
+            fantasia: document.getElementById('filterFantasía'),
+            filosofia: document.getElementById('filterFilosofia')
+        };
+
+        // ===== FUNCIÓN PARA MENÚ MÓVIL =====
+        if (menuToggle && navLinks && navOverlay) {
+            menuToggle.addEventListener('click', function() {
+                navLinks.classList.toggle('active');
+                navOverlay.classList.toggle('active');
+                document.body.style.overflow = navLinks.classList.contains('active') ? 'hidden' : '';
+
+                // Cambiar icono del menú
+                const icon = this.querySelector('i');
+                if (navLinks.classList.contains('active')) {
+                    icon.classList.remove('fa-bars');
+                    icon.classList.add('fa-times');
+                } else {
+                    icon.classList.remove('fa-times');
+                    icon.classList.add('fa-bars');
+                }
+            });
+
+            // Cerrar menú al hacer clic en el overlay
+            navOverlay.addEventListener('click', function() {
+                navLinks.classList.remove('active');
+                this.classList.remove('active');
+                document.body.style.overflow = '';
+
+                // Restaurar icono del menú
+                const icon = menuToggle.querySelector('i');
+                icon.classList.remove('fa-times');
+                icon.classList.add('fa-bars');
+            });
+
+            // Cerrar menú al hacer clic en un enlace (en móviles)
+            document.querySelectorAll('.nav-links a').forEach(link => {
+                link.addEventListener('click', function() {
+                    if (window.innerWidth <= 768) {
+                        navLinks.classList.remove('active');
+                        navOverlay.classList.remove('active');
+                        document.body.style.overflow = '';
+
+                        // Restaurar icono del menú
+                        const icon = menuToggle.querySelector('i');
+                        icon.classList.remove('fa-times');
+                        icon.classList.add('fa-bars');
+                    }
+                });
+            });
+        }
+
+        function normalizeText(text) {
+            return text.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase();
+        }
+
+        function filterBooks() {
+            const term = normalizeText(searchInput.value.trim());
+            const selectedCategories = Object.entries(categoryFilters)
+                .filter(([key, input]) => input.checked)
+                .map(([key]) => key.charAt(0).toUpperCase() + key.slice(1));
+
+            filteredBooks = bookCards.filter(card => {
+                const title = normalizeText(card.getAttribute('data-title'));
+                const category = card.getAttribute('data-category');
+                return selectedCategories.includes(category) &&
+                       (term === '' || title.includes(term));
+            });
+
+            noResults.style.display = filteredBooks.length ? 'none' : 'block';
+            currentPage = 1;
+            totalPages = Math.ceil(filteredBooks.length/itemsPerPage);
+            showPage();
+            renderPagination();
+        }
+
+        function showPage() {
+            bookCards.forEach(card => card.style.display = 'none');
+            const start = (currentPage-1)*itemsPerPage;
+            const end = start+itemsPerPage;
+            filteredBooks.slice(start,end).forEach(card => card.style.display = '');
+        }
+
+        function renderPagination() {
+            paginationContainer.innerHTML = '';
+            totalPages = Math.ceil(filteredBooks.length/itemsPerPage);
+            if(totalPages <= 1) return;
+
+            // Botón anterior
+            const prevBtn = document.createElement('button');
+            prevBtn.textContent = '←';
+            prevBtn.disabled = currentPage === 1;
+            if(currentPage === 1) prevBtn.classList.add('disabled');
+            prevBtn.addEventListener('click', () => {
+                if(currentPage > 1) {
+                    currentPage--;
+                    showPage();
+                    renderPagination();
+                }
+            });
+            paginationContainer.appendChild(prevBtn);
+
+            // Solo mostrar 3 números de página
+            let startPage = Math.max(1, currentPage - 1);
+            let endPage = Math.min(totalPages, startPage + 2);
+
+            // Ajustar si estamos cerca del final
+            if(endPage - startPage < 2) {
+                startPage = Math.max(1, endPage - 2);
+            }
+
+            for(let i = startPage; i <= endPage; i++){
+                const btn = document.createElement('button');
+                btn.textContent = i;
+                if(i === currentPage) btn.classList.add('disabled');
+                btn.addEventListener('click', () => {
+                    currentPage = i;
+                    showPage();
+                    renderPagination();
+                });
+                paginationContainer.appendChild(btn);
+            }
+
+            // Botón siguiente
+            const nextBtn = document.createElement('button');
+            nextBtn.textContent = '→';
+            nextBtn.disabled = currentPage === totalPages;
+            if(currentPage === totalPages) nextBtn.classList.add('disabled');
+            nextBtn.addEventListener('click', () => {
+                if(currentPage < totalPages) {
+                    currentPage++;
+                    showPage();
+                    renderPagination();
+                }
+            });
+            paginationContainer.appendChild(nextBtn);
+        }
+
+        function showPageError(requestedPage) {
+            // Actualizar el mensaje con el número total de páginas disponibles
+            pageErrorMessage.textContent = `Solo tenemos ${totalPages} página${totalPages !== 1 ? 's' : ''} disponible${totalPages !== 1 ? 's' : ''}. Por favor, ingresa un número entre 1 y ${totalPages}.`;
+
+            // Mostrar el modal
+            pageErrorModal.classList.add('active');
+
+            // Actualizar el valor del input con la página actual
+            pageInput.value = currentPage;
+        }
+
+        function goToPage() {
+            const pageNum = parseInt(pageInput.value);
+            if(pageNum >= 1 && pageNum <= totalPages) {
+                currentPage = pageNum;
+                showPage();
+                renderPagination();
+            } else {
+                showPageError(pageNum);
+            }
+        }
+
+        // Cerrar el modal de error
+        pageErrorClose.addEventListener('click', function() {
+            pageErrorModal.classList.remove('active');
+        });
+
+        // Cerrar el modal al hacer clic fuera del contenido
+        pageErrorModal.addEventListener('click', function(e) {
+            if(e.target === pageErrorModal) {
+                pageErrorModal.classList.remove('active');
+            }
+        });
+
+        // Cerrar el modal con la tecla Escape
+        document.addEventListener('keydown', function(e) {
+            if(e.key === 'Escape' && pageErrorModal.classList.contains('active')) {
+                pageErrorModal.classList.remove('active');
+            }
+        });
+
+        searchInput.addEventListener('input', filterBooks);
+        Object.values(categoryFilters).forEach(input => input.addEventListener('change', filterBooks));
+        goToPageBtn.addEventListener('click', goToPage);
+        pageInput.addEventListener('keyup', (e) => {
+            if(e.key === 'Enter') goToPage();
+        });
+
+        filterBooks();
+    });
+</script>
+
+</body>
+</html>

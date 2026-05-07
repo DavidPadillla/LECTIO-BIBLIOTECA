@@ -1,0 +1,622 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
+    <title>Biblioteca - Lectio</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;500;700&display=swap" rel="stylesheet" />
+    <style>
+        * {
+          margin: 0;
+          padding: 0;
+          box-sizing: border-box;
+        }
+        body {
+          font-family: 'Poppins', sans-serif;
+          background: linear-gradient(135deg, #e8f8f5 0%, #fdfdfd 100%);
+          color: #2c3e50;
+          min-height: 100vh;
+          display: flex;
+          flex-direction: column;
+        }
+        header {
+          background: #27ae60;
+          color: #fff;
+          padding: 15px 20px;
+          display: flex;
+          align-items: center;
+          justify-content: space-between;
+          position: fixed;
+          width: 100%;
+          z-index: 100;
+          box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+          user-select: none;
+        }
+        header h1 {
+          font-weight: 700;
+          font-size: 1.5rem;
+        }
+        .menu-toggle {
+          background: none;
+          border: none;
+          cursor: pointer;
+          width: 28px;
+          height: 28px;
+          display: flex;
+          flex-direction: column;
+          justify-content: space-between;
+        }
+        .menu-toggle span {
+          display: block;
+          height: 3px;
+          background: white;
+          border-radius: 2px;
+          transition: all 0.3s ease;
+        }
+        aside {
+          position: fixed;
+          top: 60px;
+          right: 0;
+          width: 270px;
+          height: calc(100vh - 60px);
+          background: linear-gradient(180deg, #2ecc71, #27ae60);
+          box-shadow: -4px 0 20px rgba(0, 0, 0, 0.08);
+          border-radius: 25px 0 0 25px;
+          padding: 30px 25px;
+          display: flex;
+          flex-direction: column;
+          justify-content: space-between;
+          transform: translateX(0);
+          transition: transform 0.35s ease;
+          z-index: 90;
+          user-select: none;
+        }
+        aside.hide {
+          transform: translateX(100%);
+        }
+        aside h2 {
+          text-align: center;
+          color: #fff;
+          font-weight: 700;
+          font-size: 1.8rem;
+          letter-spacing: 1px;
+          margin-bottom: 35px;
+        }
+        aside ul {
+          list-style: none;
+        }
+        aside li {
+          color: #fff;
+          font-weight: 600;
+          font-size: 1.1rem;
+          padding: 12px 20px;
+          margin: 18px 0;
+          border-radius: 14px;
+          background: rgba(255, 255, 255, 0.12);
+          cursor: pointer;
+          display: flex;
+          align-items: center;
+          gap: 12px;
+          transition: background 0.3s ease, transform 0.3s ease;
+        }
+        aside li:hover {
+          background: rgba(255, 255, 255, 0.3);
+          transform: translateX(-6px);
+        }
+        .footer {
+          color: #ecf0f1;
+          font-size: 0.85rem;
+          text-align: center;
+          opacity: 0.9;
+        }
+        main {
+          flex: 1;
+          padding: 100px 20px 40px 20px;
+          max-width: 980px;
+          margin: 0 auto;
+          text-align: center;
+          position: relative;
+        }
+        h1 {
+          color: #27ae60;
+          font-size: 2.4rem;
+          margin-bottom: 40px;
+          text-shadow: 0 1px 3px rgba(0,0,0,0.1);
+          font-weight: 700;
+        }
+        .libros-grid {
+          display: flex;
+          flex-wrap: wrap;
+          justify-content: center;
+          gap: 40px;
+          position: relative;
+          z-index: 2;
+        }
+        .libro {
+          background: rgba(255,255,255,0.92);
+          border-radius: 16px;
+          box-shadow: 0 6px 18px rgba(0,0,0,0.08);
+          width: 210px;
+          padding: 15px;
+          text-align: center;
+          cursor: pointer;
+          transition: transform 0.3s ease, box-shadow 0.3s ease;
+          backdrop-filter: blur(6px);
+          position: relative;
+        }
+        .libro:hover {
+          transform: translateY(-8px);
+          box-shadow: 0 12px 30px rgba(0,0,0,0.12);
+        }
+        .libro.completado {
+          border: 4px solid #27ae60;
+        }
+        .libro img {
+          width: 100%;
+          height: 260px;
+          object-fit: cover;
+          border-radius: 12px;
+          box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+        .libro h3 {
+          margin-top: 12px;
+          color: #2c3e50;
+          font-size: 1.1rem;
+          font-weight: 600;
+        }
+        .badge-completado {
+          position: absolute;
+          top: 10px;
+          right: 10px;
+          background: #27ae60;
+          color: white;
+          padding: 6px 16px;
+          border-radius: 25px;
+          font-size: 0.75rem;
+          font-weight: 600;
+          box-shadow: 0 2px 10px rgba(39,174,96,0.4);
+          user-select: none;
+        }
+        .progreso-section {
+          margin-top: 60px;
+          background: rgba(255,255,255,0.95);
+          border-radius: 20px;
+          padding: 30px;
+          box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+          position: relative;
+          z-index: 2;
+          backdrop-filter: blur(10px);
+          border: 2px solid #27ae60;
+        }
+        .progreso-title {
+          color: #27ae60;
+          font-size: 1.8rem;
+          margin-bottom: 30px;
+          font-weight: 700;
+        }
+        .stats-cards {
+          display: grid;
+          grid-template-columns: repeat(auto-fit,minmax(180px,1fr));
+          gap: 25px;
+          margin-bottom: 35px;
+        }
+        .stat-card {
+          background: linear-gradient(135deg,#27ae60,#2ecc71);
+          color: white;
+          padding: 25px;
+          border-radius: 15px;
+          text-align: center;
+          box-shadow: 0 6px 18px rgba(39,174,96,0.3);
+          transition: transform 0.3s ease;
+        }
+        .stat-card:hover {
+          transform: translateY(-6px);
+        }
+        .stat-number {
+          font-size: 2.8rem;
+          font-weight: 700;
+          margin-bottom: 6px;
+        }
+        .stat-label {
+          font-size: 1rem;
+          opacity: 0.95;
+        }
+        .progreso-table {
+          background: white;
+          border-radius: 15px;
+          overflow: hidden;
+          box-shadow: 0 6px 20px rgba(0,0,0,0.06);
+        }
+        .table-header {
+          background: #27ae60;
+          color: white;
+          padding: 18px;
+          font-weight: 600;
+          text-align: center;
+          font-size: 1.1rem;
+        }
+        .table-row {
+          display: grid;
+          grid-template-columns: 50px 1fr 130px 130px;
+          align-items: center;
+          padding: 18px 15px;
+          border-bottom: 1px solid #ecf0f1;
+          transition: background 0.3s ease;
+        }
+        .table-row:hover {
+          background: #f8f9fa;
+        }
+        .table-row:last-child {
+          border-bottom: none;
+        }
+        .book-icon {
+          font-size: 2.4rem;
+          text-align: center;
+          user-select: none;
+        }
+        .book-info h3 {
+          color: #2c3e50;
+          font-size: 1.15rem;
+          margin-bottom: 4px;
+          text-align: left;
+          font-weight: 700;
+        }
+        .book-info p {
+          color: #7f8c8d;
+          font-size: 0.95rem;
+          text-align: left;
+        }
+        .progress-bar-container {
+          background: #ecf0f1;
+          border-radius: 12px;
+          height: 12px;
+          overflow: hidden;
+          position: relative;
+          margin-right: 12px;
+        }
+        .progress-bar {
+          background: linear-gradient(90deg,#27ae60,#2ecc71);
+          height: 100%;
+          border-radius: 12px;
+          transition: width 0.5s ease;
+          box-shadow: 0 0 15px rgba(39,174,96,0.6);
+        }
+        .status-badge {
+          padding: 7px 18px;
+          border-radius: 25px;
+          font-size: 0.9rem;
+          font-weight: 600;
+          text-align: center;
+          white-space: nowrap;
+        }
+        .status-completado {
+          background: #27ae60;
+          color: white;
+        }
+        .status-en-progreso {
+          background: #f39c12;
+          color: white;
+        }
+        .status-sin-empezar {
+          background: #95a5a6;
+          color: white;
+        }
+        .no-progress {
+          text-align: center;
+          padding: 40px;
+          color: #7f8c8d;
+          font-size: 1.2rem;
+          user-select: none;
+        }
+        .burbuja {
+          position: absolute;
+          background: radial-gradient(circle at 30% 30%, rgba(39,174,96,0.5), rgba(39,174,96,0.15));
+          border-radius: 50%;
+          opacity: 0.8;
+          bottom: -120px;
+          animation: flotar 8s linear infinite;
+          pointer-events: none;
+          z-index: 1;
+        }
+        @keyframes flotar {
+          0% {
+            transform: translateY(0) scale(0.8);
+            opacity: 0;
+          }
+          10% {
+            opacity: 0.7;
+          }
+          50% {
+            transform: translateY(-50vh) scale(1);
+            opacity: 1;
+          }
+          100% {
+            transform: translateY(-110vh) scale(1.2);
+            opacity: 0;
+          }
+        }
+        @media (max-width: 900px) {
+          body {
+            padding-right: 0;
+          }
+          aside {
+            top: 60px;
+            right: 0;
+            width: 220px;
+            height: calc(100vh - 60px);
+            border-radius: 0 0 0 25px;
+            box-shadow: 0 -4px 20px rgba(0,0,0,0.1);
+          }
+          main {
+            padding: 90px 15px 35px 15px;
+            max-width: 100%;
+          }
+          .libro {
+            width: 45vw;
+            max-width: 200px;
+          }
+          .btn-container {
+            gap: 12px;
+          }
+        }
+        @media (max-width: 600px) {
+          header h1 {
+            font-size: 1.3rem;
+          }
+          aside {
+            position: fixed;
+            top: 60px;
+            right: 0;
+            width: 220px;
+            height: calc(100vh - 60px);
+            transform: translateX(100%);
+            box-shadow: 0 -4px 20px rgba(0,0,0,0.25);
+            border-radius: 0 0 0 25px;
+            transition: transform 0.3s ease;
+          }
+          aside.show {
+            transform: translateX(0);
+            z-index: 200;
+          }
+          .libro {
+            width: 80vw;
+            max-width: 280px;
+          }
+        }
+    </style>
+</head>
+<body>
+<header>
+    <h1>Biblioteca</h1>
+    <button aria-label="Abrir menú" class="menu-toggle" id="menu-toggle">
+        <span></span>
+        <span></span>
+        <span></span>
+    </button>
+</header>
+
+<aside id="sidebar" aria-label="Navegación principal" class="hide">
+    <div>
+        <h2>LECTIO</h2>
+        <ul>
+            <li onclick="window.location.href='index'">
+                <svg class="icon" viewBox="0 0 24 24" aria-hidden="true" width="22" height="22" fill="white" style="margin-right:8px;">
+                    <path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/>
+                </svg>
+                Inicio
+            </li>
+            <li onclick="window.location.href='historia_pensamiento'">
+                <svg class="icon" viewBox="0 0 24 24" aria-hidden="true" width="22" height="22" fill="white" style="margin-right:8px;">
+                    <path d="M12 2a7 7 0 0 0-7 7c0 2.76 2.24 5 5 5 .13 0 .26 0 .39-.02l-.08.28-1.52 3.45 2.5-1.01.5.62c.89.35 1.81.55 2.81.55a7 7 0 0 0 0-14z"/>
+                </svg>
+                Historia del Pensamiento
+            </li>
+            <li onclick="window.location.href='/api/inicio'">
+                <svg class="icon" viewBox="0 0 24 24" aria-hidden="true" width="22" height="22" fill="white" style="margin-right:8px;">
+                    <path d="M10 17l5-5-5-5v10z"/>
+                </svg>
+                Volver a Lectio
+            </li>
+        </ul>
+    </div>
+    <div class="footer">© 2025 Lectio</div>
+</aside>
+
+<main>
+    <h1>Selecciona un libro</h1>
+    <div class="libros-grid">
+        <div class="libro" data-libro="principito" tabindex="0" role="button" aria-label="Seleccionar El Principito" onclick="window.location.href='desafio_principito'">
+            <img src="/img/principito.jpg" alt="El Principito" />
+            <h3>El Principito</h3>
+        </div>
+        <div class="libro" data-libro="1984" tabindex="0" role="button" aria-label="Seleccionar 1984" onclick="window.location.href='desafio_1984'">
+            <img src="/img/1984.jpg" alt="1984" />
+            <h3>1984</h3>
+        </div>
+        <div class="libro" data-libro="harrypotter" tabindex="0" role="button" aria-label="Seleccionar Harry Potter" onclick="window.location.href='desafio_harrypotter'">
+            <img src="/img/harrypotter.jpg" alt="Harry Potter" />
+            <h3>Harry Potter</h3>
+        </div>
+    </div>
+
+    <div class="progreso-section" id="progreso-section" aria-live="polite" aria-atomic="true">
+        <h2 class="progreso-title">
+            <svg class="icon" viewBox="0 0 24 24" aria-hidden="true" width="28" height="28" fill="#27ae60" style="vertical-align: middle; margin-right:6px;">
+                <path d="M3 13h2v-2H3v2zm4 4h2v-2H7v2zm-4 2h2v-2H3v2zm4-8h2V7H7v4zm4 8h2v-2h-2v2zm-4-4h2v-2H7v2zm4-8h2V7h-2v4zm4 8h2v-2h-2v2zm-4-4h2v-2h-2v2zm4-8h2V7h-2v4zM3 3h18v2H3V3z"/>
+            </svg>
+            Tu Progreso de Lectura
+        </h2>
+
+        <div class="stats-cards" id="stats-cards"></div>
+
+        <div class="progreso-table" role="table" aria-label="Tabla de progreso de lectura">
+            <div class="table-header" role="row">Progreso Detallado por Libro</div>
+            <div id="tabla-progreso" role="rowgroup"></div>
+        </div>
+    </div>
+
+    <div class="burbuja" style="width:80px; height:80px; left:10%; animation-delay:1s;"></div>
+    <div class="burbuja" style="width:100px; height:100px; left:25%; animation-delay:2.5s;"></div>
+    <div class="burbuja" style="width:60px; height:60px; left:45%; animation-delay:1.5s;"></div>
+    <div class="burbuja" style="width:120px; height:120px; left:65%; animation-delay:0.8s;"></div>
+    <div class="burbuja" style="width:90px; height:90px; left:85%; animation-delay:3s;"></div>
+</main>
+
+<script>
+    const LIBROS_INFO = {
+      'principito': { nombre: 'El Principito', icono: '⭐', capitulos: 5 },
+      '1984': { nombre: '1984', icono: '👁️', capitulos: 5 },
+      'harrypotter': { nombre: 'Harry Potter', icono: '⚡', capitulos: 5 }
+    };
+
+    async function cargarProgreso() {
+      try {
+        const response = await fetch('/api/progreso/mi-progreso', {
+          method: 'GET',
+          credentials: 'include'
+        });
+
+        if (!response.ok) {
+          mostrarSinProgreso();
+          return;
+        }
+
+        const progreso = await response.json();
+        mostrarEstadisticas(progreso);
+        mostrarTablaProgreso(progreso);
+        marcarLibrosCompletados(progreso);
+
+      } catch (error) {
+        console.error('Error cargando progreso:', error);
+        mostrarSinProgreso();
+      }
+    }
+
+    function mostrarSinProgreso() {
+      document.getElementById('stats-cards').innerHTML = `
+        <div class="no-progress">
+          <p>📖 Aún no has comenzado ningún libro. ¡Empieza a leer para ver tu progreso!</p>
+        </div>
+      `;
+      document.getElementById('tabla-progreso').innerHTML = '';
+    }
+
+    function mostrarEstadisticas(progreso) {
+      const totalLibros = Object.keys(LIBROS_INFO).length;
+      const porcentaje = totalLibros > 0 ? Math.round((progreso.totalLibrosLeidos / totalLibros) * 100) : 0;
+
+      document.getElementById('stats-cards').innerHTML = `
+        <div class="stat-card">
+          <div class="stat-number">${progreso.totalLibrosLeidos}</div>
+          <div class="stat-label">Libros Completados</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-number">${progreso.puntos}</div>
+          <div class="stat-label">Puntos Ganados 🏆</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-number">${porcentaje}%</div>
+          <div class="stat-label">Progreso Total</div>
+        </div>
+      `;
+    }
+
+    function mostrarTablaProgreso(progreso) {
+      let html = '';
+
+      Object.keys(LIBROS_INFO).forEach(libroId => {
+        const libro = LIBROS_INFO[libroId];
+        const completado = progreso.librosCompletados.includes(libroId);
+
+        const capitulosCompletados = progreso.capitulosPorLibro && progreso.capitulosPorLibro[libroId]
+            ? progreso.capitulosPorLibro[libroId].length
+            : 0;
+
+        const porcentaje = (capitulosCompletados / libro.capitulos) * 100;
+
+        let statusClass, statusText;
+        if (completado) {
+          statusClass = 'status-completado';
+          statusText = '✓ Completado';
+        } else if (capitulosCompletados > 0) {
+          statusClass = 'status-en-progreso';
+          statusText = `${capitulosCompletados}/${libro.capitulos} caps`;
+        } else {
+          statusClass = 'status-sin-empezar';
+          statusText = 'Sin empezar';
+        }
+
+        html += `
+          <div class="table-row" role="row">
+            <div class="book-icon" aria-hidden="true">${libro.icono}</div>
+            <div class="book-info">
+              <h3>${libro.nombre}</h3>
+              <p>${capitulosCompletados} de ${libro.capitulos} capítulos</p>
+            </div>
+            <div class="progress-bar-container" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="${Math.round(porcentaje)}">
+              <div class="progress-bar" style="width: ${porcentaje}%"></div>
+            </div>
+            <div class="status-badge ${statusClass}">${statusText}</div>
+          </div>
+        `;
+      });
+
+      document.getElementById('tabla-progreso').innerHTML = html;
+    }
+
+    function marcarLibrosCompletados(progreso) {
+      progreso.librosCompletados.forEach(libroId => {
+        const card = document.querySelector(`[data-libro="${libroId}"]`);
+        if (card) {
+          card.classList.add('completado');
+          if (!card.querySelector('.badge-completado')) {
+            const badge = document.createElement('div');
+            badge.className = 'badge-completado';
+            badge.textContent = '✓ Completado';
+            card.appendChild(badge);
+          }
+        }
+      });
+    }
+
+    window.onload = cargarProgreso;
+
+    // Menu toggle logic
+    const menuToggle = document.getElementById('menu-toggle');
+    const sidebar = document.getElementById('sidebar');
+
+    menuToggle.addEventListener('click', () => {
+      sidebar.classList.toggle('show');
+      sidebar.classList.toggle('hide');
+      menuToggle.classList.toggle('open');
+    });
+
+    menuToggle.addEventListener('click', () => {
+      const spans = menuToggle.querySelectorAll('span');
+      if(menuToggle.classList.contains('open')) {
+        spans[0].style.transform = 'rotate(45deg) translate(5px, 5px)';
+        spans[1].style.opacity = '0';
+        spans[2].style.transform = 'rotate(-45deg) translate(6px, -6px)';
+      } else {
+        spans[0].style.transform = 'none';
+        spans[1].style.opacity = '1';
+        spans[2].style.transform = 'none';
+      }
+    });
+
+    document.addEventListener('click', (e) => {
+      if(!sidebar.contains(e.target) && !menuToggle.contains(e.target)) {
+        if(sidebar.classList.contains('show')) {
+          sidebar.classList.remove('show');
+          sidebar.classList.add('hide');
+          menuToggle.classList.remove('open');
+          const spans = menuToggle.querySelectorAll('span');
+          spans[0].style.transform = 'none';
+          spans[1].style.opacity = '1';
+          spans[2].style.transform = 'none';
+        }
+      }
+    });
+</script>
+</body>
+</html>

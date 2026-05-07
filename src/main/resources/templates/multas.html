@@ -1,0 +1,452 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title> Lectio - Gestión de Multas</title>
+  <link rel="stylesheet" href="/estilos/logiado.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;500;700&display=swap" rel="stylesheet">
+  <style>
+    /* Estilos específicos para la página de multas */
+    .multas-container {
+        padding: 40px 20px;
+        max-width: 1200px;
+        margin: 0 auto;
+    }
+
+    .buscador-multas {
+        width: 100%;
+        max-width: 500px;
+        margin: 0 auto 30px;
+        padding: 12px 20px;
+        border: 1px solid #ddd;
+        border-radius: 30px;
+        font-family: 'Poppins', sans-serif;
+        font-size: 1rem;
+        outline: none;
+    }
+
+    .buscador-multas:focus {
+        border-color: #27ae60;
+    }
+
+    .tabla-multas {
+        width: 100%;
+        border-collapse: collapse;
+        background: white;
+        border-radius: 12px;
+        overflow: hidden;
+        box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
+    }
+
+    .tabla-multas th {
+        background-color: #2c3e50;
+        color: white;
+        padding: 15px;
+        text-align: center;
+        font-weight: 500;
+    }
+
+    .tabla-multas td {
+        padding: 12px;
+        border-bottom: 1px solid #eee;
+        text-align: center;
+    }
+
+    .tabla-multas tr:last-child td {
+        border-bottom: none;
+    }
+
+    .tabla-multas tr:hover {
+        background-color: #f5f5f5;
+    }
+
+    .pagada {
+        color: #27ae60;
+        font-weight: bold;
+    }
+
+    .no-pagada {
+        color: #e74c3c;
+        font-weight: bold;
+    }
+
+    .btn-accion {
+        padding: 8px 15px;
+        border-radius: 30px;
+        font-size: 0.9rem;
+        cursor: pointer;
+        transition: all 0.3s;
+        border: none;
+        margin: 0 5px;
+    }
+
+    .btn-pagar {
+        background-color: #27ae60;
+        color: white;
+    }
+
+    .btn-pagar:hover {
+        background-color: #219150;
+    }
+
+    .btn-pagar[disabled] {
+        background-color: #95a5a6;
+        cursor: not-allowed;
+    }
+
+    .btn-eliminar {
+        background-color: #e74c3c;
+        color: white;
+    }
+
+    .btn-eliminar:hover {
+        background-color: #c0392b;
+    }
+
+    /* Modal styles */
+    .modal-overlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background-color: rgba(0, 0, 0, 0.5);
+        display: none;
+        align-items: center;
+        justify-content: center;
+        z-index: 1000;
+    }
+
+    .modal {
+        background: white;
+        padding: 30px;
+        border-radius: 12px;
+        max-width: 400px;
+        width: 90%;
+        text-align: center;
+        box-shadow: 0 8px 16px rgba(0,0,0,0.2);
+    }
+
+    .modal p {
+        margin-bottom: 20px;
+        font-size: 1.1rem;
+    }
+
+    .modal-buttons {
+        display: flex;
+        justify-content: center;
+        gap: 15px;
+    }
+
+    .modal-btn {
+        padding: 10px 20px;
+        border-radius: 30px;
+        font-size: 1rem;
+        cursor: pointer;
+        transition: all 0.3s;
+        border: none;
+    }
+
+    .btn-confirm {
+        background-color: #27ae60;
+        color: white;
+    }
+
+    .btn-confirm:hover {
+        background-color: #219150;
+    }
+
+    .btn-cancel {
+        background-color: #e74c3c;
+        color: white;
+    }
+
+    .btn-cancel:hover {
+        background-color: #c0392b;
+    }
+
+    .btn-ok {
+        background-color: #3498db;
+        color: white;
+    }
+
+    .btn-ok:hover {
+        background-color: #2980b9;
+    }
+
+    /* Mensaje de éxito */
+    .mensaje-exito {
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        background-color: #4CAF50;
+        color: white;
+        padding: 15px 25px;
+        border-radius: 5px;
+        box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        z-index: 1000;
+        display: none;
+        animation: fadeIn 0.5s, fadeOut 0.5s 2.5s;
+    }
+
+    @keyframes fadeIn {
+        from {opacity: 0; transform: translateY(-20px);}
+        to {opacity: 1; transform: translateY(0);}
+    }
+
+    @keyframes fadeOut {
+        from {opacity: 1;}
+        to {opacity: 0;}
+    }
+  </style>
+</head>
+<body>
+
+
+<div id="mensaje-flotante" class="mensaje-exito"></div>
+
+<header>
+  <nav>
+    <div class="logo">
+      <h1>BookLab <span>Biblioteca</span></h1>
+    </div>
+    <ul class="nav-links">
+      <li><a href="/api/admin#inicio">Inicio</a></li>
+      <li><a href="/api/multas" class="active">Multas</a></li>
+    </ul>
+
+  </nav>
+</header>
+
+<section class="multas-container">
+  <h2 class="section-title">Gestión de Multas</h2>
+  <p class="section-subtitle">Administra las multas por retraso en la devolución de libros</p>
+
+  <input type="text" id="buscador" class="buscador-multas" placeholder="Buscar por nombre de usuario..." />
+
+  <table class="tabla-multas">
+    <thead>
+    <tr>
+      <th>Nombre</th>
+      <th>Libro</th>
+      <th>Fecha Reserva</th>
+      <th>Fecha Devolución</th>
+      <th>Días Retraso</th>
+      <th>Valor Multa</th>
+      <th>Estado</th>
+      <th>Acciones</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="multa : ${multas}" th:data-id="${multa.id}">
+      <td th:text="${multa.nombreUsuario}">Nombre</td>
+      <td th:text="${multa.libro}">Libro</td>
+      <td th:text="${multa.fechaReserva}">Fecha Reserva</td>
+      <td th:text="${multa.fechaDevolucion}">Fecha Devolución</td>
+      <td th:text="${multa.diasRetraso}">Días Retraso</td>
+      <td th:text="${'$' + multa.valorMulta}">Valor Multa</td>
+      <td class="estado-pago"
+          th:text="${multa.pagada ? 'Pagada' : 'Pendiente'}"
+          th:classappend="${multa.pagada ? 'pagada' : 'no-pagada'}"></td>
+      <td>
+        <button class="btn-accion btn-pagar" th:disabled="${multa.pagada}">Pagar</button>
+        <button class="btn-accion btn-eliminar">Eliminar</button>
+      </td>
+    </tr>
+    </tbody>
+  </table>
+</section>
+
+
+<div id="modal-overlay" class="modal-overlay">
+  <div class="modal">
+    <p id="modal-message">¿Estás seguro de que deseas realizar esta acción?</p>
+    <div class="modal-buttons">
+      <button id="modal-confirm" class="modal-btn btn-confirm">Confirmar</button>
+      <button id="modal-cancel" class="modal-btn btn-cancel">Cancelar</button>
+    </div>
+  </div>
+</div>
+
+
+<div id="alert-overlay" class="modal-overlay">
+  <div class="modal">
+    <p id="alert-message">Operación completada con éxito</p>
+    <div class="modal-buttons">
+      <button id="alert-ok" class="modal-btn btn-ok">Aceptar</button>
+    </div>
+  </div>
+</div>
+
+<footer>
+  <p>&copy; 2024 BookLab Biblioteca. Todos los derechos reservados.</p>
+</footer>
+
+<script>
+  // Filtrar la tabla por nombre del usuario que tiene la multa
+  document.getElementById("buscador").addEventListener("keyup", function () {
+      const filtro = this.value.toLowerCase(); // Texto ingresado en minúsculas
+      const filas = document.querySelectorAll("tbody tr"); // Todas las filas de la tabla
+
+      filas.forEach((fila) => {
+          const nombre = fila.cells[0].textContent.toLowerCase(); // Primer celda de la fila (nombre del usuario)
+          // Muestra la fila si el nombre incluye el texto buscado, de lo contrario la oculta
+          fila.style.display = nombre.includes(filtro) ? "" : "none";
+      });
+  });
+
+  // Obtener el token CSRF desde la etiqueta meta (si usas Spring Security)
+  function getCsrfToken() {
+      const tokenMeta = document.querySelector('meta[name="_csrf"]');
+      return tokenMeta ? tokenMeta.getAttribute("content") : "";
+  }
+
+  // Referencias al modal de confirmación
+  const modalOverlay = document.getElementById("modal-overlay");
+  const modalMessage = document.getElementById("modal-message");
+  const modalConfirm = document.getElementById("modal-confirm");
+  const modalCancel = document.getElementById("modal-cancel");
+
+  // Referencias al mensaje de alerta
+  const alertOverlay = document.getElementById("alert-overlay");
+  const alertMessage = document.getElementById("alert-message");
+  const alertOk = document.getElementById("alert-ok");
+
+  // Variables para guardar la acción actual y la fila/botón involucrado
+  let currentAction = null;
+  let currentFila = null;
+  let currentButton = null;
+
+  // Mostrar el modal con un mensaje, una acción y la fila/botón correspondiente
+  function showModal(message, action, fila, button) {
+      modalMessage.textContent = message;
+      currentAction = action;
+      currentFila = fila;
+      currentButton = button;
+      modalOverlay.style.display = "flex";
+  }
+
+  // Ocultar el modal y limpiar variables
+  function hideModal() {
+      modalOverlay.style.display = "none";
+      currentAction = null;
+      currentFila = null;
+      currentButton = null;
+  }
+
+  // Mostrar una alerta personalizada con mensaje y mensaje flotante
+  function showAlert(message) {
+      alertMessage.textContent = message;
+      alertOverlay.style.display = "flex";
+
+      // También mostrar mensaje flotante
+      const mensajeFlotante = document.getElementById("mensaje-flotante");
+      mensajeFlotante.textContent = message;
+      mensajeFlotante.style.display = "block";
+
+      // Ocultar mensaje flotante después de 3 segundos
+      setTimeout(() => {
+          mensajeFlotante.style.display = "none";
+      }, 3000);
+  }
+
+  // Ocultar la alerta cuando se hace clic en "OK"
+  alertOk.addEventListener("click", () => {
+      alertOverlay.style.display = "none";
+  });
+
+  // Cancelar la acción del modal
+  modalCancel.addEventListener("click", hideModal);
+
+  // Confirmar la acción del modal
+  modalConfirm.addEventListener("click", () => {
+      if (!currentAction || !currentFila) {
+          hideModal();
+          return;
+      }
+      currentAction(currentFila, currentButton); // Ejecutar acción (pagar o eliminar)
+      hideModal();
+  });
+
+  // Acción para pagar una multa
+  function pagarMulta(fila, button) {
+      const idMulta = fila.getAttribute("data-id"); // Obtener ID de la multa
+
+      // Enviar solicitud POST para pagar la multa
+      fetch(`/api/multas/pagar/${idMulta}`, {
+          method: "POST",
+          headers: {
+              "Content-Type": "application/json",
+              "X-CSRF-TOKEN": getCsrfToken(), // Incluir token CSRF
+          },
+      })
+      .then((response) => {
+          if (response.ok) {
+              // Cambiar el estado visual a "Pagada"
+              const estadoPago = fila.querySelector(".estado-pago");
+              estadoPago.textContent = "Pagada";
+              estadoPago.classList.remove("no-pagada");
+              estadoPago.classList.add("pagada");
+              button.disabled = true;
+              showAlert("Multa pagada correctamente");
+          } else {
+              showAlert("Error al pagar la multa");
+          }
+      })
+      .catch(() => showAlert("Error al conectar con el servidor"));
+  }
+
+  // Acción para eliminar una multa
+  function eliminarMulta(fila) {
+      const idMulta = fila.getAttribute("data-id"); // Obtener ID de la multa
+
+      // Enviar solicitud DELETE para eliminar la multa
+      fetch(`/api/multas/${idMulta}`, {
+          method: "DELETE",
+          headers: {
+              "Content-Type": "application/json",
+              "X-CSRF-TOKEN": getCsrfToken(), // Incluir token CSRF
+          },
+      })
+      .then((response) => {
+          if (response.ok) {
+              fila.remove(); // Eliminar la fila de la tabla
+              showAlert("Multa eliminada correctamente");
+          } else {
+              showAlert("Error al eliminar la multa");
+          }
+      })
+      .catch(() => showAlert("Error al conectar con el servidor"));
+  }
+
+  // Asignar evento a cada botón de "Pagar"
+  document.querySelectorAll(".btn-pagar").forEach((button) => {
+      button.addEventListener("click", function () {
+          if (this.disabled) return; // No hacer nada si ya está deshabilitado
+          const fila = this.closest("tr"); // Obtener fila correspondiente
+          showModal(
+              "¿Seguro que deseas marcar esta multa como pagada?",
+              pagarMulta,
+              fila,
+              this
+          );
+      });
+  });
+
+  // Asignar evento a cada botón de "Eliminar"
+  document.querySelectorAll(".btn-eliminar").forEach((button) => {
+      button.addEventListener("click", function () {
+          const fila = this.closest("tr");
+          showModal(
+              "¿Seguro que deseas eliminar esta multa permanentemente?",
+              eliminarMulta,
+              fila
+          );
+      });
+  });
+</script>
+
+</body>
+</html>

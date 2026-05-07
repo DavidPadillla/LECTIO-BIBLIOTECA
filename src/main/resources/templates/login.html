@@ -1,0 +1,329 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>Lectio - Iniciar Sesión</title>
+    <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap');
+        * {
+          margin: 0;
+          padding: 0;
+          box-sizing: border-box;
+          font-family: 'Poppins', sans-serif;
+        }
+
+        body {
+          background: #f2f2f2;
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          min-height: 100vh;
+          padding: 20px;
+        }
+
+        .login-wrapper {
+          display: flex;
+          width: 100%;
+          max-width: 950px;
+          background: rgba(255, 255, 255, 0.9);
+          border-radius: 20px;
+          box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+          overflow: hidden;
+        }
+
+        .login-info {
+          flex: 1;
+          background-color: #ffffff;
+          padding: 50px 40px;
+          display: flex;
+          flex-direction: column;
+          justify-content: center;
+          text-align: center;
+        }
+
+        .login-info h1 {
+          font-size: 48px;
+          color: #333;
+          margin-bottom: 20px;
+        }
+
+        .login-info p {
+          font-size: 16px;
+          color: #666;
+        }
+
+        .login-form {
+          flex: 1;
+          padding: 50px 30px;
+          background: #fafafa;
+          display: flex;
+          justify-content: center;
+          align-items: center;
+        }
+
+        .container {
+          width: 100%;
+          max-width: 350px;
+        }
+
+        .top-header {
+          text-align: center;
+          margin-bottom: 25px;
+        }
+
+        .top-header span {
+          color: #888;
+          font-size: 14px;
+        }
+
+        .top-header header {
+          color: #333;
+          font-size: 28px;
+          margin-top: 5px;
+        }
+
+        .input-field {
+          position: relative;
+          margin-bottom: 15px;
+        }
+
+        .input-field .input {
+          height: 45px;
+          width: 100%;
+          padding-left: 40px;
+          border: 1px solid #ccc;
+          border-radius: 30px;
+          background-color: #fff;
+          color: #333;
+        }
+
+        .input-field i {
+          position: absolute;
+          left: 15px;
+          top: 50%;
+          transform: translateY(-50%);
+          color: #888;
+        }
+
+        ::placeholder {
+          color: #aaa;
+        }
+
+        .submit {
+          border: none;
+          border-radius: 30px;
+          font-size: 15px;
+          height: 45px;
+          width: 100%;
+          background: #4CAF50;
+          color: white;
+          cursor: pointer;
+          margin-top: 10px;
+          transition: background 0.3s ease;
+        }
+
+        .submit:hover {
+          background: #45a049;
+        }
+
+        #btnRegistro {
+          background: #e0e0e0;
+          color: #333;
+        }
+
+        .bottom {
+          display: flex;
+          justify-content: space-between;
+          font-size: 13px;
+          color: #333;
+          margin-top: 15px;
+        }
+
+        .bottom a {
+          color: #007BFF;
+          text-decoration: none;
+        }
+
+        .bottom a:hover {
+          text-decoration: underline;
+        }
+
+        .alert {
+          padding: 10px;
+          border-radius: 5px;
+          margin-bottom: 15px;
+          font-size: 14px;
+          text-align: center;
+        }
+
+        .alert-error {
+          background-color: #f44336;
+          color: white;
+        }
+
+        .alert-success {
+          background-color: #4CAF50;
+          color: white;
+        }
+
+        .error-message {
+          color: #f44336;
+          font-size: 12px;
+          margin-top: 5px;
+          display: none;
+        }
+
+        @media (max-width: 768px) {
+          .login-wrapper {
+            flex-direction: column;
+          }
+          .login-info {
+            padding: 30px;
+          }
+          .login-form {
+            padding: 30px;
+          }
+        }
+    </style>
+</head>
+<body>
+<main class="login-wrapper">
+    <section class="login-info">
+        <h1>Lectio</h1>
+        <p>Explora tu biblioteca virtual. Conocimiento al alcance de un clic.</p>
+    </section>
+
+    <section class="login-form">
+        <div class="container">
+            <div class="top-header">
+
+                <header>Iniciar Sesión</header>
+            </div>
+
+
+            <div id="alertBox"></div>
+
+            <form id="loginForm" action="/api/login" method="post">
+                <div class="input-field">
+                    <input type="text" name="username" id="username" class="input" placeholder="Usuario" required>
+                    <i class="bx bx-user"></i>
+                    <div id="usernameError" class="error-message">El usuario es requerido</div>
+                </div>
+                <div class="input-field">
+                    <input type="password" name="password" id="password" class="input" placeholder="Contraseña" required>
+                    <i class="bx bx-lock-alt"></i>
+                    <div id="passwordError" class="error-message">La contraseña es requerida</div>
+                </div>
+
+                <input type="submit" class="submit" value="Iniciar sesión">
+            </form>
+
+            <button type="button" class="submit" id="btnRegistro">Registrarse</button>
+
+
+        </div>
+    </section>
+</main>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+  const loginForm = document.getElementById('loginForm');
+  const usernameInput = document.getElementById('username');
+  const passwordInput = document.getElementById('password');
+  const usernameError = document.getElementById('usernameError');
+  const passwordError = document.getElementById('passwordError');
+  const alertBox = document.getElementById('alertBox');
+  const btnRegistro = document.getElementById('btnRegistro');
+
+  // Manejar parámetros de URL para mostrar mensajes
+  const urlParams = new URLSearchParams(window.location.search);
+  const error = urlParams.get('error');
+  const logout = urlParams.get('logout');
+  const success = urlParams.get('success');
+
+  if (error) {
+    showAlert('Usuario o contraseña incorrectos', 'error');
+  }
+
+  if (logout) {
+    showAlert('Has cerrado sesión correctamente', 'success');
+  }
+
+  if (success) {
+    showAlert('Registro exitoso. Por favor inicia sesión.', 'success');
+  }
+
+  // Validación en tiempo real
+  usernameInput.addEventListener('input', () => {
+    usernameError.style.display = 'none';
+  });
+
+  passwordInput.addEventListener('input', () => {
+    passwordError.style.display = 'none';
+  });
+
+  // Manejar el envío del formulario
+  loginForm.addEventListener('submit', async (e) => {
+    e.preventDefault();
+
+    // Resetear mensajes de error
+    usernameError.style.display = 'none';
+    passwordError.style.display = 'none';
+    let isValid = true;
+
+    // Validación básica
+    if (usernameInput.value.trim() === '') {
+      usernameError.style.display = 'block';
+      isValid = false;
+    }
+
+    if (passwordInput.value.trim() === '') {
+      passwordError.style.display = 'block';
+      isValid = false;
+    }
+
+    if (!isValid) {
+      showAlert('Por favor complete todos los campos', 'error');
+      return;
+    }
+
+    try {
+      const response = await fetch(loginForm.action, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/x-www-form-urlencoded',
+        },
+        body: new URLSearchParams(new FormData(loginForm))
+      });
+
+      if (response.redirected) {
+        // Si hay redirección, asumimos que el login fue exitoso
+        window.location.href = response.url;
+      } else {
+        const result = await response.json();
+        if (result.error) {
+          showAlert(result.error, 'error');
+        }
+      }
+    } catch (error) {
+      showAlert('Contraseña o usuario incorrecto ', 'error');
+      console.error('Error:', error);
+    }
+  });
+
+  // Redirigir al registro
+  btnRegistro.addEventListener('click', () => {
+    window.location.href = '/api/register';
+  });
+
+  // Función para mostrar alertas
+  function showAlert(message, type) {
+    alertBox.innerHTML = `<div class="alert alert-${type}">${message}</div>`;
+    setTimeout(() => alertBox.innerHTML = '', 5000);
+  }
+});
+</script>
+</body>
+</html>

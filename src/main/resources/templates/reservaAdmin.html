@@ -1,0 +1,897 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lectio Admin</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: #f5f6fa;
+            color: #2c3e50;
+        }
+
+        /* Header Sticky */
+        .navbar {
+            background: #fff;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px 60px;
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+
+        .logo h1 {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #2c3e50;
+        }
+
+        .logo span {
+            color: #27ae60;
+            font-weight: 600;
+        }
+
+        .back-btn {
+            background: #27ae60;
+            color: #fff;
+            padding: 10px 25px;
+            border: none;
+            border-radius: 30px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 14px;
+        }
+
+        .back-btn:hover {
+            background: #219150;
+            transform: translateY(-3px) scale(1.05);
+            box-shadow: 0 8px 20px rgba(39, 174, 96, 0.4);
+        }
+
+        /* Container */
+        .container {
+            max-width: 1400px;
+            margin: 40px auto;
+            padding: 0 40px;
+        }
+
+        .page-header {
+            margin-bottom: 30px;
+            animation: fadeInDown 0.6s ease;
+        }
+
+        @keyframes fadeInDown {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .page-title {
+            font-size: 24px;
+            font-weight: 700;
+            color: #2c3e50;
+            margin-bottom: 5px;
+        }
+
+        .page-subtitle {
+            font-size: 14px;
+            color: #7f8c8d;
+        }
+
+        /* Filters Card */
+        .filters-card {
+            background: white;
+            border-radius: 12px;
+            padding: 25px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.06);
+            margin-bottom: 25px;
+            animation: fadeInUp 0.6s ease;
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .filters-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+
+        .form-group {
+            margin-bottom: 0;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+            color: #2c3e50;
+            font-size: 14px;
+        }
+
+        .form-group label i {
+            color: #27ae60;
+            margin-right: 6px;
+        }
+
+        .form-group select,
+        .form-group input {
+            width: 100%;
+            padding: 12px 16px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-family: 'Poppins', sans-serif;
+            font-size: 14px;
+            transition: all 0.3s ease;
+        }
+
+        .form-group select:focus,
+        .form-group input:focus {
+            outline: none;
+            border-color: #27ae60;
+            box-shadow: 0 0 0 4px rgba(39, 174, 96, 0.1);
+        }
+
+        /* Results Card */
+        .results-card {
+            background: white;
+            border-radius: 12px;
+            padding: 25px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.06);
+            animation: fadeInUp 0.6s ease 0.2s both;
+        }
+
+        .results-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid #f0f0f0;
+        }
+
+        .results-header h3 {
+            font-size: 18px;
+            font-weight: 600;
+            color: #2c3e50;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .results-header i {
+            color: #27ae60;
+            font-size: 1.3rem;
+        }
+
+        .counter {
+            background: linear-gradient(135deg, #27ae60 0%, #229954 100%);
+            color: white;
+            padding: 6px 14px;
+            border-radius: 20px;
+            font-size: 13px;
+            font-weight: 600;
+        }
+
+        /* Books Grid */
+        .books-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 20px;
+        }
+
+        .book-card {
+            background: #f8f9fa;
+            border-radius: 10px;
+            padding: 20px;
+            border: 2px solid transparent;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            position: relative;
+        }
+
+        .book-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 8px 16px rgba(39, 174, 96, 0.15);
+            border-color: #27ae60;
+        }
+
+        .book-card h4 {
+            font-size: 16px;
+            font-weight: 600;
+            color: #2c3e50;
+            margin-bottom: 10px;
+            padding-right: 50px;
+        }
+
+        .book-card p {
+            font-size: 13px;
+            color: #7f8c8d;
+            margin-bottom: 6px;
+        }
+
+        .book-card p strong {
+            color: #2c3e50;
+        }
+
+        /* Badge de stock para admin */
+        .stock-badge {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: #fff;
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-weight: 700;
+            font-size: 0.75rem;
+            box-shadow: 0 2px 8px rgba(102, 126, 234, 0.3);
+            letter-spacing: 0.5px;
+            min-width: 40px;
+            text-align: center;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 4px;
+        }
+
+        .stock-badge::before {
+            content: '📚';
+            font-size: 0.85rem;
+        }
+
+        .stock-badge.agotado {
+            background: linear-gradient(135deg, #ff6b6b 0%, #c92a2a 100%);
+            box-shadow: 0 2px 8px rgba(255, 107, 107, 0.3);
+        }
+
+        .stock-badge.agotado::before {
+            content: '📕';
+        }
+
+        .stock-badge.bajo-stock {
+            background: linear-gradient(135deg, #ffa94d 0%, #fd7e14 100%);
+            box-shadow: 0 2px 8px rgba(255, 169, 77, 0.3);
+        }
+
+        .stock-badge.bajo-stock::before {
+            content: '📙';
+        }
+
+        .btn-select {
+            width: 100%;
+            background: linear-gradient(135deg, #27ae60 0%, #229954 100%);
+            color: white;
+            padding: 10px;
+            border: none;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-top: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .btn-select:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 12px rgba(39, 174, 96, 0.3);
+        }
+
+        .btn-select:disabled {
+            background: #bdc3c7;
+            cursor: not-allowed;
+        }
+
+        /* Modal Overlay */
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.6);
+            z-index: 9998;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .modal-overlay.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+            to {
+                opacity: 1;
+            }
+        }
+
+        /* Formulario Flotante Modal */
+        #formulario-reserva {
+            display: none;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 90%;
+            max-width: 500px;
+            background: white;
+            border-radius: 16px;
+            padding: 30px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            z-index: 9999;
+            animation: slideInBounce 0.5s ease;
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+
+        @keyframes slideInBounce {
+            0% {
+                opacity: 0;
+                transform: translate(-50%, -60%);
+            }
+            50% {
+                transform: translate(-50%, -48%);
+            }
+            100% {
+                opacity: 1;
+                transform: translate(-50%, -50%);
+            }
+        }
+
+        #formulario-reserva h3 {
+            font-size: 20px;
+            font-weight: 600;
+            color: #2c3e50;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid #f0f0f0;
+        }
+
+        #formulario-reserva h3 i {
+            color: #27ae60;
+            font-size: 1.5rem;
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .form-actions {
+            display: flex;
+            gap: 15px;
+            margin-top: 25px;
+        }
+
+        .btn {
+            flex: 1;
+            padding: 12px 20px;
+            border: none;
+            border-radius: 8px;
+            font-size: 15px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #27ae60 0%, #229954 100%);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 12px rgba(39, 174, 96, 0.3);
+        }
+
+        .btn-secondary {
+            background: #e0e0e0;
+            color: #2c3e50;
+        }
+
+        .btn-secondary:hover {
+            background: #d0d0d0;
+        }
+
+        /* Success Message */
+        .success-message {
+            background: linear-gradient(135deg, #d4edda 0%, #c3e6cb 100%);
+            color: #155724;
+            padding: 14px 20px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            display: none;
+            align-items: center;
+            gap: 12px;
+            font-size: 14px;
+            font-weight: 600;
+            border: 2px solid #28a745;
+            animation: slideInBounce 0.5s ease;
+        }
+
+        .success-message i {
+            font-size: 1.2rem;
+        }
+
+        /* Loading */
+        .loading {
+            text-align: center;
+            padding: 40px;
+            color: #7f8c8d;
+        }
+
+        .loading i {
+            font-size: 3rem;
+            color: #27ae60;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            from {
+                transform: rotate(0deg);
+            }
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+        /* Empty State */
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+            color: #95a5a6;
+        }
+
+        .empty-state i {
+            font-size: 4rem;
+            margin-bottom: 20px;
+        }
+
+        .empty-state h3 {
+            font-size: 18px;
+            margin-bottom: 10px;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .navbar {
+                flex-direction: column;
+                gap: 15px;
+                padding: 15px 20px;
+            }
+
+            .container {
+                padding: 0 20px;
+                margin: 30px auto;
+            }
+
+            .filters-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .books-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .form-actions {
+                flex-direction: column;
+            }
+
+            #formulario-reserva {
+                width: 95%;
+                padding: 20px;
+            }
+        }
+
+        /* Footer */
+        footer {
+            background: #2c3e50;
+            color: #fff;
+            text-align: center;
+            padding: 20px;
+            font-size: 0.9rem;
+            margin-top: 60px;
+        }
+
+        /* Mensaje flotante */
+        #mensaje-reserva {
+            display: none;
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background-color: #4CAF50;
+            color: white;
+            padding: 15px 25px;
+            border-radius: 8px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+            z-index: 10000;
+            font-weight: 600;
+            animation: slideInRight 0.3s ease;
+        }
+
+        @keyframes slideInRight {
+            from {
+                transform: translateX(400px);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+    </style>
+</head>
+<body>
+<!-- Header -->
+<header class="navbar">
+    <div class="logo">
+        <h1>Lectio <span>Admin</span></h1>
+    </div>
+    <a href="/api/admin" class="back-btn">
+        <i class="fas fa-arrow-left"></i> Volver al Panel
+    </a>
+</header>
+
+<!-- Modal Overlay -->
+<div class="modal-overlay" id="modal-overlay"></div>
+
+<!-- Container -->
+<div class="container">
+    <div class="page-header">
+        <h1 class="page-title">Gestión de Reservas</h1>
+        <p class="page-subtitle">Crea y administra reservas de libros para los usuarios</p>
+    </div>
+
+    <!-- Filters -->
+    <div class="filters-card">
+        <div class="filters-grid">
+            <div class="form-group">
+                <label>
+                    <i class="fas fa-tags"></i> Categoría
+                </label>
+                <select id="categoria" required>
+                    <option value="" disabled selected>Selecciona una categoría</option>
+                    <option th:each="cat : ${categorias}" th:value="${cat}" th:text="${cat}">Categoría</option>
+                </select>
+            </div>
+
+            <div class="form-group" id="grupo-busqueda" style="display:none;">
+                <label>
+                    <i class="fas fa-search"></i> Buscar Libro
+                </label>
+                <input type="text" id="busqueda" placeholder="Título, autor...">
+            </div>
+        </div>
+    </div>
+
+    <!-- Results -->
+    <div class="results-card" id="resultados-container" style="display:none;">
+        <div class="results-header">
+            <h3>
+                <i class="fas fa-book"></i> Libros Disponibles
+            </h3>
+            <span class="counter" id="contador">0 libros encontrados</span>
+        </div>
+
+        <div class="books-grid" id="lista-libros">
+            <!-- Los libros se cargarán aquí dinámicamente -->
+        </div>
+    </div>
+</div>
+
+<!-- Formulario Flotante Modal -->
+<div id="formulario-reserva">
+    <h3>
+        <i class="fas fa-clipboard-check"></i> Completar Reserva
+    </h3>
+
+    <form id="reserva-form">
+        <input type="hidden" id="libro-seleccionado" name="libro">
+        <input type="hidden" id="libro-id" name="libroId">
+        <input type="hidden" id="categoria-seleccionada" name="categoria">
+
+        <div class="form-grid">
+            <div class="form-group">
+                <label>
+                    <i class="fas fa-book-open"></i> Libro Seleccionado
+                </label>
+                <input type="text" id="libro-display" disabled style="background: #f8f9fa;">
+            </div>
+
+            <div class="form-group">
+                <label>
+                    <i class="fas fa-id-card"></i> ID de Usuario
+                </label>
+                <input type="text" id="idUsuario" name="idUsuario" required placeholder="Ej: 12345">
+            </div>
+
+            <div class="form-group">
+                <label>
+                    <i class="fas fa-user"></i> Nombre Completo
+                </label>
+                <input type="text" id="nombreCompleto" name="nombreCompleto" required placeholder="Ej: Juan Pérez">
+            </div>
+
+            <div class="form-group">
+                <label>
+                    <i class="fas fa-envelope"></i> Correo Electrónico
+                </label>
+                <input type="email" id="correo" name="correo" required placeholder="usuario@ejemplo.com">
+            </div>
+
+            <div class="form-group">
+                <label>
+                    <i class="fas fa-calendar-alt"></i> Fecha de Reserva
+                </label>
+                <input type="date" id="fecha" name="fecha" required>
+            </div>
+        </div>
+
+        <div class="form-actions">
+            <button type="button" id="cancelar-reserva" class="btn btn-secondary">
+                <i class="fas fa-times"></i> Cancelar
+            </button>
+            <button type="submit" class="btn btn-primary">
+                <i class="fas fa-check-circle"></i> Confirmar Reserva
+            </button>
+        </div>
+    </form>
+</div>
+
+<!-- Mensaje flotante -->
+<div id="mensaje-reserva"></div>
+
+<!-- Footer -->
+<footer>
+    <p>&copy; 2025 Lectio Biblioteca. Todos los derechos reservados.</p>
+</footer>
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+    $(document).ready(function() {
+        let todosLosLibros = [];
+        let librosFiltrados = [];
+        const hoy = new Date().toISOString().split('T')[0];
+        $('#fecha').attr('min', hoy);
+
+        $('#categoria').change(function() {
+            const categoria = $(this).val();
+            if (categoria) {
+                cargarLibros(categoria);
+                $('#grupo-busqueda').slideDown();
+            } else {
+                $('#resultados-container').slideUp();
+                $('#grupo-busqueda').slideUp();
+            }
+        });
+
+        $('#busqueda').keyup(function() {
+            filtrarLibros();
+        });
+
+        // Cerrar modal
+        $('#cancelar-reserva, #modal-overlay').click(function() {
+            cerrarModal();
+        });
+
+        // Cerrar con tecla Escape
+        $(document).keydown(function(e) {
+            if (e.key === 'Escape' && $('#formulario-reserva').is(':visible')) {
+                cerrarModal();
+            }
+        });
+
+        function cerrarModal() {
+            $('#formulario-reserva').fadeOut(300);
+            $('#modal-overlay').removeClass('active');
+            $('body').css('overflow', '');
+        }
+
+        function abrirModal() {
+            $('#formulario-reserva').fadeIn(300);
+            $('#modal-overlay').addClass('active');
+            $('body').css('overflow', 'hidden');
+        }
+
+        $('#reserva-form').submit(function(e) {
+            e.preventDefault();
+            enviarReserva();
+        });
+
+        function cargarLibros(categoria) {
+            $.ajax({
+                url: '/api/cargarLibrosPorCategoria',
+                type: 'GET',
+                data: { categoria: categoria },
+                beforeSend: function() {
+                    $('#lista-libros').html('<div class="loading"><i class="fas fa-spinner"></i><p>Cargando libros...</p></div>');
+                },
+                success: function(data) {
+                    todosLosLibros = data;
+                    librosFiltrados = data;
+                    mostrarLibros(data);
+                    $('#categoria-seleccionada').val(categoria);
+                    $('#resultados-container').slideDown();
+                },
+                error: function() {
+                    mostrarMensaje('Error al cargar los libros', 'error');
+                }
+            });
+        }
+
+        function filtrarLibros() {
+            const busqueda = $('#busqueda').val().toLowerCase();
+            if (busqueda === '') {
+                librosFiltrados = todosLosLibros;
+            } else {
+                librosFiltrados = todosLosLibros.filter(function(libro) {
+                    return libro.titulo.toLowerCase().includes(busqueda) ||
+                           (libro.autor && libro.autor.toLowerCase().includes(busqueda));
+                });
+            }
+            mostrarLibros(librosFiltrados);
+        }
+
+        function mostrarLibros(libros) {
+            const $lista = $('#lista-libros');
+            $lista.empty();
+
+            if (libros.length === 0) {
+                $lista.html('<div class="empty-state"><i class="fas fa-search"></i><h3>No se encontraron libros</h3><p>Intenta con otro término de búsqueda</p></div>');
+                $('#contador').text('0 libros encontrados');
+                return;
+            }
+
+            $('#contador').text(libros.length + ' libros encontrados');
+
+            libros.forEach(function(libro) {
+                const stock = (typeof libro.stock === 'number') ? libro.stock : 0;
+                const id = libro.id || libro._id || '';
+
+                let stockBadge = '';
+                let btnDisabled = '';
+
+                if (stock === 0) {
+                    stockBadge = `<div class="stock-badge agotado">Agotado</div>`;
+                    btnDisabled = 'disabled';
+                } else if (stock <= 3) {
+                    stockBadge = `<div class="stock-badge bajo-stock">${stock}</div>`;
+                } else {
+                    stockBadge = `<div class="stock-badge">${stock}</div>`;
+                }
+
+                $lista.append(`
+                    <div class="book-card" data-titulo="${escapeHtml(libro.titulo)}" data-id="${id}">
+                        ${stockBadge}
+                        <h4>${escapeHtml(libro.titulo)}</h4>
+                        ${libro.autor ? `<p><strong>Autor:</strong> ${escapeHtml(libro.autor)}</p>` : ''}
+                        ${libro.anioPublicacion ? `<p><strong>Año:</strong> ${libro.anioPublicacion}</p>` : ''}
+                        <button class="btn-select" ${btnDisabled}>
+                            <i class="fas fa-check-circle"></i> ${stock > 0 ? 'Seleccionar' : 'Sin stock'}
+                        </button>
+                    </div>
+                `);
+            });
+
+            $('.btn-select:not(:disabled)').click(function() {
+                const titulo = $(this).closest('.book-card').data('titulo');
+                const id = $(this).closest('.book-card').data('id');
+
+                $('#libro-seleccionado').val(titulo);
+                $('#libro-id').val(id);
+                $('#libro-display').val(titulo);
+
+                abrirModal();
+            });
+        }
+
+        function enviarReserva() {
+            const libroId = $('#libro-id').val();
+
+            if (!libroId) {
+                mostrarMensaje('Error: no se seleccionó un libro', 'error');
+                return;
+            }
+
+            // 1) Decrementar stock
+            $.ajax({
+                url: '/api/reservar/' + encodeURIComponent(libroId),
+                type: 'POST'
+            }).done(function() {
+                // 2) Guardar reserva
+                const formData = $('#reserva-form').serialize();
+                $.ajax({
+                    url: '/api/guardarReservaUsuario',
+                    type: 'POST',
+                    data: formData,
+                    success: function(response) {
+                        $('#reserva-form')[0].reset();
+                        cerrarModal();
+                        mostrarMensaje('¡Reserva realizada con éxito!', 'exito');
+
+                        // Recargar libros
+                        const categoria = $('#categoria').val();
+                        if (categoria) {
+                            cargarLibros(categoria);
+                        }
+                    },
+                    error: function() {
+                        mostrarMensaje('Error al guardar la reserva', 'error');
+                    }
+                });
+            }).fail(function() {
+                mostrarMensaje('No se pudo reservar: sin stock o error', 'error');
+            });
+        }
+
+        function mostrarMensaje(texto, tipo) {
+            const $msg = $('#mensaje-reserva');
+            $msg.text(texto);
+            if (tipo === 'exito') {
+                $msg.css('background-color', '#4CAF50');
+            } else {
+                $msg.css('background-color', '#e74c3c');
+            }
+            $msg.fadeIn();
+            setTimeout(() => { $msg.fadeOut(); }, 3000);
+        }
+
+        function escapeHtml(text) {
+            if (!text) return '';
+            return String(text)
+                .replace(/&/g, '&amp;')
+                .replace(/</g, '&lt;')
+                .replace(/>/g, '&gt;')
+                .replace(/"/g, '&quot;')
+                .replace(/'/g, '&#039;');
+        }
+    });
+</script>
+</body>
+</html>

@@ -1,0 +1,624 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Devolución de Libros - Lectio Admin</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: #f5f6fa;
+            color: #2c3e50;
+        }
+
+        /* Header Sticky */
+        .navbar {
+            background: #fff;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px 60px;
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+
+        .logo h1 {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #2c3e50;
+        }
+
+        .logo span {
+            color: #27ae60;
+            font-weight: 600;
+        }
+
+        .back-btn {
+            background: #27ae60;
+            color: #fff;
+            padding: 10px 25px;
+            border: none;
+            border-radius: 30px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 14px;
+        }
+
+        .back-btn:hover {
+            background: #219150;
+            transform: translateY(-3px) scale(1.05);
+            box-shadow: 0 8px 20px rgba(39, 174, 96, 0.4);
+        }
+
+        /* Container */
+        .container {
+            max-width: 1400px;
+            margin: 40px auto;
+            padding: 0 40px;
+        }
+
+        .page-header {
+            margin-bottom: 30px;
+            animation: fadeInDown 0.6s ease;
+        }
+
+        @keyframes fadeInDown {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .page-title {
+            font-size: 24px;
+            font-weight: 700;
+            color: #2c3e50;
+            margin-bottom: 5px;
+        }
+
+        .page-subtitle {
+            font-size: 14px;
+            color: #7f8c8d;
+        }
+
+        /* Grid Layout */
+        .content-grid {
+            display: grid;
+            grid-template-columns: 1.5fr 1fr;
+            gap: 25px;
+        }
+
+        /* Cards */
+        .card {
+            background: white;
+            border-radius: 12px;
+            padding: 25px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.06);
+            border: 2px solid transparent;
+            transition: all 0.3s ease;
+            animation: fadeInUp 0.6s ease;
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .card:hover {
+            border-color: #27ae60;
+            box-shadow: 0 8px 16px rgba(39, 174, 96, 0.15);
+        }
+
+        .card-header {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid #f0f0f0;
+        }
+
+        .card-header i {
+            font-size: 1.3rem;
+            color: #27ae60;
+        }
+
+        .card-header h3 {
+            font-size: 18px;
+            font-weight: 600;
+            color: #2c3e50;
+        }
+
+        /* Search */
+        .search-box {
+            margin-bottom: 20px;
+        }
+
+        .search-input {
+            width: 100%;
+            padding: 12px 16px 12px 45px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-family: 'Poppins', sans-serif;
+            font-size: 14px;
+            transition: all 0.3s ease;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='20' height='20' viewBox='0 0 24 24' fill='none' stroke='%2327ae60' stroke-width='2'%3E%3Ccircle cx='11' cy='11' r='8'/%3E%3Cpath d='m21 21-4.35-4.35'/%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: 12px center;
+        }
+
+        .search-input:focus {
+            outline: none;
+            border-color: #27ae60;
+            box-shadow: 0 0 0 4px rgba(39, 174, 96, 0.1);
+        }
+
+        /* Table */
+        .table-container {
+            overflow-x: auto;
+        }
+
+        .table {
+            width: 100%;
+            border-collapse: separate;
+            border-spacing: 0;
+        }
+
+        .table thead {
+            background: #27ae60;
+            color: white;
+        }
+
+        .table th {
+            padding: 14px 16px;
+            text-align: left;
+            font-weight: 600;
+            font-size: 13px;
+        }
+
+        .table th:first-child {
+            border-radius: 8px 0 0 0;
+        }
+
+        .table th:last-child {
+            border-radius: 0 8px 0 0;
+        }
+
+        .table td {
+            padding: 14px 16px;
+            border-bottom: 1px solid #e0e0e0;
+            font-size: 14px;
+        }
+
+        .table tbody tr {
+            transition: all 0.3s ease;
+        }
+
+        .table tbody tr:hover {
+            background: rgba(39, 174, 96, 0.05);
+        }
+
+        .btn-seleccionar {
+            background: linear-gradient(135deg, #27ae60 0%, #229954 100%);
+            color: white;
+            padding: 8px 16px;
+            border: none;
+            border-radius: 6px;
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .btn-seleccionar:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(39, 174, 96, 0.3);
+        }
+
+        /* Form */
+        .form-group {
+            margin-bottom: 18px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+            color: #2c3e50;
+            font-size: 14px;
+        }
+
+        .form-group label i {
+            color: #27ae60;
+            margin-right: 6px;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 12px 16px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-family: 'Poppins', sans-serif;
+            font-size: 14px;
+            transition: all 0.3s ease;
+        }
+
+        .form-group input:read-only {
+            background: #f8f9fa;
+            cursor: not-allowed;
+        }
+
+        .form-group input:focus:not(:read-only) {
+            outline: none;
+            border-color: #27ae60;
+            box-shadow: 0 0 0 4px rgba(39, 174, 96, 0.1);
+        }
+
+        /* Multa Alert */
+        .multa-alert {
+            background: linear-gradient(135deg, #fff3cd 0%, #ffe8a1 100%);
+            border: 2px solid #ffc107;
+            border-radius: 10px;
+            padding: 20px;
+            margin: 20px 0;
+            display: none;
+            animation: slideInBounce 0.5s ease;
+        }
+
+        @keyframes slideInBounce {
+            0% {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            50% {
+                transform: translateY(5px);
+            }
+            100% {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .multa-alert h5 {
+            color: #856404;
+            font-size: 16px;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .multa-alert h5 i {
+            font-size: 20px;
+        }
+
+        /* Submit Button */
+        .btn-submit {
+            width: 100%;
+            background: linear-gradient(135deg, #27ae60 0%, #229954 100%);
+            color: white;
+            padding: 14px 30px;
+            border: none;
+            border-radius: 8px;
+            font-size: 15px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            margin-top: 25px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn-submit::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.3);
+            transform: translate(-50%, -50%);
+            transition: width 0.6s, height 0.6s;
+        }
+
+        .btn-submit:hover::before {
+            width: 300px;
+            height: 300px;
+        }
+
+        .btn-submit:hover {
+            transform: translateY(-4px) scale(1.02);
+            box-shadow: 0 12px 30px rgba(39, 174, 96, 0.4);
+        }
+
+        .btn-submit i, .btn-submit span {
+            position: relative;
+            z-index: 1;
+        }
+
+        .btn-submit:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        /* Empty State */
+        .empty-state {
+            text-align: center;
+            padding: 40px 20px;
+            color: #95a5a6;
+        }
+
+        .empty-state i {
+            font-size: 3rem;
+            margin-bottom: 15px;
+        }
+
+        /* Responsive */
+        @media (max-width: 1024px) {
+            .content-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .navbar {
+                flex-direction: column;
+                gap: 15px;
+                padding: 15px 20px;
+            }
+
+            .container {
+                padding: 0 20px;
+                margin: 30px auto;
+            }
+
+            .page-title {
+                font-size: 20px;
+            }
+        }
+
+        /* Footer */
+        footer {
+            background: #2c3e50;
+            color: #fff;
+            text-align: center;
+            padding: 20px;
+            font-size: 0.9rem;
+            margin-top: 60px;
+        }
+    </style>
+</head>
+<body>
+<!-- Header -->
+<header class="navbar">
+    <div class="logo">
+        <h1>Lectio <span>Admin</span></h1>
+    </div>
+    <a href="/api/admin" class="back-btn">
+        <i class="fas fa-arrow-left"></i> Volver al Panel
+    </a>
+</header>
+
+<!-- Container -->
+<div class="container">
+    <div class="page-header">
+        <h1 class="page-title">Devolución de Libros</h1>
+        <p class="page-subtitle">Procesa las devoluciones y calcula multas automáticamente</p>
+    </div>
+
+    <!-- Grid Layout -->
+    <div class="content-grid">
+        <!-- Reservas Activas Card -->
+        <div class="card">
+            <div class="card-header">
+                <i class="fas fa-book-reader"></i>
+                <h3>Reservas Activas</h3>
+            </div>
+
+            <div class="search-box">
+                <input type="text" id="searchInput" class="search-input" placeholder="Buscar por nombre o libro...">
+            </div>
+
+            <div class="table-container">
+                <table class="table">
+                    <thead>
+                    <tr>
+                        <th>Nombre</th>
+                        <th>Libro</th>
+                        <th>Fecha Reserva</th>
+                        <th>Acción</th>
+                    </tr>
+                    </thead>
+                    <tbody id="reservasTable">
+                    <tr th:each="reserva : ${reservas}">
+                        <td th:text="${reserva.nombreCompleto}">Nombre Usuario</td>
+                        <td th:text="${reserva.libro}">Título del Libro</td>
+                        <td th:text="${#temporals.format(reserva.fecha, 'dd/MM/yyyy')}">01/01/2025</td>
+                        <td>
+                            <button class="btn-seleccionar seleccionar-btn"
+                                    th:data-id="${reserva.id}"
+                                    th:data-nombre="${reserva.nombreCompleto}"
+                                    th:data-libro="${reserva.libro}"
+                                    th:data-fechareserva="${#temporals.format(reserva.fecha, 'yyyy-MM-dd')}">
+                                <i class="fas fa-check-circle"></i> Seleccionar
+                            </button>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+
+                <div class="empty-state" id="emptyState" style="display: none;">
+                    <i class="fas fa-inbox"></i>
+                    <p>No se encontraron reservas</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Formulario de Devolución Card -->
+        <div class="card">
+            <div class="card-header">
+                <i class="fas fa-clipboard-check"></i>
+                <h3>Procesar Devolución</h3>
+            </div>
+
+            <form id="devolucionForm" th:action="@{/api/procesar-devolucion}" method="post">
+                <input type="hidden" id="reservaId" name="reservaId">
+
+                <div class="form-group">
+                    <label>
+                        <i class="fas fa-user"></i> Nombre del Usuario
+                    </label>
+                    <input type="text" id="nombre" readonly placeholder="Seleccione una reserva">
+                </div>
+
+                <div class="form-group">
+                    <label>
+                        <i class="fas fa-book"></i> Libro
+                    </label>
+                    <input type="text" id="libro" readonly placeholder="Seleccione una reserva">
+                </div>
+
+                <div class="form-group">
+                    <label>
+                        <i class="fas fa-calendar-alt"></i> Fecha de Reserva
+                    </label>
+                    <input type="text" id="fechaReserva" readonly placeholder="Seleccione una reserva">
+                </div>
+
+                <div class="form-group">
+                    <label>
+                        <i class="fas fa-calendar-check"></i> Fecha de Devolución
+                    </label>
+                    <input type="date" id="fechaDevolucion" name="fechaDevolucion"
+                           th:value="${#temporals.format(#temporals.createToday(), 'yyyy-MM-dd')}" readonly>
+                </div>
+
+                <!-- Alerta de Multa -->
+                <div id="multaSection" class="multa-alert">
+                    <h5>
+                        <i class="fas fa-exclamation-triangle"></i> Multa por Retraso
+                    </h5>
+                    <div class="form-group">
+                        <label>
+                            <i class="fas fa-clock"></i> Días de retraso
+                        </label>
+                        <input type="number" id="diasRetraso" name="diasRetraso" readonly>
+                    </div>
+                    <div class="form-group">
+                        <label>
+                            <i class="fas fa-dollar-sign"></i> Valor de la multa (COP)
+                        </label>
+                        <input type="number" id="valorMulta" name="valorMulta" readonly>
+                    </div>
+                </div>
+
+                <button type="submit" class="btn-submit" id="submitBtn" disabled>
+                    <i class="fas fa-check-double"></i>
+                    <span>Confirmar Devolución</span>
+                </button>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Footer -->
+<footer>
+    <p>&copy; 2025 Lectio Biblioteca. Todos los derechos reservados.</p>
+</footer>
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+    $(document).ready(function() {
+        // Búsqueda en tabla
+        $("#searchInput").on("keyup", function() {
+            const value = $(this).val().toLowerCase();
+            let visibleCount = 0;
+
+            $("#reservasTable tr").filter(function() {
+                const matches = $(this).text().toLowerCase().indexOf(value) > -1;
+                $(this).toggle(matches);
+                if (matches) visibleCount++;
+            });
+
+            // Mostrar/ocultar empty state
+            if (visibleCount === 0) {
+                $("#emptyState").show();
+            } else {
+                $("#emptyState").hide();
+            }
+        });
+
+        // Seleccionar reserva
+        $(document).on("click", ".seleccionar-btn", function() {
+            const nombre = $(this).data("nombre");
+            const libro = $(this).data("libro");
+            const fechaReservaStr = $(this).data("fechareserva");
+            const id = $(this).data("id");
+
+            // Convertir fechas
+            const fechaReserva = new Date(fechaReservaStr);
+            const fechaDevolucion = new Date();
+
+            // Calcular días transcurridos
+            const diffTime = fechaDevolucion - fechaReserva;
+            const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+
+            // Rellenar formulario
+            $("#reservaId").val(id);
+            $("#nombre").val(nombre);
+            $("#libro").val(libro);
+            $("#fechaReserva").val(fechaReserva.toLocaleDateString('es-CO'));
+
+            // Habilitar botón
+            $("#submitBtn").prop('disabled', false);
+
+            // Calcular multa si hay retraso (más de 7 días)
+            if (diffDays > 7) {
+                const diasRetraso = diffDays - 7;
+                const valorMulta = diasRetraso * 5000;
+
+                $("#diasRetraso").val(diasRetraso);
+                $("#valorMulta").val(valorMulta);
+                $("#multaSection").slideDown();
+            } else {
+                $("#multaSection").slideUp();
+            }
+        });
+    });
+</script>
+</body>
+</html>

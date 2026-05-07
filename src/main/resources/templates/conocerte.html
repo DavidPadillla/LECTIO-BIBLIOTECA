@@ -1,0 +1,586 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Perfil de usuario</title>
+  <link rel="stylesheet" href="/estilos/inicio.css">
+  <style>
+    :root {
+      --primary: #2563eb;
+      --primary-hover: #1d4ed8;
+      --bg-body: #f3f4f6;
+      --text-main: #111827;
+      --text-muted: #6b7280;
+      --border: #e5e7eb;
+      --radius-lg: 14px;
+      --radius-md: 10px;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background-color: var(--bg-body);
+      color: var(--text-main);
+      margin: 0;
+      padding: 0;
+    }
+
+    .page-wrapper {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+    }
+
+    .section {
+      width: 100%;
+      max-width: 960px;
+      background-color: #ffffff;
+      border-radius: var(--radius-lg);
+      box-shadow: 0 18px 45px rgba(15, 23, 42, 0.10);
+      padding: 28px 32px 32px;
+    }
+
+    .section-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 10px;
+    }
+
+    .section-title {
+      font-size: 1.6rem;
+      font-weight: 650;
+      margin: 0;
+      color: #0f172a;
+    }
+
+    .section-subtitle {
+      margin: 4px 0 24px;
+      font-size: 0.95rem;
+      color: var(--text-muted);
+    }
+
+    .section-meta {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-bottom: 22px;
+      font-size: 0.8rem;
+      color: var(--text-muted);
+    }
+
+    .badge-muted {
+      padding: 4px 10px;
+      border-radius: 999px;
+      background-color: #f9fafb;
+      border: 1px solid #e5e7eb;
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      padding: 10px 18px;
+      border-radius: 999px;
+      border: none;
+      font-size: 0.9rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background-color 0.2s ease, transform 0.1s ease, box-shadow 0.1s ease;
+      text-decoration: none;
+      white-space: nowrap;
+    }
+
+    .btn-primary {
+      background-color: var(--primary);
+      color: #ffffff;
+      box-shadow: 0 10px 25px rgba(37, 99, 235, 0.35);
+    }
+
+    .btn-primary:hover {
+      background-color: var(--primary-hover);
+      transform: translateY(-1px);
+      box-shadow: 0 14px 30px rgba(37, 99, 235, 0.45);
+    }
+
+    .btn-outline {
+      background-color: #ffffff;
+      color: #111827;
+      border: 1px solid #d1d5db;
+    }
+
+    .btn-outline:hover {
+      background-color: #f9fafb;
+    }
+
+    .btn-sm {
+      padding: 7px 14px;
+      font-size: 0.8rem;
+    }
+
+    .btn-icon {
+      width: 32px;
+      height: 32px;
+      border-radius: 999px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      border: 1px solid #e5e7eb;
+      background-color: #ffffff;
+      cursor: pointer;
+      transition: background-color 0.2s ease, border-color 0.2s ease, transform 0.1s ease;
+    }
+
+    .btn-icon:hover {
+      background-color: #f3f4f6;
+      border-color: #d1d5db;
+      transform: translateY(-1px);
+    }
+
+    .btn-icon svg {
+      width: 16px;
+      height: 16px;
+      stroke: #4b5563;
+    }
+
+    form {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 18px 24px;
+    }
+
+    .form-group {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .form-group.full {
+      grid-column: 1 / -1;
+    }
+
+    .form-label {
+      font-size: 0.86rem;
+      font-weight: 600;
+      color: #374151;
+    }
+
+    .form-label span {
+      color: #ef4444;
+      margin-left: 2px;
+    }
+
+    .form-help {
+      font-size: 0.78rem;
+      color: var(--text-muted);
+    }
+
+    .form-control,
+    textarea,
+    select {
+      width: 100%;
+      padding: 9px 11px;
+      font-size: 0.9rem;
+      border-radius: var(--radius-md);
+      border: 1px solid var(--border);
+      background-color: #f9fafb;
+      color: var(--text-main);
+      transition: border-color 0.2s ease, box-shadow 0.2s ease, background-color 0.15s ease;
+    }
+
+    .form-control:focus,
+    textarea:focus,
+    select:focus {
+      outline: none;
+      border-color: rgba(37, 99, 235, 0.8);
+      box-shadow: 0 0 0 1px rgba(37, 99, 235, 0.25);
+      background-color: #ffffff;
+    }
+
+    textarea {
+      resize: vertical;
+      min-height: 90px;
+    }
+
+    .form-footer {
+      grid-column: 1 / -1;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-top: 8px;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+
+    .form-footer-left {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      align-items: center;
+    }
+
+    .form-footer-right {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      align-items: center;
+    }
+
+    .note-text {
+      font-size: 0.78rem;
+      color: var(--text-muted);
+    }
+
+    .modal {
+      display: none;
+      position: fixed;
+      z-index: 50;
+      inset: 0;
+      background-color: rgba(15, 23, 42, 0.65);
+      backdrop-filter: blur(4px);
+    }
+
+    .modal-content {
+      position: relative;
+      background-color: #ffffff;
+      padding: 26px 24px 22px;
+      border-radius: 16px;
+      text-align: center;
+      width: 100%;
+      max-width: 420px;
+      margin: 15vh auto 0;
+      box-shadow: 0 22px 60px rgba(15, 23, 42, 0.40);
+    }
+
+    .modal-content h3 {
+      margin: 4px 0 6px;
+      color: #0f172a;
+      font-size: 1.25rem;
+    }
+
+    .modal-content p {
+      margin: 0 0 18px;
+      font-size: 0.9rem;
+      color: var(--text-muted);
+    }
+
+    .modal-icon {
+      width: 42px;
+      height: 42px;
+      border-radius: 999px;
+      margin: 0 auto 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background-color: rgba(22, 163, 74, 0.1);
+      color: #16a34a;
+    }
+
+    .modal-icon svg {
+      width: 22px;
+      height: 22px;
+    }
+
+    .modal-actions {
+      display: flex;
+      justify-content: center;
+      gap: 10px;
+      margin-top: 4px;
+    }
+
+    @media (max-width: 768px) {
+      .section {
+        padding: 22px 18px 20px;
+      }
+
+      form {
+        grid-template-columns: 1fr;
+      }
+
+      .section-header {
+        flex-direction: row;
+        align-items: center;
+      }
+
+      .section-title {
+        font-size: 1.4rem;
+      }
+
+      .form-footer {
+        flex-direction: column-reverse;
+        align-items: stretch;
+      }
+
+      .form-footer-right {
+        width: 100%;
+        justify-content: flex-end;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .section-header {
+        flex-direction: column-reverse;
+        align-items: flex-start;
+      }
+
+      .form-footer-right {
+        justify-content: space-between;
+      }
+    }
+  </style>
+</head>
+<body>
+<div class="page-wrapper">
+  <section class="section">
+    <div class="section-header">
+      <div>
+        <h2 class="section-title">Perfil de usuario</h2>
+        <p class="section-subtitle">
+          Ayúdanos a conocerte mejor para personalizar tus recomendaciones de lectura.
+        </p>
+      </div>
+      <!-- Botón regresar a la página anterior -->
+      <button type="button" class="btn-icon" id="btnVolver" title="Volver a la página anterior">
+        <svg viewBox="0 0 24 24" fill="none">
+          <path d="M15 18l-6-6 6-6" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </button>
+    </div>
+
+    <div class="section-meta">
+      <span class="badge-muted">Tiempo estimado: 2–3 min</span>
+      <span class="badge-muted">Tus respuestas serán confidenciales</span>
+    </div>
+
+    <form id="userForm">
+      <div class="form-group">
+        <label class="form-label">Edad <span>*</span></label>
+        <input type="number" name="edad" class="form-control" required min="1" max="120">
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">Género</label>
+        <select name="genero" class="form-control">
+          <option value="">Selecciona una opción</option>
+          <option value="masculino">Masculino</option>
+          <option value="femenino">Femenino</option>
+          <option value="otro">Otro</option>
+          <option value="prefiero_no_decirlo">Prefiero no decirlo</option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">Nivel de educación</label>
+        <select name="educacion" class="form-control">
+          <option value="">Selecciona una opción</option>
+          <option value="primaria">Primaria</option>
+          <option value="secundaria">Secundaria</option>
+          <option value="universitaria">Universitaria</option>
+          <option value="posgrado">Posgrado</option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">Frecuencia de lectura</label>
+        <select name="frecuencia" class="form-control">
+          <option value="">Selecciona una opción</option>
+          <option value="diaria">Diaria</option>
+          <option value="semanal">Semanal</option>
+          <option value="mensual">Mensual</option>
+          <option value="ocasional">Ocasional</option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">Categoría favorita</label>
+        <input type="text" name="categoriaFavorita" class="form-control" placeholder="Novela, ensayo, ciencia ficción, etc.">
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">Formato preferido</label>
+        <select name="formato" class="form-control">
+          <option value="">Selecciona una opción</option>
+          <option value="fisico">Físico</option>
+          <option value="virtual">Virtual</option>
+          <option value="ambos">Ambos</option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">¿Usas biblioteca virtual?</label>
+        <select name="uso" class="form-control">
+          <option value="">Selecciona una opción</option>
+          <option value="si">Sí</option>
+          <option value="no">No</option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">Libros que lees al mes</label>
+        <input type="number" name="librosMes" class="form-control" min="0">
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">Calificación de la plataforma (1–10)</label>
+        <input type="number" name="calificacion" class="form-control" min="1" max="10">
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">¿Recomendarías la biblioteca?</label>
+        <select name="recomendacion" class="form-control">
+          <option value="">Selecciona una opción</option>
+          <option value="si">Sí</option>
+          <option value="no">No</option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">Dispositivos de acceso</label>
+        <input type="text" name="dispositivos" class="form-control" placeholder="PC, celular, tablet, etc.">
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">Último libro leído</label>
+        <input type="text" name="ultimoLibro" class="form-control">
+      </div>
+
+      <div class="form-group full">
+        <label class="form-label">¿Qué mejorarías?</label>
+        <textarea name="mejoras" class="form-control" rows="3"></textarea>
+      </div>
+
+      <div class="form-group full">
+        <label class="form-label">¿Qué recomendaciones darías?</label>
+        <textarea name="recomendaciones" class="form-control" rows="3"></textarea>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">¿Participarías en clubes de lectura?</label>
+        <select name="clubes" class="form-control">
+          <option value="">Selecciona una opción</option>
+          <option value="si">Sí</option>
+          <option value="no">No</option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">¿Compras libros frecuentemente?</label>
+        <select name="compras" class="form-control">
+          <option value="">Selecciona una opción</option>
+          <option value="si">Sí</option>
+          <option value="no">No</option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">Autores favoritos</label>
+        <input type="text" name="autoresFavoritos" class="form-control">
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">¿Deseas recibir boletines?</label>
+        <select name="boletines" class="form-control">
+          <option value="">Selecciona una opción</option>
+          <option value="si">Sí</option>
+          <option value="no">No</option>
+        </select>
+      </div>
+
+      <div class="form-footer">
+        <div class="form-footer-left">
+          <button type="button" class="btn btn-outline btn-sm" id="btnVolverInferior">
+            ← Volver
+          </button>
+          <span class="note-text">Puedes actualizar tus respuestas más adelante.</span>
+        </div>
+        <div class="form-footer-right">
+          <button type="submit" class="btn btn-primary">
+            Guardar y continuar
+          </button>
+        </div>
+      </div>
+    </form>
+  </section>
+</div>
+
+<div id="gracias" class="modal">
+  <div class="modal-content">
+    <div class="modal-icon">
+      <svg viewBox="0 0 24 24" fill="none">
+        <path d="M5 13l4 4L19 7" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+    </div>
+    <h3>¡Gracias por completar tu perfil!</h3>
+    <p>Usaremos esta información para mejorar tus recomendaciones de lectura.</p>
+    <div class="modal-actions">
+      <a href="/api/logiado" class="btn btn-outline">Ir al inicio</a>
+      <button type="button" class="btn btn-primary" id="cerrarModal">Seguir aquí</button>
+    </div>
+  </div>
+</div>
+
+<script>
+  const form = document.getElementById('userForm');
+  const modal = document.getElementById('gracias');
+  const btnVolver = document.getElementById('btnVolver');
+  const btnVolverInferior = document.getElementById('btnVolverInferior');
+  const btnCerrarModal = document.getElementById('cerrarModal');
+
+  function irAAnterior() {
+    if (window.history.length > 1) {
+      history.back();
+    } else {
+      window.location.href = '/api/logiado';
+    }
+  }
+
+  btnVolver.addEventListener('click', irAAnterior);
+  btnVolverInferior.addEventListener('click', irAAnterior);
+
+  form.addEventListener('submit', function(event) {
+    event.preventDefault();
+
+    const formData = new FormData(form);
+
+    fetch("/api/guardarRespuestaDashboard", {
+      method: "POST",
+      body: formData
+    })
+    .then(response => {
+      if (response.ok) {
+        modal.style.display = 'block';
+        setTimeout(() => {
+          window.location.href = '/api/logiado';
+        }, 3000);
+      } else {
+        alert("Hubo un problema al enviar los datos.");
+      }
+    })
+    .catch(error => {
+      alert("Error al enviar: " + error);
+    });
+  });
+
+  if (btnCerrarModal) {
+    btnCerrarModal.addEventListener('click', function () {
+      modal.style.display = 'none';
+    });
+  }
+
+  window.addEventListener('click', function (e) {
+    if (e.target === modal) {
+      modal.style.display = 'none';
+    }
+  });
+</script>
+</body>
+</html>
+

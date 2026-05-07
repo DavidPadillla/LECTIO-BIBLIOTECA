@@ -1,0 +1,103 @@
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Roboto', sans-serif;
+    background-color: #f0f4f8;
+    color: #2c3e50;
+    scroll-behavior: smooth;
+}
+
+
+.formulario {
+    max-width: 400px;
+    margin: 100px auto;
+    padding: 20px;
+    background-color: #ffffff;
+    border-radius: 10px;
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+}
+
+.formulario h1 {
+    font-size: 2rem;
+    color: #2c3e50;
+    margin-bottom: 20px;
+    text-align: center;
+}
+
+.enlace-registro {
+    display: block;
+    text-align: center;
+    font-size: 1rem;
+    color: #27ae60;
+    text-decoration: none;
+    margin-bottom: 20px;
+    transition: color 0.3s ease;
+}
+
+.enlace-registro:hover {
+    color: #1e8449;
+}
+
+.usuario, .contraseña {
+    position: relative;
+    margin-bottom: 20px;
+}
+
+.usuario input, .contraseña input {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #dfe6e9;
+    border-radius: 5px;
+    font-size: 1rem;
+    color: #2c3e50;
+}
+
+.usuario label, .contraseña label {
+    position: absolute;
+    top: 10px;
+    left: 15px;
+    font-size: 1rem;
+    color: #7f8c8d;
+    transition: top 0.3s ease, font-size 0.3s ease;
+}
+
+.usuario input:focus + label, .contraseña input:focus + label {
+    top: -15px;
+    font-size: 0.8rem;
+    color: #27ae60;
+}
+
+.recordar a {
+    color: #27ae60;
+    text-decoration: none;
+    font-size: 0.9rem;
+    display: block;
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.recordar a:hover {
+    text-decoration: underline;
+}
+
+button {
+    width: 100%;
+    padding: 10px;
+    background-color: #27ae60;
+    color: #ffffff;
+    border: none;
+    border-radius: 5px;
+    font-size: 1.2rem;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+button:hover {
+    background-color: #1e8449;
+}

@@ -1,0 +1,74 @@
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #f4f4f4;
+}
+
+header {
+    background-color: #4CAF50; /* Color de fondo */
+    color: white; /* Color del texto */
+    padding: 10px 20px;
+    text-align: center;
+}
+
+nav ul {
+    list-style-type: none;
+    padding: 0;
+}
+
+nav ul li {
+    display: inline;
+    margin: 0 15px;
+}
+
+nav ul li a {
+    color: white;
+    text-decoration: none;
+}
+
+#carrito {
+    margin: 20px;
+    padding: 20px;
+    background-color: white; /* Fondo blanco para el carrito */
+    border-radius: 5px; /* Bordes redondeados */
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); /* Sombra sutil */
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse; /* Colapsar bordes */
+}
+
+th, td {
+    padding: 10px;
+    text-align: left;
+    border-bottom: 1px solid #ddd; /* Línea entre filas */
+}
+
+input[type="number"] {
+    width: 50px; /* Ancho para el campo de cantidad */
+}
+
+button {
+    background-color: #4CAF50; /* Color del botón */
+    color: white;
+    border: none;
+    padding: 10px 15px;
+    cursor: pointer;
+    border-radius: 5px; /* Bordes redondeados */
+}
+
+button:hover {
+    background-color: #45a049; /* Color de botón al pasar el mouse */
+}
+
+footer {
+    text-align: center;
+    padding: 10px;
+    background-color: #4CAF50; /* Mismo color que el header */
+    color: white;
+    position: relative;
+    bottom: 0;
+    width: 100%;
+}

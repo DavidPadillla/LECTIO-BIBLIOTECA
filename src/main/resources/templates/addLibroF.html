@@ -1,0 +1,614 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lectio Admin</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: #f5f6fa;
+            color: #2c3e50;
+        }
+
+        /* Header Sticky */
+        .navbar {
+            background: #fff;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px 60px;
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+
+        .logo h1 {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #2c3e50;
+        }
+
+        .logo span {
+            color: #27ae60;
+            font-weight: 600;
+        }
+
+        .back-btn {
+            background: #27ae60;
+            color: #fff;
+            padding: 10px 25px;
+            border: none;
+            border-radius: 30px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 14px;
+        }
+
+        .back-btn:hover {
+            background: #219150;
+            transform: translateY(-3px) scale(1.05);
+            box-shadow: 0 8px 20px rgba(39, 174, 96, 0.4);
+        }
+
+        /* Container */
+        .container {
+            max-width: 900px;
+            margin: 40px auto;
+            padding: 0 40px;
+        }
+
+        .page-header {
+            margin-bottom: 30px;
+            animation: fadeInDown 0.6s ease;
+        }
+
+        @keyframes fadeInDown {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .page-title {
+            font-size: 24px;
+            font-weight: 700;
+            color: #2c3e50;
+            margin-bottom: 5px;
+        }
+
+        .page-subtitle {
+            font-size: 14px;
+            color: #7f8c8d;
+        }
+
+        /* Form Card */
+        .form-card {
+            background: white;
+            border-radius: 12px;
+            padding: 35px;
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.08);
+            border: 2px solid transparent;
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            animation: fadeInUp 0.6s ease;
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .form-card:hover {
+            transform: translateY(-4px);
+            border-color: #27ae60;
+            box-shadow: 0 12px 24px rgba(39, 174, 96, 0.15);
+        }
+
+        .form-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 25px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid #f0f0f0;
+        }
+
+        .form-header i {
+            font-size: 1.5rem;
+            color: #27ae60;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% {
+                transform: scale(1);
+            }
+            50% {
+                transform: scale(1.1);
+            }
+        }
+
+        .form-header h3 {
+            font-size: 18px;
+            font-weight: 600;
+            color: #2c3e50;
+        }
+
+        /* Form Grid */
+        .form-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+
+        .form-grid.full {
+            grid-template-columns: 1fr;
+        }
+
+        /* Form Styles */
+        .form-group {
+            margin-bottom: 20px;
+            position: relative;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+            color: #2c3e50;
+            font-size: 14px;
+            transition: all 0.3s ease;
+        }
+
+        .form-group label i {
+            color: #27ae60;
+            margin-right: 6px;
+            transition: all 0.3s ease;
+        }
+
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            width: 100%;
+            padding: 12px 16px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-family: 'Poppins', sans-serif;
+            font-size: 14px;
+            transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            background: #fff;
+        }
+
+        .form-group input:hover,
+        .form-group select:hover,
+        .form-group textarea:hover {
+            border-color: #b0bec5;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.08);
+        }
+
+        .form-group input:focus,
+        .form-group select:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: #27ae60;
+            box-shadow: 0 0 0 4px rgba(39, 174, 96, 0.1);
+            transform: translateY(-2px);
+        }
+
+        .form-group:has(input:focus) label,
+        .form-group:has(select:focus) label,
+        .form-group:has(textarea:focus) label {
+            color: #27ae60;
+        }
+
+        .form-group:has(input:focus) label i,
+        .form-group:has(select:focus) label i,
+        .form-group:has(textarea:focus) label i {
+            transform: scale(1.2) rotate(10deg);
+        }
+
+        .form-group textarea {
+            resize: vertical;
+            min-height: 100px;
+        }
+
+        /* Character Counter */
+        .char-counter {
+            font-size: 12px;
+            color: #7f8c8d;
+            text-align: right;
+            margin-top: 4px;
+        }
+
+        /* Submit Button */
+        .btn-submit {
+            width: 100%;
+            background: linear-gradient(135deg, #27ae60 0%, #229954 100%);
+            color: white;
+            padding: 14px 30px;
+            border: none;
+            border-radius: 8px;
+            font-size: 15px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            margin-top: 25px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn-submit::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.3);
+            transform: translate(-50%, -50%);
+            transition: width 0.6s, height 0.6s;
+        }
+
+        .btn-submit:hover::before {
+            width: 300px;
+            height: 300px;
+        }
+
+        .btn-submit:hover {
+            transform: translateY(-4px) scale(1.02);
+            box-shadow: 0 12px 30px rgba(39, 174, 96, 0.4);
+        }
+
+        .btn-submit:active {
+            transform: translateY(-2px) scale(1.01);
+        }
+
+        .btn-submit i, .btn-submit span {
+            position: relative;
+            z-index: 1;
+        }
+
+        /* Messages */
+        .message {
+            padding: 14px 20px;
+            border-radius: 8px;
+            margin-top: 20px;
+            display: none;
+            align-items: center;
+            gap: 12px;
+            font-size: 14px;
+            animation: slideInBounce 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+        }
+
+        @keyframes slideInBounce {
+            0% {
+                opacity: 0;
+                transform: translateY(-30px) scale(0.8);
+            }
+            50% {
+                transform: translateY(5px) scale(1.05);
+            }
+            100% {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+        }
+
+        .message.success {
+            background: linear-gradient(135deg, #d4edda 0%, #c3e6cb 100%);
+            color: #155724;
+            border: 2px solid #28a745;
+            box-shadow: 0 4px 12px rgba(40, 167, 69, 0.3);
+        }
+
+        .message.error {
+            background: linear-gradient(135deg, #f8d7da 0%, #f5c6cb 100%);
+            color: #721c24;
+            border: 2px solid #dc3545;
+            box-shadow: 0 4px 12px rgba(220, 53, 69, 0.3);
+        }
+
+        .message i {
+            font-size: 1.2rem;
+            animation: bounceIn 0.6s ease;
+        }
+
+        @keyframes bounceIn {
+            0%, 20%, 50%, 80%, 100% {
+                transform: translateY(0);
+            }
+            40% {
+                transform: translateY(-10px);
+            }
+            60% {
+                transform: translateY(-5px);
+            }
+        }
+
+        /* Info Box */
+        .info-box {
+            background: linear-gradient(135deg, #e8f5e9 0%, #c8e6c9 100%);
+            padding: 16px 20px;
+            border-radius: 8px;
+            margin-bottom: 25px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            border-left: 4px solid #27ae60;
+            animation: fadeInLeft 0.6s ease;
+            transition: all 0.3s ease;
+        }
+
+        @keyframes fadeInLeft {
+            from {
+                opacity: 0;
+                transform: translateX(-30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        .info-box:hover {
+            transform: translateX(5px);
+            box-shadow: 0 4px 12px rgba(39, 174, 96, 0.2);
+        }
+
+        .info-box i {
+            font-size: 1.3rem;
+            color: #27ae60;
+        }
+
+        .info-box p {
+            margin: 0;
+            font-size: 13px;
+            color: #2c3e50;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .navbar {
+                flex-direction: column;
+                gap: 15px;
+                padding: 15px 20px;
+            }
+
+            .container {
+                padding: 0 20px;
+                margin: 30px auto;
+            }
+
+            .form-card {
+                padding: 25px 20px;
+            }
+
+            .form-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .page-title {
+                font-size: 20px;
+            }
+        }
+
+        /* Footer */
+        footer {
+            background: #2c3e50;
+            color: #fff;
+            text-align: center;
+            padding: 20px;
+            font-size: 0.9rem;
+            margin-top: 60px;
+        }
+    </style>
+</head>
+<body>
+<!-- Header -->
+<header class="navbar">
+    <div class="logo">
+        <h1>Lectio <span>Admin</span></h1>
+    </div>
+    <a href="/api/admin" class="back-btn">
+        <i class="fas fa-arrow-left"></i> Volver al Panel
+    </a>
+</header>
+
+<!-- Container -->
+<div class="container">
+    <div class="page-header">
+        <h1 class="page-title">Añadir Libro Físico</h1>
+        <p class="page-subtitle">Registra nuevos ejemplares físicos en el inventario de la biblioteca</p>
+    </div>
+
+    <!-- Info Box -->
+    <div class="info-box">
+        <i class="fas fa-info-circle"></i>
+        <p>Los libros físicos requieren control de inventario. Asegúrate de ingresar correctamente las cantidades disponibles y reservadas.</p>
+    </div>
+
+    <!-- Form Card -->
+    <div class="form-card">
+        <div class="form-header">
+            <i class="fas fa-box"></i>
+            <h3>Detalles del Libro Físico</h3>
+        </div>
+
+        <form id="agregar-libro-form">
+            <div class="form-grid">
+                <div class="form-group">
+                    <label for="titulo">
+                        <i class="fas fa-heading"></i> Título del Libro *
+                    </label>
+                    <input type="text" id="titulo" name="titulo" required placeholder="Ej: El Quijote">
+                </div>
+
+                <div class="form-group">
+                    <label for="autor">
+                        <i class="fas fa-user-edit"></i> Autor *
+                    </label>
+                    <input type="text" id="autor" name="autor" required placeholder="Ej: Miguel de Cervantes">
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="categoria">
+                    <i class="fas fa-tags"></i> Categoría *
+                </label>
+                <select id="categoria" name="categoria" required>
+                    <option value="">Selecciona una categoría</option>
+                    <option value="Novelas">Novelas</option>
+                    <option value="Ciencia">Ciencia</option>
+                    <option value="Historia">Historia</option>
+                    <option value="Arte">Arte</option>
+                    <option value="Fantasía">Fantasía</option>
+                    <option value="Filosofía">Filosofía</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="descripcion">
+                    <i class="fas fa-align-left"></i> Descripción *
+                </label>
+                <textarea id="descripcion" name="descripcion" rows="4" placeholder="Escribe una breve descripción del libro..." required maxlength="500"></textarea>
+                <div class="char-counter"><span id="charCount">0</span> / 500 caracteres</div>
+            </div>
+
+            <div class="form-grid">
+                <div class="form-group">
+                    <label for="stock">
+                        <i class="fas fa-boxes"></i> Cantidad Disponible *
+                    </label>
+                    <input type="number" id="stock" name="stock" required placeholder="0" min="0">
+                </div>
+
+                <div class="form-group">
+                    <label for="reservado">
+                        <i class="fas fa-bookmark"></i> Cantidad Reservada *
+                    </label>
+                    <input type="number" id="reservado" name="reservado" required placeholder="0" min="0">
+                </div>
+            </div>
+
+            <button type="submit" class="btn-submit">
+                <i class="fas fa-plus-circle"></i>
+                <span>Agregar Libro Físico</span>
+            </button>
+        </form>
+
+        <!-- Messages -->
+        <div id="mensajeConfirmacion" class="message success">
+            <i class="fas fa-check-circle"></i>
+            <span>¡Libro físico agregado exitosamente!</span>
+        </div>
+
+        <div id="mensajeError" class="message error">
+            <i class="fas fa-exclamation-circle"></i>
+            <span>Hubo un error al agregar el libro. Por favor, intenta de nuevo.</span>
+        </div>
+    </div>
+</div>
+
+<!-- Footer -->
+<footer>
+    <p>&copy; 2025 Lectio Biblioteca. Todos los derechos reservados.</p>
+</footer>
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+    $(document).ready(function() {
+        // Contador de caracteres
+        $('#descripcion').on('input', function() {
+            const count = $(this).val().length;
+            $('#charCount').text(count);
+        });
+
+        // Enviar el formulario por AJAX
+        $('#agregar-libro-form').submit(function(e) {
+            e.preventDefault();
+
+            // Agregar estado de carga
+            $('.btn-submit').addClass('loading');
+            $('.btn-submit span').text('Agregando...');
+            $('.btn-submit i').removeClass('fa-plus-circle').addClass('fa-spinner');
+
+            // Obtener los datos del formulario
+            var formData = {
+                titulo: $('#titulo').val(),
+                autor: $('#autor').val(),
+                descripcion: $('#descripcion').val(),
+                categoria: $('#categoria').val(),
+                stock: parseInt($('#stock').val(), 10),
+                reservado: parseInt($('#reservado').val(), 10)
+            };
+
+            // Enviar los datos a través de AJAX
+            $.ajax({
+                url: '/api/agregarLibroF',
+                type: 'POST',
+                contentType: 'application/json',
+                data: JSON.stringify(formData),
+                success: function(response) {
+                    $('.btn-submit').removeClass('loading');
+                    $('.btn-submit span').text('Agregar Libro Físico');
+                    $('.btn-submit i').removeClass('fa-spinner').addClass('fa-plus-circle');
+
+                    $('#mensajeConfirmacion').css('display', 'flex');
+                    $('#mensajeError').css('display', 'none');
+                    $('#agregar-libro-form')[0].reset();
+                    $('#charCount').text('0');
+
+                    // Ocultar mensaje después de 5 segundos
+                    setTimeout(function() {
+                        $('#mensajeConfirmacion').fadeOut();
+                    }, 5000);
+                },
+                error: function() {
+                    $('.btn-submit').removeClass('loading');
+                    $('.btn-submit span').text('Agregar Libro Físico');
+                    $('.btn-submit i').removeClass('fa-spinner').addClass('fa-plus-circle');
+
+                    $('#mensajeError').css('display', 'flex');
+                    $('#mensajeConfirmacion').css('display', 'none');
+
+                    // Ocultar mensaje después de 5 segundos
+                    setTimeout(function() {
+                        $('#mensajeError').fadeOut();
+                    }, 5000);
+                }
+            });
+        });
+    });
+</script>
+</body>
+</html>

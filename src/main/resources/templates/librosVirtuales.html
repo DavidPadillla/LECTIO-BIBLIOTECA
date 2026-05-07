@@ -1,0 +1,324 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>BookLab - Libros Virtuales</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" />
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;500;700&display=swap" rel="stylesheet" />
+    <style>
+        /* ----------- RESET Y FUENTES ----------- */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: #f4f6fc;
+            color: #2c3e50;
+            line-height: 1.6;
+        }
+
+        /* ----------- HEADER Y NAV ----------- */
+        header {
+            background-color: #ffffff;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            transition: background-color 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 18px 50px;
+            flex-wrap: wrap;
+        }
+
+        .logo h1 {
+            font-size: 1.9rem;
+            font-weight: 700;
+            color: #2c3e50;
+            letter-spacing: 1px;
+        }
+
+        .logo span {
+            color: #27ae60; /* Verde oficial BookLab */
+            font-weight: 800;
+        }
+
+        /* --- Enlaces del nav --- */
+        .nav-links {
+            list-style: none;
+            display: flex;
+            gap: 30px;
+        }
+
+        .nav-links a {
+            text-decoration: none;
+            color: #2c3e50;
+            font-weight: 500;
+            font-size: 1rem;
+            padding: 8px 16px;
+            border-radius: 8px;
+            transition: all 0.3s ease-in-out;
+        }
+
+        .nav-links a:hover {
+            background-color: #27ae60;
+            color: white;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 10px rgba(39, 174, 96, 0.3);
+        }
+
+        /* ----------- SECCIÓN PRINCIPAL ----------- */
+        .section {
+            padding: 80px 40px;
+            text-align: center;
+            background: linear-gradient(to bottom, #ffffff, #eef2f7);
+        }
+
+        .section-title {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            color: #2c3e50;
+            font-weight: 700;
+        }
+
+        .section-subtitle {
+            font-size: 1.2rem;
+            color: #7f8c8d;
+            margin-bottom: 50px;
+        }
+
+        /* ----------- CONTENEDOR DE LIBROS ----------- */
+        .shop-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 30px;
+            padding: 0 15px;
+        }
+
+        .shop-item {
+            background: white;
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 12px 24px rgba(0, 0, 0, 0.10);
+            display: flex;
+            flex-direction: column;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .shop-item:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 18px 35px rgba(0, 0, 0, 0.15);
+        }
+
+        .shop-item img {
+            width: 100%;
+            height: auto;
+            max-height: 280px;
+            object-fit: cover;
+            border-bottom: 3px solid #27ae60;
+            border-top-left-radius: 15px;
+            border-top-right-radius: 15px;
+            transition: transform 0.35s ease;
+        }
+
+        .shop-item:hover img {
+            transform: scale(1.05);
+        }
+
+        .shop-item h3 {
+            font-size: 1.3rem;
+            margin: 16px 20px 8px;
+            color: #2c3e50;
+            font-weight: 700;
+        }
+
+        .shop-item p {
+            margin: 0 20px 20px;
+            font-size: 1rem;
+            color: #5a6d7c;
+            flex-grow: 1;
+            line-height: 1.4;
+        }
+
+        .shop-item a.btn {
+            display: inline-block;
+            margin: 0 20px 20px;
+            padding: 12px 26px;
+            background-color: #27ae60;
+            color: white;
+            text-decoration: none;
+            font-weight: 600;
+            border-radius: 28px;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+            text-align: center;
+        }
+
+        .shop-item a.btn:hover {
+            background-color: #1e8449;
+            transform: translateY(-3px);
+        }
+
+        /* Mejoras para dispositivos móviles */
+
+        @media (max-width: 768px) {
+            .shop-container {
+                grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+                gap: 20px;
+                padding: 0 10px;
+            }
+
+            .shop-item img {
+                max-height: 200px;
+            }
+
+            .shop-item h3 {
+                font-size: 1.1rem;
+                margin: 12px 16px 6px;
+            }
+
+            .shop-item p {
+                font-size: 0.9rem;
+                margin: 0 16px 16px;
+            }
+
+            .shop-item a.btn {
+                margin: 0 16px 16px;
+                padding: 10px 20px;
+                font-size: 0.9rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            nav {
+                padding: 22px 16px;
+            }
+
+            .nav-links {
+                gap: 8px;
+            }
+
+            .shop-container {
+                grid-template-columns: 1fr;
+                padding: 0 15px;
+                gap: 18px;
+            }
+
+            .shop-item img {
+                max-height: 180px;
+                border-radius: 15px 15px 0 0;
+            }
+        }
+
+        /* ----------- FOOTER ----------- */
+        footer {
+            background-color: #2c3e50;
+            color: #ecf0f1;
+            text-align: center;
+            padding: 25px;
+            font-size: 0.95rem;
+            letter-spacing: 0.3px;
+        }
+
+        /* ----------- RESPONSIVE ----------- */
+        @media (max-width: 768px) {
+            nav {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 10px;
+                padding: 20px;
+            }
+
+            .nav-links {
+                flex-direction: column;
+                width: 100%;
+                gap: 10px;
+            }
+
+            .nav-links a {
+                width: 100%;
+                text-align: left;
+            }
+
+            .section {
+                padding: 50px 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<header>
+    <nav>
+        <div class="logo">
+            <h1>Lectio <span>Biblioteca</span></h1>
+        </div>
+        <ul class="nav-links">
+            <li><a href="/api/index">Inicio</a></li>
+            <li><a href="/api/librosVirtuales">Libros virtuales</a></li>
+        </ul>
+    </nav>
+</header>
+
+<section class="section coleccion" id="coleccion">
+    <h2 class="section-title">Libros Disponibles</h2>
+    <p class="section-subtitle">Accede a nuestra selección de libros virtuales</p>
+
+    <div class="shop-container">
+        <div class="shop-item">
+            <img src="/img/libro1.jpeg" alt="Libro 1" />
+            <h3>El Gran Libro del Conocimiento</h3>
+            <p>Una exploración profunda de los temas más importantes.</p>
+            <a href="/api/login" class="btn">Leer</a>
+        </div>
+
+        <div class="shop-item">
+            <img src="/img/reyes.jpeg" alt="Libro 2" />
+            <h3>Misterios del Universo</h3>
+            <p>Una guía fascinante sobre los secretos del cosmos.</p>
+            <a href="/api/login" class="btn">Leer</a>
+        </div>
+
+        <div class="shop-item">
+            <img src="/img/libro3.jpeg" alt="Libro 3" />
+            <h3>Historias de la Antigua Civilización</h3>
+            <p>Relatos impresionantes sobre las primeras sociedades humanas.</p>
+            <a href="/api/login" class="btn">Leer</a>
+        </div>
+
+        <div class="shop-item">
+            <img src="/img/d3.jpeg" alt="Libro 4" />
+            <h3>Aventuras de la Ciencia</h3>
+            <p>Exploraciones asombrosas en el mundo de la física moderna.</p>
+            <a href="/api/login" class="btn">Leer</a>
+        </div>
+
+        <div class="shop-item">
+            <img src="/img/d1.png" alt="Libro 5" />
+            <h3>Descubrimientos del Futuro</h3>
+            <p>Innovaciones científicas que cambiarán el mundo.</p>
+            <a href="/api/login" class="btn">Leer</a>
+        </div>
+
+        <div class="shop-item">
+            <img src="/img/d5.jpeg" alt="Libro 6" />
+            <h3>Viajes por la Mente</h3>
+            <p>Un recorrido por los misterios de la conciencia humana.</p>
+            <a href="/api/login" class="btn">Leer</a>
+        </div>
+    </div>
+</section>
+
+<footer>
+    <p>&copy; 2024 NexGet Biblioteca. Todos los derechos reservados.</p>
+</footer>
+
+</body>
+</html>

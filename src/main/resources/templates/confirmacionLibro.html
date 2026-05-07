@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Lectio</title>
+  <link rel="stylesheet" href="/estilos/confirmacion.css">
+</head>
+<body>
+
+<header>
+  <nav>
+    <div class="logo">
+      <h1>BookLab - Admin</h1>
+    </div>
+    <ul class="nav-links">
+      <li><a href="/api/admin">Inicio</a></li>
+      <li><a href="/api/reservaAdmin">Reserva</a></li>
+      <li><a href="/api/usuariosAdmin">Usuarios</a></li>
+      <li><a href="/api/noAdminConfig">Configuración</a></li>
+      <li><a href="/api/addBook">Añadir Libro</a></li>
+      <li><a href="/api/devolucion">Devolver Libro</a></li>
+      <li><a href="/api/multasAdmin">Multas</a></li>
+    </ul>
+  </nav>
+</header>
+
+
+<section class="mensaje-confirmacion">
+  <div class="mensaje-container">
+    <h2>¡El libro ha sido añadido exitosamente!</h2>
+    <p>El libro se ha añadido correctamente a la base de datos. Puedes continuar gestionando los libros o volver al menú principal.</p>
+    <a href="/api/admin" class="btn-volver">Volver al Inicio</a>
+  </div>
+</section>
+
+
+<footer>
+  <p>&copy; 2024 BookLab. Todos los derechos reservados.</p>
+</footer>
+</body>
+</html>

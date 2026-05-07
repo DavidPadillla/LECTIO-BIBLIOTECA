@@ -1,0 +1,613 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gestión de Multas - Lectio Admin</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: #f5f6fa;
+            color: #2c3e50;
+        }
+
+        /* Header Sticky */
+        .navbar {
+            background: #fff;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px 60px;
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+
+        .logo h1 {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #2c3e50;
+        }
+
+        .logo span {
+            color: #27ae60;
+            font-weight: 600;
+        }
+
+        .back-btn {
+            background: #27ae60;
+            color: #fff;
+            padding: 10px 25px;
+            border: none;
+            border-radius: 30px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 14px;
+        }
+
+        .back-btn:hover {
+            background: #219150;
+            transform: translateY(-3px) scale(1.05);
+            box-shadow: 0 8px 20px rgba(39, 174, 96, 0.4);
+        }
+
+        /* Alert Message */
+        .alert {
+            padding: 16px 24px;
+            border-radius: 12px;
+            margin-bottom: 25px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-size: 14px;
+            font-weight: 500;
+            animation: slideInDown 0.5s ease;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+
+        @keyframes slideInDown {
+            from {
+                opacity: 0;
+                transform: translateY(-30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .alert-success {
+            background: linear-gradient(135deg, #27ae60 0%, #229954 100%);
+            color: white;
+        }
+
+        .alert-error {
+            background: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%);
+            color: white;
+        }
+
+        .alert i {
+            font-size: 20px;
+        }
+
+        .alert-close {
+            margin-left: auto;
+            background: none;
+            border: none;
+            color: white;
+            font-size: 20px;
+            cursor: pointer;
+            opacity: 0.8;
+            transition: opacity 0.3s ease;
+        }
+
+        .alert-close:hover {
+            opacity: 1;
+        }
+
+        /* Container */
+        .container {
+            max-width: 1400px;
+            margin: 40px auto;
+            padding: 0 40px;
+        }
+
+        .page-header {
+            margin-bottom: 30px;
+            animation: fadeInDown 0.6s ease;
+        }
+
+        @keyframes fadeInDown {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .page-title {
+            font-size: 24px;
+            font-weight: 700;
+            color: #2c3e50;
+            margin-bottom: 5px;
+        }
+
+        .page-subtitle {
+            font-size: 14px;
+            color: #7f8c8d;
+        }
+
+        /* Search Bar */
+        .search-bar {
+            background: white;
+            border-radius: 12px;
+            padding: 25px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.06);
+            margin-bottom: 25px;
+            animation: fadeInUp 0.6s ease;
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .search-grid {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 15px;
+        }
+
+        .search-input,
+        .filter-select {
+            padding: 12px 16px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-family: 'Poppins', sans-serif;
+            font-size: 14px;
+            transition: all 0.3s ease;
+        }
+
+        .search-input:focus,
+        .filter-select:focus {
+            outline: none;
+            border-color: #27ae60;
+            box-shadow: 0 0 0 4px rgba(39, 174, 96, 0.1);
+        }
+
+        /* Multas Cards */
+        .multas-container {
+            display: grid;
+            gap: 20px;
+        }
+
+        .multa-card {
+            background: white;
+            border-radius: 12px;
+            padding: 25px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.06);
+            border-left: 5px solid transparent;
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            animation: fadeInUp 0.6s ease;
+            animation-fill-mode: both;
+            position: relative;
+        }
+
+        .multa-card:hover {
+            transform: translateX(5px);
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+        }
+
+        .multa-card.pendiente {
+            border-left-color: #e74c3c;
+            background: linear-gradient(135deg, #ffffff 0%, #fdf2f1 100%);
+        }
+
+        /* Efecto para multas PAGADAS */
+        .multa-card.pagada {
+            border-left-color: #27ae60;
+            background: linear-gradient(135deg, #ffffff 0%, #f1f9f4 100%);
+            opacity: 0.75;
+            position: relative;
+        }
+
+        .multa-card.pagada::before {
+            content: '✓';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 120px;
+            color: rgba(39, 174, 96, 0.08);
+            font-weight: bold;
+            z-index: 0;
+        }
+
+        .multa-card.pagada * {
+            position: relative;
+            z-index: 1;
+        }
+
+        .multa-card.pagada .multa-title,
+        .multa-card.pagada .info-item span {
+            text-decoration: line-through;
+            color: #95a5a6;
+        }
+
+        .multa-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 20px;
+        }
+
+        .multa-title {
+            font-size: 18px;
+            font-weight: 600;
+            color: #2c3e50;
+            margin-bottom: 8px;
+        }
+
+        .multa-badge {
+            padding: 6px 14px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .badge-pagada {
+            background: #27ae60;
+            color: white;
+        }
+
+        .badge-pendiente {
+            background: #e74c3c;
+            color: white;
+        }
+
+        .multa-info {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+            margin-bottom: 20px;
+        }
+
+        .info-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 14px;
+        }
+
+        .info-item i {
+            color: #27ae60;
+            width: 20px;
+        }
+
+        .info-item strong {
+            color: #2c3e50;
+            margin-right: 4px;
+        }
+
+        .info-item span {
+            color: #7f8c8d;
+        }
+
+        .multa-valor {
+            background: linear-gradient(135deg, #27ae60 0%, #229954 100%);
+            color: white;
+            padding: 12px 20px;
+            border-radius: 8px;
+            text-align: center;
+            font-size: 20px;
+            font-weight: 700;
+            margin: 15px 0;
+        }
+
+        .multa-card.pagada .multa-valor {
+            opacity: 0.6;
+        }
+
+        .multa-actions {
+            display: flex;
+            gap: 10px;
+            justify-content: flex-end;
+        }
+
+        .btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn-success {
+            background: linear-gradient(135deg, #27ae60 0%, #229954 100%);
+            color: white;
+        }
+
+        .btn-success:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 12px rgba(39, 174, 96, 0.3);
+        }
+
+        .fecha-pago {
+            font-size: 13px;
+            color: #27ae60;
+            text-align: right;
+            margin-top: 10px;
+            font-weight: 600;
+            background: rgba(39, 174, 96, 0.1);
+            padding: 8px 12px;
+            border-radius: 6px;
+            display: inline-block;
+            float: right;
+        }
+
+        /* Empty State */
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.06);
+        }
+
+        .empty-state i {
+            font-size: 4rem;
+            color: #e0e0e0;
+            margin-bottom: 20px;
+        }
+
+        .empty-state h3 {
+            font-size: 18px;
+            color: #7f8c8d;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .navbar {
+                flex-direction: column;
+                gap: 15px;
+                padding: 15px 20px;
+            }
+
+            .container {
+                padding: 0 20px;
+                margin: 30px auto;
+            }
+
+            .search-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .multa-info {
+                grid-template-columns: 1fr;
+            }
+
+            .page-title {
+                font-size: 20px;
+            }
+        }
+
+        /* Footer */
+        footer {
+            background: #2c3e50;
+            color: #fff;
+            text-align: center;
+            padding: 20px;
+            font-size: 0.9rem;
+            margin-top: 60px;
+        }
+
+        /* Stagger animation */
+        .multa-card:nth-child(1) { animation-delay: 0.1s; }
+        .multa-card:nth-child(2) { animation-delay: 0.2s; }
+        .multa-card:nth-child(3) { animation-delay: 0.3s; }
+        .multa-card:nth-child(4) { animation-delay: 0.4s; }
+        .multa-card:nth-child(5) { animation-delay: 0.5s; }
+    </style>
+</head>
+<body>
+<!-- Header -->
+<header class="navbar">
+    <div class="logo">
+        <h1>Lectio <span>Admin</span></h1>
+    </div>
+    <a href="/api/admin" class="back-btn">
+        <i class="fas fa-arrow-left"></i> Volver al Panel
+    </a>
+</header>
+
+<!-- Container -->
+<div class="container">
+    <!-- Success Message -->
+    <div th:if="${mensaje}" class="alert alert-success">
+        <i class="fas fa-check-circle"></i>
+        <span th:text="${mensaje}">Multa marcada como pagada</span>
+        <button class="alert-close" onclick="this.parentElement.style.display='none'">
+            <i class="fas fa-times"></i>
+        </button>
+    </div>
+
+    <!-- Error Message -->
+    <div th:if="${error}" class="alert alert-error">
+        <i class="fas fa-exclamation-circle"></i>
+        <span th:text="${error}">Error al procesar el pago</span>
+        <button class="alert-close" onclick="this.parentElement.style.display='none'">
+            <i class="fas fa-times"></i>
+        </button>
+    </div>
+
+    <div class="page-header">
+        <h1 class="page-title">Gestión de Multas</h1>
+        <p class="page-subtitle">Administra y da seguimiento a las multas por retrasos en devoluciones</p>
+    </div>
+
+    <!-- Search Bar -->
+    <div class="search-bar">
+        <div class="search-grid">
+            <input type="text" id="searchInput" class="search-input" placeholder="Buscar por nombre de usuario o libro...">
+            <select id="filterStatus" class="filter-select">
+                <option value="all">Todas las multas</option>
+                <option value="paid">Pagadas</option>
+                <option value="unpaid">Pendientes</option>
+            </select>
+        </div>
+    </div>
+
+    <!-- Multas Container -->
+    <div class="multas-container" id="multasContainer">
+        <div th:each="multa : ${multas}"
+             class="multa-card"
+             th:classappend="${multa.pagada} ? 'pagada' : 'pendiente'">
+
+            <div class="multa-header">
+                <div>
+                    <h3 class="multa-title" th:text="${multa.libro}">Título del Libro</h3>
+                    <span th:if="${multa.pagada}" class="multa-badge badge-pagada">
+                            <i class="fas fa-check-circle"></i> PAGADA
+                        </span>
+                    <span th:unless="${multa.pagada}" class="multa-badge badge-pendiente">
+                            <i class="fas fa-exclamation-circle"></i> PENDIENTE
+                        </span>
+                </div>
+            </div>
+
+            <div class="multa-info">
+                <div class="info-item">
+                    <i class="fas fa-user"></i>
+                    <strong>Usuario:</strong>
+                    <span th:text="${multa.nombreUsuario}">Nombre</span>
+                </div>
+                <div class="info-item">
+                    <i class="fas fa-calendar-alt"></i>
+                    <strong>F. Reserva:</strong>
+                    <span th:text="${#temporals.format(multa.fechaReserva, 'dd/MM/yyyy')}">01/01/2025</span>
+                </div>
+                <div class="info-item">
+                    <i class="fas fa-calendar-check"></i>
+                    <strong>F. Devolución:</strong>
+                    <span th:text="${#temporals.format(multa.fechaDevolucion, 'dd/MM/yyyy')}">10/01/2025</span>
+                </div>
+                <div class="info-item">
+                    <i class="fas fa-clock"></i>
+                    <strong>Días retraso:</strong>
+                    <span th:text="${multa.diasRetraso} + ' días'">5 días</span>
+                </div>
+            </div>
+
+            <div class="multa-valor">
+                <span th:text="'$' + ${#numbers.formatDecimal(multa.valorMulta, 1, 2, 'POINT')} + ' COP'">$5000.00 COP</span>
+            </div>
+
+            <div th:if="${multa.pagada}" class="fecha-pago">
+                <i class="fas fa-check-circle"></i> Pagada el: <span th:text="${#temporals.format(multa.fechaPago, 'dd/MM/yyyy')}">15/01/2025</span>
+            </div>
+
+            <div th:unless="${multa.pagada}" class="multa-actions">
+                <form th:action="@{/api/multas/pagar/{id}(id=${multa.id})}" method="post" style="margin: 0;">
+                    <button type="submit" class="btn btn-success">
+                        <i class="fas fa-check"></i> Marcar como Pagada
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Empty State -->
+    <div class="empty-state" id="emptyState" style="display: none;">
+        <i class="fas fa-search"></i>
+        <h3>No se encontraron multas</h3>
+        <p style="color: #b0bec5; margin-top: 10px;">Intenta con otro término de búsqueda</p>
+    </div>
+</div>
+
+<!-- Footer -->
+<footer>
+    <p>&copy; 2025 Lectio Biblioteca. Todos los derechos reservados.</p>
+</footer>
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+    $(document).ready(function() {
+        // Auto-hide alerts after 5 seconds
+        setTimeout(function() {
+            $('.alert').fadeOut('slow');
+        }, 5000);
+
+        // Filtro de búsqueda
+        $("#searchInput").on("keyup", function() {
+            filterMultas();
+        });
+
+        // Filtro por estado
+        $("#filterStatus").on("change", function() {
+            filterMultas();
+        });
+
+        function filterMultas() {
+            const searchValue = $("#searchInput").val().toLowerCase();
+            const filterStatus = $("#filterStatus").val();
+            let visibleCount = 0;
+
+            $(".multa-card").each(function() {
+                const text = $(this).text().toLowerCase();
+                const isPaid = $(this).hasClass("pagada");
+
+                const matchesSearch = text.indexOf(searchValue) > -1;
+                const matchesStatus = filterStatus === "all" ||
+                                    (filterStatus === "paid" && isPaid) ||
+                                    (filterStatus === "unpaid" && !isPaid);
+
+                if (matchesSearch && matchesStatus) {
+                    $(this).show();
+                    visibleCount++;
+                } else {
+                    $(this).hide();
+                }
+            });
+
+            // Mostrar/ocultar empty state
+            if (visibleCount === 0) {
+                $("#emptyState").fadeIn();
+            } else {
+                $("#emptyState").fadeOut();
+            }
+        }
+    });
+</script>
+</body>
+</html>

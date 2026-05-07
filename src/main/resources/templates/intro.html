@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lectio - Introducción</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body, html {
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            background: #000;
+        }
+
+        .video-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        #intro-video {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .skip-btn {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            padding: 10px 20px;
+            background: rgba(255, 255, 255, 0.9);
+            color: #000;
+            border: none;
+            border-radius: 25px;
+            cursor: pointer;
+            font-weight: bold;
+            z-index: 100;
+            transition: all 0.3s ease;
+        }
+
+        .skip-btn:hover {
+            background: white;
+            transform: scale(1.05);
+        }
+
+        .loading {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            color: white;
+            font-size: 18px;
+            z-index: 10;
+        }
+    </style>
+</head>
+<body>
+
+<div class="loading" id="loading">Cargando...</div>
+
+<div class="video-container">
+    <video id="intro-video" autoplay muted playsinline>
+        <!-- Se selecciona automáticamente el video correcto -->
+    </video>
+</div>
+
+<button class="skip-btn" id="skip-btn">Saltar Introducción</button>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const video = document.getElementById('intro-video');
+        const skipBtn = document.getElementById('skip-btn');
+        const loading = document.getElementById('loading');
+
+        // Determinar qué video usar según dispositivo
+        const isMobile = window.innerWidth <= 768;
+        const videoSource = isMobile ? '/img/cel.mp4' : '/img/1k.mp4';
+
+        console.log('Dispositivo:', isMobile ? 'Móvil/Tablet' : 'Computadora');
+        console.log('Usando video:', videoSource);
+
+        // Configurar el video
+        video.innerHTML = `<source src="${videoSource}" type="video/mp4">`;
+
+        // Cuando el video se carga
+        video.addEventListener('loadeddata', function() {
+            loading.style.display = 'none';
+            console.log('Video cargado correctamente');
+        });
+
+        // Manejo de errores al cargar el video
+        video.addEventListener('error', function() {
+            console.error('Error cargando el video:', videoSource);
+            loading.textContent = 'Error cargando el video. Redirigiendo...';
+            setTimeout(() => {
+                window.location.href = "/api/index";
+            }, 2000);
+        });
+
+        // Cuando termina el video
+        video.addEventListener('ended', function() {
+            console.log('Video terminado, redirigiendo...');
+            window.location.href = "/api/index";
+        });
+
+        // Botón de saltar introducción
+        skipBtn.addEventListener('click', function() {
+            console.log('Saltando introducción...');
+            window.location.href = "/api/index";
+        });
+
+        // También se puede saltar con Escape o barra espaciadora
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape' || e.key === ' ') {
+                window.location.href = "/api/index";
+            }
+        });
+
+        // Redirección automática de respaldo después de 30 segundos
+        setTimeout(function() {
+            if (!video.ended) {
+                console.log('Redirección automática por timeout');
+                window.location.href = "/api/index";
+            }
+        }, 30000);
+
+        // Intentar reproducir el video
+        video.play().catch(function(error) {
+            console.log('Reproducción automática fallida:', error);
+        });
+    });
+</script>
+
+</body>
+</html>

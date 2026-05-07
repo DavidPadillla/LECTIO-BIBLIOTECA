@@ -1,0 +1,670 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
+  <title>Desafío - 1984</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;500;700&display=swap" rel="stylesheet" />
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    body {
+      font-family: 'Poppins', sans-serif;
+      min-height: 100vh;
+      color: #EAEAEA;
+      background: linear-gradient(to bottom, #2a1a1a, #1a0a0a);
+      position: relative;
+      overflow-x: hidden;
+      display: flex;
+      flex-direction: column;
+      padding-right: 0;
+    }
+
+    .background-magic {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: 0;
+      overflow: hidden;
+      opacity: 0.6;
+    }
+
+    .background-magic::before {
+      content: '';
+      position: absolute;
+      width: 4px;
+      height: 4px;
+      background: #FF3333;
+      box-shadow: 200px 800px #FF3333, 150px 200px #CC0000, 300px 120px #FF4444, 450px 600px #FF3333,
+                  50px 900px #CC0000, 250px 300px #FF4444, 400px 450px #FF3333, 100px 550px #CC0000,
+                  350px 650px #FF4444, 200px 750px #FF3333, 500px 850px #CC0000, 150px 950px #FF4444;
+      animation: magic-float 15s infinite linear;
+    }
+
+    .background-magic::after {
+      content: '';
+      position: absolute;
+      width: 3px;
+      height: 3px;
+      background: #FF4444;
+      box-shadow: 100px 100px #CC0000, 220px 400px #FF3333, 400px 500px #FF4444, 10px 700px #CC0000,
+                  300px 800px #FF3333, 500px 900px #FF4444;
+      animation: magic-float 10s infinite linear 5s;
+    }
+
+    @keyframes magic-float {
+      0% { transform: translateY(100vh); opacity: 0.5; }
+      100% { transform: translateY(-100vh); opacity: 1; }
+    }
+
+    .layout {
+      width: 100%;
+      z-index: 2;
+      display: flex;
+      flex: 1;
+      position: relative;
+    }
+
+    .center {
+      flex: 1;
+      padding: 100px 40px 40px 40px;
+      text-align: center;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      color: #EAEAEA;
+      position: relative;
+      max-width: 700px;
+      margin: 0 auto;
+    }
+
+    h1 {
+      color: #FF3333;
+      margin-bottom: 10px;
+      text-shadow: 0 0 10px rgba(255, 51, 51, 0.7);
+      position: relative;
+      z-index: 2;
+      font-size: 2.6rem;
+      letter-spacing: 1.2px;
+      font-weight: 700;
+    }
+
+    .portada {
+      width: 200px;
+      height: 280px;
+      border-radius: 6px;
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.5);
+      background-image: url('/img/1984.jpg');
+      background-size: cover;
+      background-position: center;
+      margin-bottom: 15px;
+      border: 3px solid #FF3333;
+      position: relative;
+      z-index: 2;
+      flex-shrink: 0;
+    }
+
+    p {
+      max-width: 700px;
+      line-height: 1.6;
+      color: #CFCFCF;
+      font-size: 1rem;
+      position: relative;
+      z-index: 2;
+      margin-bottom: 32px;
+    }
+
+    .capitulos {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 18px;
+      margin-top: 30px;
+      margin-bottom: 60px;
+      padding-bottom: 100px;
+      position: relative;
+      z-index: 2;
+    }
+
+    .capitulo-nodo {
+      width: 85px;
+      height: 85px;
+      border-radius: 50%;
+      background: #CC0000;
+      border: 3px solid #FF3333;
+      color: #fff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+      box-shadow: 0 0 15px rgba(204, 0, 0, 0.5);
+      cursor: pointer;
+      transition: all 0.3s ease;
+      position: relative;
+      font-size: 1.2rem;
+      user-select: none;
+    }
+
+    .capitulo-nodo.locked {
+      opacity: 0.6;
+      cursor: not-allowed;
+      background: #660000;
+      border-color: #A0A0A0;
+    }
+
+    .capitulo-nodo.locked::after {
+      content: "👁️";
+      position: absolute;
+      font-size: 1.2rem;
+      opacity: 0.8;
+    }
+
+    .capitulo-nodo.leido {
+      background: #FF3333;
+      color: #fff;
+      transform: scale(1.1);
+      box-shadow: 0 0 20px #FF3333;
+    }
+
+    .flecha {
+      color: #FF3333;
+      margin: 6px 0;
+      font-size: 1.2rem;
+      opacity: 0.8;
+      animation: arrow-pulse 1s infinite alternate;
+      user-select: none;
+    }
+
+    @keyframes arrow-pulse {
+      from { opacity: 0.5; }
+      to { opacity: 1; }
+    }
+
+    /* Sidebar styling */
+    .sidebar {
+      width: 270px;
+      background: linear-gradient(180deg, #1a0a0a, #0d0000);
+      border-left: 3px solid #FF3333;
+      padding: 30px 25px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      color: #fff;
+      border-top-left-radius: 25px;
+      border-bottom-left-radius: 25px;
+      box-shadow: -4px 0 20px rgba(0, 0, 0, 0.4);
+      position: fixed;
+      top: 0;
+      right: 0;
+      height: 100vh;
+      z-index: 90;
+      user-select: none;
+      transition: transform 0.35s ease;
+      transform: translateX(0);
+    }
+    .sidebar.hide {
+      transform: translateX(100%);
+    }
+    .sidebar h2 {
+      text-align: center;
+      color: #FF3333;
+      font-weight: 700;
+      font-size: 1.8rem;
+      letter-spacing: 1px;
+      margin-bottom: 35px;
+      text-shadow: 0 0 8px rgba(255, 51, 51, 0.5);
+      user-select: none;
+    }
+    .sidebar ul {
+      list-style: none;
+      padding: 0;
+    }
+    .sidebar li {
+      color: #EAEAEA;
+      font-weight: 600;
+      font-size: 1.1rem;
+      padding: 12px 20px;
+      margin: 18px 0;
+      border-radius: 14px;
+      background: rgba(255, 51, 51, 0.15);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      transition: background 0.3s ease, transform 0.3s ease;
+    }
+    .sidebar li:hover {
+      background: rgba(255, 51, 51, 0.35);
+      transform: translateX(-6px);
+    }
+    .footer {
+      color: #7f8c8d;
+      font-size: 0.85rem;
+      text-align: center;
+      margin-top: 20px;
+      opacity: 0.8;
+      user-select: none;
+    }
+
+    /* Header and hamburger button for mobile */
+    header {
+      background: linear-gradient(180deg, #1a0a0a, #0d0000);
+      color: #fff;
+      padding: 15px 20px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      position: fixed;
+      width: 100%;
+      top: 0;
+      left: 0;
+      z-index: 100;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.4);
+      user-select: none;
+    }
+    header h1 {
+      font-weight: 700;
+      font-size: 1.5rem;
+    }
+    .menu-toggle {
+      background: none;
+      border: none;
+      cursor: pointer;
+      width: 28px;
+      height: 28px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      padding: 0;
+    }
+    .menu-toggle span {
+      display: block;
+      height: 3px;
+      background: white;
+      border-radius: 2px;
+      transition: all 0.3s ease;
+    }
+    .menu-toggle.open span:nth-child(1) {
+      transform: rotate(45deg) translate(5px, 5px);
+    }
+    .menu-toggle.open span:nth-child(2) {
+      opacity: 0;
+    }
+    .menu-toggle.open span:nth-child(3) {
+      transform: rotate(-45deg) translate(6px, -6px);
+    }
+
+    /* Modal styles */
+    .modal {
+      display: none;
+      position: fixed;
+      z-index: 200;
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0,0,0,0.8);
+      justify-content: center;
+      align-items: center;
+    }
+    .modal-content {
+      background: #F8F8F8;
+      padding: 25px;
+      border-radius: 10px;
+      max-width: 600px;
+      text-align: left;
+      box-shadow: 0 8px 24px rgba(0,0,0,0.3);
+      max-height: 80vh;
+      overflow-y: auto;
+      color: #222;
+    }
+    .modal-content h3 {
+      color: #CC0000;
+      margin-bottom: 15px;
+      text-align: center;
+    }
+    .modal-content button {
+      background: #CC0000;
+      color: #fff;
+      border: none;
+      border-radius: 4px;
+      padding: 10px 18px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      margin-top: 15px;
+      display: block;
+      margin-left: auto;
+      margin-right: auto;
+    }
+    .modal-content button:hover {
+      background: #990000;
+    }
+
+    .mensaje-motivacional {
+      display: none;
+      position: fixed;
+      bottom: 30px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: #CC0000;
+      color: #fff;
+      padding: 15px 25px;
+      border-radius: 10px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+      z-index: 210;
+      font-weight: 600;
+      opacity: 0;
+      transition: opacity 0.5s ease;
+      border: 2px solid #FF3333;
+    }
+    .mensaje-motivacional.show {
+      display: block;
+      opacity: 1;
+    }
+
+    /* Responsive for mobile */
+    @media (max-width: 900px) {
+      header h1 {
+        font-size: 1.3rem;
+      }
+      .sidebar {
+        width: 220px;
+        height: calc(100vh - 60px);
+        border-radius: 0 0 0 25px;
+        box-shadow: 0 -4px 20px rgba(0,0,0,0.4);
+        top: 60px;
+        right: 0;
+        position: fixed;
+        background: linear-gradient(180deg, #1a0a0a, #0d0000);
+        padding: 25px 20px;
+        transform: translateX(100%);
+        transition: transform 0.3s ease;
+        user-select: none;
+      }
+      .sidebar.show {
+        transform: translateX(0);
+        z-index: 200;
+      }
+      .layout {
+        flex-direction: column;
+        padding-right: 0;
+      }
+      .center {
+        padding: 80px 20px 40px 20px;
+        max-width: 100%;
+        width: 100%;
+      }
+      .capitulo-nodo {
+        width: 70px;
+        height: 70px;
+        font-size: 1rem;
+      }
+      .flecha {
+        font-size: 1rem;
+        margin: 4px 0;
+      }
+      p {
+        max-width: 100%;
+      }
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <h1>1984</h1>
+  <button aria-label="Abrir menú" aria-expanded="false" aria-controls="sidebar" class="menu-toggle" id="menu-toggle" type="button">
+    <span></span>
+    <span></span>
+    <span></span>
+  </button>
+</header>
+
+<div class="background-magic" aria-hidden="true"></div>
+
+<div class="layout">
+  <main class="center" role="main">
+    <div class="portada" aria-label="Portada del libro 1984"></div>
+    <h1>1984</h1>
+    <p>Una historia sobre vigilancia, libertad y resistencia ante el poder absoluto. Cada acto de pensamiento es un crimen contra el Partido.</p>
+    <div class="capitulos" id="capitulosList"></div>
+  </main>
+
+  <aside id="sidebar" class="sidebar hide" role="navigation" aria-label="Menú principal">
+    <div>
+      <h2>LECTIO</h2>
+      <ul>
+        <li onclick="location.href='/api/inicio'" tabindex="0" role="link" aria-label="Inicio">🏠 Inicio</li>
+        <li onclick="location.href='/api/libros'" tabindex="0" role="link" aria-label="Biblioteca">📚 Biblioteca</li>
+        <li onclick="location.href='/api/historia_pensamiento.html'" tabindex="0" role="link" aria-label="Historia del Pensamiento">💡 Historia del Pensamiento</li>
+        <li onclick="location.href='/api/logiado'" tabindex="0" role="link" aria-label="Volver a Lectio">🏠 Volver a Lectio</li>
+      </ul>
+    </div>
+    <div class="footer">© 2025 Lectio</div>
+  </aside>
+</div>
+
+<div id="modal" class="modal" onclick="if(event.target===this)closeModal()" role="dialog" aria-modal="true" aria-labelledby="modal-title" aria-describedby="modal-body">
+  <div class="modal-content">
+    <h3 id="modal-title">Capítulo</h3>
+    <div id="modal-body" style="white-space:pre-wrap;color:#333"></div>
+    <button id="modal-button" type="button" onclick="handleModalButtonClick()">Completar</button>
+  </div>
+</div>
+
+<div id="mensaje" class="mensaje-motivacional" role="alert" aria-live="assertive" aria-atomic="true"></div>
+
+<script>
+  const menuToggle = document.getElementById('menu-toggle');
+  const sidebar = document.getElementById('sidebar');
+
+  // Toggle menu open/close
+  function toggleMenu() {
+    const isOpen = sidebar.classList.toggle('show');
+    sidebar.classList.toggle('hide', !isOpen);
+    menuToggle.classList.toggle('open', isOpen);
+    menuToggle.setAttribute('aria-expanded', isOpen.toString());
+    if (isOpen) {
+      sidebar.focus();
+    }
+  }
+
+  menuToggle.addEventListener('click', toggleMenu);
+
+  // Close menu when clicking outside or pressing Escape
+  document.addEventListener('click', (e) => {
+    if (!sidebar.contains(e.target) && !menuToggle.contains(e.target)) {
+      if (sidebar.classList.contains('show')) {
+        sidebar.classList.remove('show');
+        sidebar.classList.add('hide');
+        menuToggle.classList.remove('open');
+        menuToggle.setAttribute('aria-expanded', 'false');
+      }
+    }
+  });
+
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && sidebar.classList.contains('show')) {
+      sidebar.classList.remove('show');
+      sidebar.classList.add('hide');
+      menuToggle.classList.remove('open');
+      menuToggle.setAttribute('aria-expanded', 'false');
+      menuToggle.focus();
+    }
+  });
+
+  const capitulos = [
+    `Capítulo 1: El mundo de Big Brother.
+
+Winston Smith vive en Oceanía, un estado totalitario controlado por el Partido. En la capital, Londres, los telescreans observan constantemente a todos los ciudadanos. El Ministerio de la Paz guerrea, el Ministerio de la Verdad miente, el Ministerio del Amor tortura. Winston trabaja en el Ministerio de la Verdad, reescribiendo la historia para adaptarla a la versión actual del Partido. Su vida es gris, monótona y vigilada. Sin embargo, en lo profundo de su corazón, existe un pensamiento prohibido: la memoria de un mundo diferente.`,
+
+    `Capítulo 2: El crimen de pensar.
+
+Winston comienza a llevar un diario secreto, un acto considerado altamente traidor. Sus pensamientos se deslizan en las páginas: reflexiones sobre el pasado, dudas sobre el sistema, anhelos de libertad. Siente que alguien lo observa, que su habitación tiene ojos invisibles. Conoce a O'Brien, un aparente miembro del Partido que habla de una hermandad clandestina de resistencia. Winston cree haber encontrado un aliado, alguien que entiende que el Partido miente. Sin embargo, desconoce la verdadera naturaleza de O'Brien y su verdadero propósito.`,
+
+    `Capítulo 3: El amor en tiempos de vigilancia.
+
+Winston conoce a Julia, una joven hermosa que aparenta ser leal al Partido. Juntos, se aman en secreto, escapando de los telescreans en lugares olvidados de la ciudad. Cada encuentro es un acto de rebelión. El sexo sin propósito procreador es prohibido, y el amor es visto como un crimen de doblepiensa. Winston y Julia planean huir, creyendo que O'Brien los ayudará. Su amor parece ser la única verdad en un mundo de mentiras. Pero en Oceanía, nada es seguro, y la esperanza es la herramienta más peligrosa del Partido.`,
+
+    `Capítulo 4: La trampa del Partido.
+
+O'Brien revela su verdadera naturaleza: es un agente del Partido enviado para atrapar a los disidentes. Winston y Julia son arrestados. En el Ministerio del Amor, la tortura psicológica y física comienza. Winston es llevado a la Sala 101, donde enfrenta sus mayores miedos. El Partido no busca simplemente el castigo: busca la aceptación. Busca que Winston ame al Gran Hermano, que betraye a Julia, que acepte la doblepiensa como verdad. La resistencia es aplastada, y los héroes caen bajo el peso de la vigilancia.`,
+
+    `Capítulo 5: La victoria del Partido.
+
+Winston es liberado, pero transformado. Su espíritu ha sido quebrado. Ahora cree que el Partido es infalible, que el Gran Hermano siempre tiene razón. Observa cómo otros disidentes siguen el mismo camino que él. En una taberna, mientras bebe su rama y observa las pantallas de propaganda, Winston finalmente comprende la verdad absoluta: "Amaba al Gran Hermano." La libertad ha sido completamente extinguida. En Oceanía, el pasado es mentira, el presente es vigilancia, y el futuro es sumisión. La historia termina con la muerte del espíritu humano, no del cuerpo.`
+  ];
+
+  const mensajesMotivacionales = [
+      "Has dado el primer paso hacia la Doblepiensa. La libertad es poder escribir dos más dos son cuatro. ¡Recuérdalo!",
+      "El crimen de pensar es el único que el Partido teme. Tu mente es tu último refugio. ¡Mantente vigilante!",
+      "El amor es la única verdad en un mundo de mentiras. Cada momento compartido es un acto de rebelión. ¡Sigue creyendo!",
+      "La verdad siempre sale a la luz, aunque el Partido intente ocultarla. El conocimiento es poder, pero también es peligro. ¡Ten cuidado!",
+      "Ahora que conoces la oscuridad de Oceanía, recuerda: la libertad es la capacidad de decir que dos más dos son cuatro. ¡Que tu mente permanezca libre! 👁️"
+  ];
+
+  const LIBRO_ID = '1984';
+  const cont = document.getElementById('capitulosList');
+  let currentReadingChapterIndex = -1;
+  let capitulosLeidos = [];
+
+  async function cargarProgreso() {
+      try {
+          const response = await fetch('/api/progreso/mi-progreso', {
+              method: 'GET',
+              credentials: 'include'
+          });
+
+          if (!response.ok) {
+              desbloquearSiguientes();
+              return;
+          }
+
+          const data = await response.json();
+
+          if (data.capitulosPorLibro && data.capitulosPorLibro[LIBRO_ID]) {
+              capitulosLeidos = Array.from(data.capitulosPorLibro[LIBRO_ID]);
+          }
+          desbloquearSiguientes();
+      } catch (error) {
+          desbloquearSiguientes();
+      }
+  }
+
+  async function guardarProgreso(capituloIndex) {
+      try {
+          const response = await fetch('/api/progreso/guardar-capitulo', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              credentials: 'include',
+              body: JSON.stringify({
+                  libroId: LIBRO_ID,
+                  capitulo: capituloIndex,
+                  totalCapitulos: capitulos.length
+              })
+          });
+
+          if (response.ok) {
+              if (capitulosLeidos.length === capitulos.length) {
+                  mostrarMensaje('🎉 ¡Felicitaciones! Has completado 1984. +100 puntos 👁️');
+              }
+          }
+      } catch (error) {
+          console.error('Error guardando progreso:', error);
+      }
+  }
+
+  // Render chapters
+  function renderChapters() {
+    capitulos.forEach((txt, i) => {
+      const nodo = document.createElement('div');
+      nodo.className = 'capitulo-nodo locked';
+      nodo.textContent = i + 1;
+      nodo.tabIndex = 0;
+      nodo.setAttribute('role', 'button');
+      nodo.setAttribute('aria-label', `Capítulo ${i + 1}`);
+      nodo.onclick = () => openModal(i);
+      nodo.onkeypress = (e) => { if(e.key === 'Enter' || e.key === ' ') openModal(i); };
+      cont.appendChild(nodo);
+
+      if (i < capitulos.length - 1) {
+        const f = document.createElement('div');
+        f.className = 'flecha';
+        f.innerHTML = '&#8595;';
+        cont.appendChild(f);
+      }
+    });
+  }
+
+  function desbloquearSiguientes() {
+    const nodos = document.querySelectorAll('.capitulo-nodo');
+    nodos.forEach((n, i) => {
+      if (i === 0 || capitulosLeidos.includes(i - 1)) {
+        n.classList.remove('locked');
+      }
+      if (capitulosLeidos.includes(i)) n.classList.add('leido');
+    });
+  }
+
+  function openModal(i) {
+    const nodo = document.querySelectorAll('.capitulo-nodo')[i];
+    if (nodo.classList.contains('locked')) return;
+
+    document.getElementById('modal-title').innerText = `Capítulo ${i + 1}`;
+    document.getElementById('modal-body').innerText = capitulos[i];
+    const modalButton = document.getElementById('modal-button');
+    if (capitulosLeidos.includes(i)) {
+      modalButton.innerText = 'Cerrar';
+      modalButton.onclick = () => closeModal();
+    } else {
+      modalButton.innerText = 'Completar';
+      modalButton.onclick = () => handleModalButtonClick();
+    }
+
+    document.getElementById('modal').style.display = 'flex';
+    currentReadingChapterIndex = i;
+  }
+
+  function handleModalButtonClick() {
+    if (document.getElementById('modal-button').innerText === 'Completar') {
+      closeModal();
+    } else {
+      document.getElementById('modal').style.display = 'none';
+    }
+  }
+
+  function closeModal() {
+    document.getElementById('modal').style.display = 'none';
+    const i = currentReadingChapterIndex;
+    if (i >= 0 && !capitulosLeidos.includes(i)) {
+      capitulosLeidos.push(i);
+      guardarProgreso(i);
+      mostrarMensaje(mensajesMotivacionales[i % mensajesMotivacionales.length]);
+      const nodo = document.querySelectorAll('.capitulo-nodo')[i];
+      nodo.classList.add('leido');
+      desbloquearSiguientes();
+    }
+    currentReadingChapterIndex = -1;
+  }
+
+  function mostrarMensaje(text) {
+    const mensaje = document.getElementById('mensaje');
+    mensaje.textContent = text;
+    mensaje.classList.add('show');
+    setTimeout(() => { mensaje.classList.remove('show'); }, 4000);
+  }
+
+  window.onload = () => {
+    renderChapters();
+    cargarProgreso();
+  };
+
+</script>
+</body>
+</html>
