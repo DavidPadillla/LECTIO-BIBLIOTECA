@@ -18,7 +18,7 @@ import java.util.UUID;
 @Service
 public class SyncService {
 
-    private static final int LIMITE_REGISTROS = 1;
+    private static final int LIMITE_REGISTROS = 0;
 
     private static LocalDateTime ultimaSincronizacion = null;
     private static int totalSincronizados = 0;

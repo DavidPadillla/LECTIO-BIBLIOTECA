@@ -8,6 +8,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
+import java.nio.charset.StandardCharsets;
+import java.util.Base64;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ExecutorService;
@@ -24,7 +26,6 @@ public class ChatbotService {
 
     @Autowired
     public ChatbotService(MongoTemplate mongoTemplate) {
-        // ✅ SOLO usa variable de entorno - NADA hardcodeado
         String tempKey = System.getenv("GROQ_API_KEY");
 
         if (tempKey == null || tempKey.isBlank()) {
@@ -93,7 +94,11 @@ public class ChatbotService {
                                             String chunk = delta.asText();
                                             if (!chunk.isEmpty()) {
                                                 System.out.print(chunk);
-                                                emitter.send(SseEmitter.event().data(chunk));
+                                                // ✅ FIX: encodear en Base64 para evitar que
+                                                // espacios y saltos de línea rompan el protocolo SSE
+                                                String encoded = Base64.getEncoder()
+                                                        .encodeToString(chunk.getBytes(StandardCharsets.UTF_8));
+                                                emitter.send(SseEmitter.event().data(encoded));
                                             }
                                         }
 
@@ -110,7 +115,9 @@ public class ChatbotService {
                                 },
                                 () -> {
                                     System.out.println("\n✅ Stream completado");
-                                    emitter.complete();
+                                    try {
+                                        emitter.complete();
+                                    } catch (Exception ignored) {}
                                 }
                         );
 

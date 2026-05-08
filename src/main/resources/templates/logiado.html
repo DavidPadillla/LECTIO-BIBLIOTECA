@@ -586,7 +586,7 @@
     logoutModal.addEventListener('click', e => { if (e.target === logoutModal) logoutModal.classList.remove('active'); });
     document.addEventListener('keydown', e => { if (e.key === 'Escape') logoutModal.classList.remove('active'); });
 
-    // ========== CHAT — CORREGIDO CON EventSource ==========
+    // ========== CHAT ==========
     const chatBubble  = document.getElementById('chatBubble');
     const chatWindow  = document.getElementById('chatWindow');
     const chatClose   = document.getElementById('chatClose');
@@ -597,7 +597,7 @@
     const chatBadge   = chatBubble?.querySelector('.chat-badge');
 
     let isWaiting = false;
-    let currentEvtSource = null; // referencia al EventSource activo
+    let currentEvtSource = null;
 
     function getTime() {
         const n = new Date();
@@ -612,6 +612,19 @@
 
     function renderMarkdown(text) {
         return (typeof marked !== 'undefined') ? marked.parse(text) : escapeHtml(text);
+    }
+
+    // ✅ FIX: decodificar Base64 con soporte para UTF-8 (tildes, ñ, emojis)
+    function decodeBase64(str) {
+        try {
+            return decodeURIComponent(
+                atob(str).split('').map(c =>
+                    '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2)
+                ).join('')
+            );
+        } catch (e) {
+            return str; // fallback si no es base64 válido
+        }
     }
 
     function addUserMessage(text) {
@@ -633,7 +646,7 @@
         div.innerHTML = `
             <div class="chat-avatar"><i class="fas fa-robot"></i></div>
             <div class="chat-bubble-msg${isError ? ' chat-error' : ''}">
-                <div class="md-content">${escapeHtml(text)}</div>
+                <div class="md-content">${isError ? escapeHtml(text) : renderMarkdown(text)}</div>
                 <span class="chat-time">${getTime()}</span>
             </div>`;
         chatBody.appendChild(div);
@@ -665,13 +678,11 @@
         chatSend.disabled = val;
     }
 
-    // ── Función principal: usa EventSource (SSE nativo) ──
     function sendMessageToGroq(message) {
         if (isWaiting) return;
         setWaiting(true);
         showTyping();
 
-        // Cerrar conexión previa si existe
         if (currentEvtSource) {
             currentEvtSource.close();
             currentEvtSource = null;
@@ -688,10 +699,14 @@
         evtSource.onmessage = function (event) {
             const data = event.data;
 
-            // Señales de control
             if (data === '[DONE]') {
                 evtSource.close();
                 currentEvtSource = null;
+                // Renderizar markdown completo al final
+                if (streamingContent && fullResponse) {
+                    streamingContent.innerHTML = renderMarkdown(fullResponse);
+                    chatBody.scrollTop = chatBody.scrollHeight;
+                }
                 if (!fullResponse) {
                     hideTyping();
                     addBotMessage('⚠️ No se recibió respuesta del asistente.', true);
@@ -713,6 +728,9 @@
                 return;
             }
 
+            // ✅ FIX: decodificar el chunk Base64 antes de usarlo
+            const chunk = decodeBase64(data);
+
             // Primer chunk: crear burbuja de respuesta
             if (!streamingDiv) {
                 hideTyping();
@@ -729,10 +747,10 @@
                 streamingContent = document.getElementById('streamingContent');
             }
 
-            // Acumular y renderizar
-            fullResponse += data;
+            // Acumular texto plano durante el stream, markdown al final
+            fullResponse += chunk;
             if (streamingContent) {
-                streamingContent.innerHTML = renderMarkdown(fullResponse);
+                streamingContent.textContent = fullResponse;
                 chatBody.scrollTop = chatBody.scrollHeight;
             }
         };
@@ -741,8 +759,9 @@
             evtSource.close();
             currentEvtSource = null;
             hideTyping();
-            // Solo mostrar error si no hubo respuesta parcial
-            if (!fullResponse) {
+            if (fullResponse && streamingContent) {
+                streamingContent.innerHTML = renderMarkdown(fullResponse);
+            } else if (!fullResponse) {
                 addBotMessage('⚠️ Error de conexión. Verifica tu red e intenta de nuevo.', true);
             }
             setWaiting(false);
@@ -769,7 +788,6 @@
     });
 
     chatClear?.addEventListener('click', () => {
-        // Cancelar stream activo si hay uno
         if (currentEvtSource) {
             currentEvtSource.close();
             currentEvtSource = null;
@@ -785,7 +803,6 @@
         if (e.key === 'Enter') sendMessage();
     });
 
-    // Evitar cierre accidental al hacer clic dentro de la ventana
     chatWindow.addEventListener('click', e => e.stopPropagation());
 
     // ── Chips de sugerencias ──
