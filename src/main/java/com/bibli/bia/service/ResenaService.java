@@ -12,12 +12,11 @@ public class ResenaService {
     @Autowired
     private Resenarepository resenarepository;
 
-    @Autowired
-    private SyncService syncService;
+
 
     public void guardarResena(ResenaModel resena) {
         ResenaModel saved = resenarepository.save(resena);
-        syncService.sincronizarResena(saved);
+
     }
 
     public List<ResenaModel> obtenerTodasLasResenas() {

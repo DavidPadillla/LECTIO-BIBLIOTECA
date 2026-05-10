@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Lectio</title>
+    <title>Lectio - Reserva de Libros</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;500;700&display=swap" rel="stylesheet">
     <style>
@@ -39,7 +39,6 @@
         }
         .nav-links a:hover, .nav-links a.active { background-color:#27ae60; color:#fff; }
 
-        /* Menú hamburguesa para móviles */
         .menu-toggle {
             display: none;
             background: none;
@@ -71,7 +70,6 @@
             margin:0 auto;
         }
 
-        /* Filtros y buscador MEJORADOS */
         .filtros-buscador {
             display:flex;
             flex-wrap:wrap;
@@ -100,7 +98,6 @@
             box-shadow: 0 0 0 3px rgba(39, 174, 96, 0.1);
         }
 
-        /* Lista de libros */
         .lista-libros {
             display:grid;
             grid-template-columns:repeat(auto-fill, minmax(240px,1fr));
@@ -108,7 +105,6 @@
             min-height: 400px;
         }
 
-        /* TARJETAS MEJORADAS con efectos modernos */
         .libro-item {
             background:#fff;
             padding:1.2rem;
@@ -129,7 +125,6 @@
             border-color: rgba(39, 174, 96, 0.3);
         }
 
-        /* Contenedor del contenido que crece */
         .libro-contenido {
             flex-grow: 1;
             display: flex;
@@ -162,7 +157,6 @@
             font-weight: 600;
         }
 
-        /* Badge minimalista MEJORADO */
         .stock-badge {
             position: absolute;
             top: 0;
@@ -212,7 +206,6 @@
             border-left-color: rgba(255, 169, 77, 0.5);
         }
 
-        /* Indicador de puntos animado */
         .stock-badge .dot {
             width: 7px;
             height: 7px;
@@ -234,7 +227,6 @@
             }
         }
 
-        /* Botón mejorado con gradiente y hover suave */
         .btn-seleccionar {
             width:100%;
             padding:0.7rem;
@@ -283,7 +275,6 @@
             box-shadow: none;
         }
 
-        /* Formulario flotante MEJORADO */
         #formulario-reserva {
             display:none;
             position:fixed;
@@ -377,7 +368,6 @@
             box-shadow: 0 6px 16px rgba(231, 76, 60, 0.35);
         }
 
-        /* Mensaje flotante MEJORADO */
         #mensaje-reserva {
             display:none;
             position:fixed;
@@ -407,7 +397,6 @@
             }
         }
 
-        /* Paginación MEJORADA */
         .pagination {
             display:flex;
             justify-content:center;
@@ -442,7 +431,6 @@
             box-shadow: none;
         }
 
-        /* Buscador de páginas */
         .page-jumper {
             display: flex;
             justify-content: center;
@@ -491,7 +479,6 @@
             box-shadow: 0 4px 12px rgba(44, 62, 80, 0.3);
         }
 
-        /* Modal de error */
         .page-error-modal {
             position: fixed;
             top: 0;
@@ -567,7 +554,6 @@
             box-shadow: 0 6px 16px rgba(39, 174, 96, 0.35);
         }
 
-        /* Loader inicial */
         #loader {
             display: none;
             position: fixed;
@@ -608,54 +594,42 @@
             font-size:0.9rem;
         }
 
-        /* ===== RESPONSIVE DESIGN ===== */
-
-        /* Tablet (768px - 1024px) */
         @media (max-width: 1024px) {
             nav {
                 padding: 1rem 3%;
             }
-
             .logo h1 {
                 font-size: 1.7rem;
             }
-
             main.reserva-section {
                 padding: 1.5rem 3%;
             }
-
             .lista-libros {
                 grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
                 gap: 1.2rem;
             }
         }
 
-        /* Móviles (hasta 768px) */
         @media (max-width: 768px) {
             header {
                 padding: 0;
             }
-
             nav {
                 padding: 15px;
                 position: relative;
                 flex-wrap: nowrap;
             }
-
             .menu-toggle {
                 display: block;
                 order: 2;
             }
-
             .logo {
                 order: 1;
                 flex: 1;
             }
-
             .logo h1 {
                 font-size: 1.5rem;
             }
-
             .nav-links {
                 position: fixed;
                 top: 0;
@@ -672,17 +646,14 @@
                 gap: 0;
                 margin: 0;
             }
-
             .nav-links.active {
                 right: 0;
             }
-
             .nav-links li {
                 width: 100%;
                 text-align: center;
                 margin: 0;
             }
-
             .nav-links li a {
                 display: block;
                 width: 100%;
@@ -690,96 +661,77 @@
                 border-radius: 0;
                 margin: 0;
             }
-
             .filtros-buscador {
                 flex-direction:column;
                 padding: 1.2rem;
             }
-
             .filtros-buscador select,
             .filtros-buscador input {
                 width: 100%;
             }
-
             .lista-libros {
                 grid-template-columns:1fr;
                 gap: 1rem;
             }
-
             .libro-item {
                 padding: 1rem;
                 padding-top: 2.8rem;
                 min-height: 280px;
             }
-
             .libro-item h3 {
                 font-size: 1.05rem;
             }
-
             .libro-item p {
                 font-size: 0.85rem;
             }
-
             .stock-badge {
                 font-size: 0.65rem;
                 padding: 6px 12px;
                 max-width: 60%;
             }
-
             .pagination {
                 gap: 8px;
                 margin: 30px 0;
             }
-
             .pagination button {
                 padding: 8px 14px;
                 font-size: 0.9rem;
             }
-
             .page-jumper {
                 flex-direction: column;
                 gap: 10px;
             }
-
             .page-jumper input {
                 width: 80px;
             }
         }
 
-        /* Móviles pequeños (hasta 480px) */
         @media (max-width: 480px) {
             nav {
                 padding: 10px;
             }
-
             .logo h1 {
                 font-size: 1.3rem;
             }
-
             main.reserva-section {
                 padding: 1rem 10px;
             }
-
             .libro-item {
                 padding: 0.9rem;
                 padding-top: 2.6rem;
                 min-height: 260px;
             }
-
             .btn-seleccionar {
                 padding: 0.65rem;
                 font-size: 0.9rem;
             }
-
             #formulario-reserva {
                 width: 95%;
                 padding: 1.5rem;
             }
-
             .form-grupo input {
                 padding: 0.7rem 0.9rem;
             }
-
             .stock-badge {
                 font-size: 0.6rem;
                 padding: 5px 10px;
@@ -789,7 +741,6 @@
 </head>
 <body>
 
-<!-- Loader inicial -->
 <div id="loader">
     <div class="spinner"></div>
     <p>Cargando libros...</p>
@@ -824,10 +775,8 @@
 
     <div class="lista-libros" id="lista-libros"></div>
 
-    <!-- Paginación -->
     <div class="pagination" id="pagination"></div>
 
-    <!-- Buscador de páginas -->
     <div class="page-jumper" id="pageJumper" style="display: none;">
         <span>Ir a la página:</span>
         <input type="number" id="pageInput" min="1" value="1">
@@ -835,7 +784,7 @@
     </div>
 </main>
 
-<!-- Formulario flotante -->
+<!-- ✅ FORMULARIO CORREGIDO - Sin campo idUsuario -->
 <div id="formulario-reserva">
     <h2>Reservar Libro</h2>
     <form id="reserva-form" method="post">
@@ -843,10 +792,6 @@
         <input type="hidden" id="libro-titulo" name="libro">
         <input type="hidden" id="categoria-seleccionada" name="categoria">
 
-        <div class="form-grupo">
-            <label for="idUsuario">ID Usuario</label>
-            <input type="text" id="idUsuario" name="idUsuario" placeholder="ID de Usuario" required>
-        </div>
         <div class="form-grupo">
             <label for="nombreCompleto">Nombre Completo</label>
             <input type="text" id="nombreCompleto" name="nombreCompleto" placeholder="Nombre completo" required>
@@ -864,7 +809,6 @@
     </form>
 </div>
 
-<!-- Modal de error para páginas no existentes -->
 <div class="page-error-modal" id="pageErrorModal">
     <div class="page-error-content">
         <div class="page-error-icon">⚠️</div>
@@ -1174,12 +1118,12 @@
             $('#reserva-form')[0].reset();
         });
 
+        // ✅ AJAX CORREGIDO - Ya no envía idUsuario
         $('#reserva-form').submit(function(e){
             e.preventDefault();
             const libroId = $('#libro-id').val();
             const titulo = $('#libro-titulo').val();
             const categoria = $('#categoria-seleccionada').val();
-            const idUsuario = $('#idUsuario').val();
             const nombreCompleto = $('#nombreCompleto').val();
             const correo = $('#correo').val();
             const fecha = $('#fecha').val();
@@ -1197,7 +1141,6 @@
                     url: '/api/guardarReservaUsuario',
                     type: 'POST',
                     data: {
-                        idUsuario: idUsuario,
                         nombreCompleto: nombreCompleto,
                         correo: correo,
                         categoria: categoria,

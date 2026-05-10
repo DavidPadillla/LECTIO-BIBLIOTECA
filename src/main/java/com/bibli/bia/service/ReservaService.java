@@ -15,12 +15,11 @@ public class ReservaService {
     @Autowired
     private ReservaRepository reservaRepository;
 
-    @Autowired
-    private SyncService syncService;
+
 
     public ReservaModel crearReserva(ReservaModel reserva) {
         ReservaModel saved = reservaRepository.save(reserva);
-        syncService.sincronizarReserva(saved);
+
         return saved;
     }
 

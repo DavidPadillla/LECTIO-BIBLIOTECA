@@ -13,13 +13,8 @@ public class LibroService {
     @Autowired
     private LibroRepository libroRepository;
 
-    @Autowired
-    private SyncService syncService;
-
     public LibroModel guardarLibro(LibroModel libro) {
-        LibroModel saved = libroRepository.save(libro);
-        syncService.sincronizarLibro(saved);
-        return saved;
+        return libroRepository.save(libro);
     }
 
     public List<LibroModel> obtenerTodosLosLibros() {
@@ -27,7 +22,8 @@ public class LibroService {
     }
 
     public List<LibroModel> obtenerLibrosPorCategoria(String categoria) {
-        return libroRepository.findByCategoria(categoria);
+        // ✅ Cambiado: ahora usa findByCategoriaIgnoreCase
+        return libroRepository.findByCategoriaIgnoreCase(categoria);
     }
 
     public void eliminarLibro(String id) {

@@ -2,8 +2,6 @@ package com.bibli.bia.service;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
@@ -24,8 +22,8 @@ public class ChatbotService {
     private static final String MODEL = "llama-3.3-70b-versatile";
     private final ObjectMapper mapper = new ObjectMapper();
 
-    @Autowired
-    public ChatbotService(MongoTemplate mongoTemplate) {
+    // ✅ Eliminado MongoTemplate del constructor
+    public ChatbotService() {
         String tempKey = System.getenv("GROQ_API_KEY");
 
         if (tempKey == null || tempKey.isBlank()) {
@@ -49,6 +47,7 @@ public class ChatbotService {
         executor.submit(() -> {
             try {
                 System.out.println("📝 Pregunta: " + pregunta);
+                System.out.println("👤 Usuario: " + username);
 
                 Map<String, Object> body = Map.of(
                         "model", MODEL,
@@ -94,8 +93,6 @@ public class ChatbotService {
                                             String chunk = delta.asText();
                                             if (!chunk.isEmpty()) {
                                                 System.out.print(chunk);
-                                                // ✅ FIX: encodear en Base64 para evitar que
-                                                // espacios y saltos de línea rompan el protocolo SSE
                                                 String encoded = Base64.getEncoder()
                                                         .encodeToString(chunk.getBytes(StandardCharsets.UTF_8));
                                                 emitter.send(SseEmitter.event().data(encoded));

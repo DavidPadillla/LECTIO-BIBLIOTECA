@@ -399,13 +399,13 @@
     <div>
         <h2>LECTIO</h2>
         <ul>
-            <li onclick="window.location.href='index'">
+            <li onclick="window.location.href='/api/index'">
                 <svg class="icon" viewBox="0 0 24 24" aria-hidden="true" width="22" height="22" fill="white" style="margin-right:8px;">
                     <path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/>
                 </svg>
                 Inicio
             </li>
-            <li onclick="window.location.href='historia_pensamiento'">
+            <li onclick="window.location.href='/api/historia_pensamiento'">
                 <svg class="icon" viewBox="0 0 24 24" aria-hidden="true" width="22" height="22" fill="white" style="margin-right:8px;">
                     <path d="M12 2a7 7 0 0 0-7 7c0 2.76 2.24 5 5 5 .13 0 .26 0 .39-.02l-.08.28-1.52 3.45 2.5-1.01.5.62c.89.35 1.81.55 2.81.55a7 7 0 0 0 0-14z"/>
                 </svg>
@@ -425,15 +425,15 @@
 <main>
     <h1>Selecciona un libro</h1>
     <div class="libros-grid">
-        <div class="libro" data-libro="principito" tabindex="0" role="button" aria-label="Seleccionar El Principito" onclick="window.location.href='desafio_principito'">
+        <div class="libro" data-libro="principito" tabindex="0" role="button" aria-label="Seleccionar El Principito" onclick="window.location.href='/api/desafio_principito'">
             <img src="/img/principito.jpg" alt="El Principito" />
             <h3>El Principito</h3>
         </div>
-        <div class="libro" data-libro="1984" tabindex="0" role="button" aria-label="Seleccionar 1984" onclick="window.location.href='desafio_1984'">
+        <div class="libro" data-libro="1984" tabindex="0" role="button" aria-label="Seleccionar 1984" onclick="window.location.href='/api/desafio_1984'">
             <img src="/img/1984.jpg" alt="1984" />
             <h3>1984</h3>
         </div>
-        <div class="libro" data-libro="harrypotter" tabindex="0" role="button" aria-label="Seleccionar Harry Potter" onclick="window.location.href='desafio_harrypotter'">
+        <div class="libro" data-libro="harrypotter" tabindex="0" role="button" aria-label="Seleccionar Harry Potter" onclick="window.location.href='/api/desafio_harrypotter'">
             <img src="/img/harrypotter.jpg" alt="Harry Potter" />
             <h3>Harry Potter</h3>
         </div>
@@ -482,6 +482,8 @@
         }
 
         const progreso = await response.json();
+        console.log("📚 Progreso cargado:", progreso);
+
         mostrarEstadisticas(progreso);
         mostrarTablaProgreso(progreso);
         marcarLibrosCompletados(progreso);
@@ -494,7 +496,7 @@
 
     function mostrarSinProgreso() {
       document.getElementById('stats-cards').innerHTML = `
-        <div class="no-progress">
+        <div class="no-progress" style="grid-column:1/-1">
           <p>📖 Aún no has comenzado ningún libro. ¡Empieza a leer para ver tu progreso!</p>
         </div>
       `;
@@ -503,15 +505,16 @@
 
     function mostrarEstadisticas(progreso) {
       const totalLibros = Object.keys(LIBROS_INFO).length;
-      const porcentaje = totalLibros > 0 ? Math.round((progreso.totalLibrosLeidos / totalLibros) * 100) : 0;
+      const totalLibrosLeidos = progreso.totalLibrosLeidos || 0;
+      const porcentaje = totalLibros > 0 ? Math.round((totalLibrosLeidos / totalLibros) * 100) : 0;
 
       document.getElementById('stats-cards').innerHTML = `
         <div class="stat-card">
-          <div class="stat-number">${progreso.totalLibrosLeidos}</div>
+          <div class="stat-number">${totalLibrosLeidos}</div>
           <div class="stat-label">Libros Completados</div>
         </div>
         <div class="stat-card">
-          <div class="stat-number">${progreso.puntos}</div>
+          <div class="stat-number">${progreso.puntos || 0}</div>
           <div class="stat-label">Puntos Ganados 🏆</div>
         </div>
         <div class="stat-card">
@@ -524,12 +527,32 @@
     function mostrarTablaProgreso(progreso) {
       let html = '';
 
+      // Manejar librosCompletados como Set o Array
+      let librosCompletados = progreso.librosCompletados;
+      if (typeof librosCompletados === 'object' && !Array.isArray(librosCompletados)) {
+        librosCompletados = Array.from(librosCompletados);
+      } else if (!librosCompletados) {
+        librosCompletados = [];
+      }
+
+      // Manejar capitulosPorLibro como objeto
+      let capitulosPorLibro = progreso.capitulosPorLibro;
+      if (typeof capitulosPorLibro === 'string') {
+        try {
+          capitulosPorLibro = JSON.parse(capitulosPorLibro);
+        } catch(e) {
+          capitulosPorLibro = {};
+        }
+      } else if (!capitulosPorLibro) {
+        capitulosPorLibro = {};
+      }
+
       Object.keys(LIBROS_INFO).forEach(libroId => {
         const libro = LIBROS_INFO[libroId];
-        const completado = progreso.librosCompletados.includes(libroId);
+        const completado = librosCompletados.includes(libroId);
 
-        const capitulosCompletados = progreso.capitulosPorLibro && progreso.capitulosPorLibro[libroId]
-            ? progreso.capitulosPorLibro[libroId].length
+        const capitulosCompletados = capitulosPorLibro[libroId]
+            ? (Array.isArray(capitulosPorLibro[libroId]) ? capitulosPorLibro[libroId].length : Object.keys(capitulosPorLibro[libroId] || {}).length)
             : 0;
 
         const porcentaje = (capitulosCompletados / libro.capitulos) * 100;
@@ -565,9 +588,16 @@
     }
 
     function marcarLibrosCompletados(progreso) {
-      progreso.librosCompletados.forEach(libroId => {
+      let librosCompletados = progreso.librosCompletados;
+      if (typeof librosCompletados === 'object' && !Array.isArray(librosCompletados)) {
+        librosCompletados = Array.from(librosCompletados);
+      } else if (!librosCompletados) {
+        librosCompletados = [];
+      }
+
+      librosCompletados.forEach(libroId => {
         const card = document.querySelector(`[data-libro="${libroId}"]`);
-        if (card) {
+        if (card && !card.classList.contains('completado')) {
           card.classList.add('completado');
           if (!card.querySelector('.badge-completado')) {
             const badge = document.createElement('div');
@@ -589,9 +619,7 @@
       sidebar.classList.toggle('show');
       sidebar.classList.toggle('hide');
       menuToggle.classList.toggle('open');
-    });
 
-    menuToggle.addEventListener('click', () => {
       const spans = menuToggle.querySelectorAll('span');
       if(menuToggle.classList.contains('open')) {
         spans[0].style.transform = 'rotate(45deg) translate(5px, 5px)';

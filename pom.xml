@@ -24,15 +24,12 @@
     </properties>
 
     <repositories>
-        <!-- Waikato: SOLO para WEKA -->
         <repository>
             <id>waikato</id>
             <url>https://waikato.github.io/weka-maven-repository/</url>
             <releases><enabled>true</enabled></releases>
             <snapshots><enabled>false</enabled></snapshots>
         </repository>
-
-        <!-- Spring Milestones: para Spring AI -->
         <repository>
             <id>spring-milestones</id>
             <name>Spring Milestones</name>
@@ -40,8 +37,6 @@
             <releases><enabled>true</enabled></releases>
             <snapshots><enabled>false</enabled></snapshots>
         </repository>
-
-        <!-- Spring Snapshots: por si se necesita algún snapshot -->
         <repository>
             <id>spring-snapshots</id>
             <name>Spring Snapshots</name>
@@ -98,11 +93,13 @@
             <version>4.10.2</version>
         </dependency>
 
-        <!-- MongoDB -->
+        <!-- ✅ ELIMINADA la dependencia de MongoDB -->
+        <!--
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-data-mongodb</artifactId>
         </dependency>
+        -->
 
         <!-- PostgreSQL / JPA -->
         <dependency>
@@ -146,6 +143,12 @@
             <artifactId>spring-boot-devtools</artifactId>
             <scope>runtime</scope>
             <optional>true</optional>
+        </dependency>
+
+        <!-- Jackson para manejar JSON -->
+        <dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-databind</artifactId>
         </dependency>
 
         <!-- WEKA -->

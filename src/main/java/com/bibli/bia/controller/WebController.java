@@ -20,10 +20,6 @@ import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
 import java.util.stream.Collectors;
-import com.bibli.bia.service.SyncService;  // ← Agregar este import
-import java.time.LocalDateTime;              // ← Ya debería estar
-import java.util.HashMap;                    // ← Ya debería estar
-import java.util.Map;                        // ← Ya debería estar
 
 @Controller
 @RequestMapping("/api")
@@ -31,9 +27,6 @@ public class WebController {
 
     @Autowired
     private ResenaService resenaService;
-
-    @Autowired
-    private CustomUserDetailsService customUserDetailsService;
 
     @Autowired
     private LibroService libroService;
@@ -52,9 +45,6 @@ public class WebController {
 
     @Autowired
     private UsuarioService usuarioService;
-
-    @Autowired
-    private RespuestaDashboardService respuestaDashboardService;
 
     @Autowired
     private ReservaService reservaService;
@@ -165,7 +155,10 @@ public class WebController {
 
     @GetMapping("/libroVirtualesLog")
     public String listarLibros(Model model) {
-        model.addAttribute("libros", libroService.obtenerTodosLosLibros());
+        List<LibroModel> libros = libroService.obtenerTodosLosLibros();
+        System.out.println("📚 TOTAL LIBROS EN BD: " + libros.size());  // 👈 Agrega esto
+
+        model.addAttribute("libros", libros);
         model.addAttribute("librosNovela", libroService.obtenerLibrosPorCategoria("Novelas"));
         model.addAttribute("librosCiencia", libroService.obtenerLibrosPorCategoria("Ciencia"));
         model.addAttribute("librosHistoria", libroService.obtenerLibrosPorCategoria("Historia"));
@@ -186,11 +179,20 @@ public class WebController {
     }
 
     @PostMapping("/guardarResena")
-    public String guardarResena(@RequestParam String nombre,
-                                @RequestParam String comentario,
-                                RedirectAttributes redirectAttributes) {
+    public String guardarResena(@RequestParam String comentario,
+                                RedirectAttributes redirectAttributes,
+                                Authentication authentication) {
         try {
-            ResenaModel resena = new ResenaModel(nombre, comentario);
+            if (authentication == null || !authentication.isAuthenticated()) {
+                redirectAttributes.addFlashAttribute("error", "Debes iniciar sesión para dejar una reseña");
+                return "redirect:/api/login";
+            }
+
+            Usuario usuario = usuarioRepository.findByUsername(authentication.getName())
+                    .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
+
+            // Usa el username del usuario autenticado como nombre
+            ResenaModel resena = new ResenaModel(usuario, usuario.getUsername(), comentario);
             resenaService.guardarResena(resena);
             redirectAttributes.addFlashAttribute("mensaje", "¡Gracias por tu reseña!");
             return "redirect:/api/logiado";
@@ -202,9 +204,13 @@ public class WebController {
     }
 
     @PostMapping("/guardarRespuestaDashboard")
-    public String guardarRespuestaDashboard(@ModelAttribute RespuestaDashboard respuesta) {
+    public String guardarRespuestaDashboard(@ModelAttribute RespuestaDashboard respuesta, Authentication authentication) {
+        if (authentication != null && authentication.isAuthenticated()) {
+            Usuario usuario = usuarioRepository.findByUsername(authentication.getName()).orElse(null);
+            respuesta.setUsuario(usuario);
+        }
         respuestaService.guardarRespuesta(respuesta);
-        return "redirect:/api/logiado";
+        return "redirect:/api/logiado";  // ✅ Redirige después de guardar
     }
 
     // ==================== ÁREA ADMINISTRACIÓN ====================
@@ -353,15 +359,27 @@ public class WebController {
 
     @PostMapping("/guardarReservaUsuario")
     @ResponseBody
-    public ResponseEntity<?> guardarReservaUsuario(@RequestParam String idUsuario,
-                                                   @RequestParam String nombreCompleto,
+    public ResponseEntity<?> guardarReservaUsuario(@RequestParam String nombreCompleto,
                                                    @RequestParam String correo,
                                                    @RequestParam String categoria,
                                                    @RequestParam String libro,
-                                                   @RequestParam String fecha) {
+                                                   @RequestParam String fecha,
+                                                   Authentication authentication) {
         try {
+            Usuario usuario = null;
+            if (authentication != null && authentication.isAuthenticated()) {
+                usuario = usuarioRepository.findByUsername(authentication.getName()).orElse(null);
+            }
+
+            if (usuario == null) {
+                return ResponseEntity.status(401).body(Map.of(
+                        "success", false,
+                        "error", "Debes iniciar sesión para realizar una reserva"
+                ));
+            }
+
             ReservaModel reserva = new ReservaModel(
-                    idUsuario, nombreCompleto, correo, categoria, libro, LocalDate.parse(fecha)
+                    usuario, nombreCompleto, correo, categoria, libro, LocalDate.parse(fecha)
             );
             reservaService.crearReserva(reserva);
 
@@ -418,7 +436,7 @@ public class WebController {
 
         if (diasRetraso != null && diasRetraso > 0 && valorMulta != null) {
             MultaModel multa = new MultaModel(
-                    reserva.getIdUsuario(),
+                    reserva.getUsuario(),
                     reserva.getNombreCompleto(),
                     reserva.getLibro(),
                     reserva.getFecha(),
@@ -543,40 +561,6 @@ public class WebController {
         }
     }
 
-    // ========== ENDPOINTS DE VERIFICACIÓN ==========
-
-    @GetMapping("/test-usuarios")
-    @ResponseBody
-    public ResponseEntity<?> testUsuarios() {
-        try {
-            List<Usuario> usuarios = usuarioService.obtenerTodosLosUsuarios();
-            System.out.println("🔍 TEST: Total usuarios encontrados: " + usuarios.size());
-            return ResponseEntity.ok().body(Map.of(
-                    "total", usuarios.size(),
-                    "usuarios", usuarios
-            ));
-        } catch (Exception e) {
-            e.printStackTrace();
-            return ResponseEntity.status(500).body(Map.of("error", e.getMessage()));
-        }
-    }
-
-    @GetMapping("/test-multas")
-    @ResponseBody
-    public ResponseEntity<?> testMultas() {
-        try {
-            List<MultaModel> multas = multaService.obtenerTodasMultas();
-            System.out.println("🔍 TEST: Total multas encontradas: " + multas.size());
-            return ResponseEntity.ok().body(Map.of(
-                    "total", multas.size(),
-                    "multas", multas
-            ));
-        } catch (Exception e) {
-            e.printStackTrace();
-            return ResponseEntity.status(500).body(Map.of("error", e.getMessage()));
-        }
-    }
-
     // ========== OTRAS RUTAS ==========
 
     @GetMapping("/mensajeRegistro")
@@ -694,54 +678,4 @@ public class WebController {
         model.addAttribute("librosFisicos", libroFisicoService.obtenerTodosLosLibrosFisicos());
         return "reservaLibro";
     }
-    // ==================== SINCRONIZACIÓN MONGODB → POSTGRESQL ====================
-
-    @Autowired
-    private SyncService syncService;
-
-    /**
-     * Endpoint para ejecutar la sincronización manualmente
-     * GET o POST: http://localhost:8080/api/sync/run
-     */
-    @GetMapping("/sync/run")
-    @ResponseBody
-    public ResponseEntity<Map<String, Object>> sincronizarManual() {
-        long startTime = System.currentTimeMillis();
-
-        try {
-            syncService.sincronizarTodo();
-            long duration = System.currentTimeMillis() - startTime;
-
-            Map<String, Object> response = new HashMap<>();
-            response.put("status", "success");
-            response.put("message", "✅ Sincronización completada exitosamente");
-            response.put("duration", duration + " ms");
-            response.put("timestamp", LocalDateTime.now().toString());
-
-            return ResponseEntity.ok(response);
-
-        } catch (Exception e) {
-            Map<String, Object> response = new HashMap<>();
-            response.put("status", "error");
-            response.put("message", "❌ Error en la sincronización: " + e.getMessage());
-            response.put("timestamp", LocalDateTime.now().toString());
-
-            return ResponseEntity.status(500).body(response);
-        }
-    }
-
-    /**
-     * Endpoint para verificar el estado de la última sincronización
-     * GET: http://localhost:8080/api/sync/status
-     */
-    @GetMapping("/sync/status")
-    @ResponseBody
-    public ResponseEntity<Map<String, Object>> sincronizarStatus() {
-        Map<String, Object> response = new HashMap<>();
-        response.put("ultima_sincronizacion", SyncService.getUltimaSincronizacion());
-        response.put("total_sincronizados", SyncService.getTotalSincronizados());
-        response.put("estado", "activo");
-        return ResponseEntity.ok(response);
-    }
-
 }

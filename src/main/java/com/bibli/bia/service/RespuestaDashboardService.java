@@ -11,12 +11,11 @@ public class RespuestaDashboardService {
     @Autowired
     private RespuestaDashboardRepository respuestaRepository;
 
-    @Autowired
-    private SyncService syncService;
+    // ✅ Elimina esta línea - no va aquí:
+    // @Autowired
 
     public RespuestaDashboard guardarRespuesta(RespuestaDashboard respuestaDashboard) {
         RespuestaDashboard saved = respuestaRepository.save(respuestaDashboard);
-        syncService.sincronizarRespuestaDashboard(saved);
         return saved;
     }
 }

@@ -1,4 +1,4 @@
-/*package com.bibli.bia.config;
+package com.bibli.bia.config;
 
 import com.bibli.bia.Model.Usuario;
 import com.bibli.bia.repository.UsuarioRepository;
@@ -20,23 +20,33 @@ public class DataInitializer implements CommandLineRunner {
 
     @Override
     public void run(String... args) {
-        // Contar cuántos admins existen
-        long cantidadAdmins = usuarioRepository.count();
+        // Verificar si ya existe al menos un ADMIN
+        boolean existeAdmin = usuarioRepository.findAll().stream()
+                .anyMatch(usuario -> usuario.getRoles() != null && usuario.getRoles().contains("ADMIN"));
 
-        // Generar un username único
-        String nuevoUsername = "david" + (cantidadAdmins + 1);
-
-        // Verificar que no exista ya un usuario con ese username
-        if (usuarioRepository.findByUsername(nuevoUsername).isEmpty()) {
+        if (!existeAdmin) {
+            // Crear usuario ADMIN por defecto
             Usuario admin = new Usuario();
-            admin.setUsername(nuevoUsername);
-            admin.setPassword(passwordEncoder.encode("1234567")); // Contraseña por defecto
+            admin.setUsername("admin");
+            admin.setPassword(passwordEncoder.encode("admin123"));
             admin.setRoles(Set.of("ADMIN"));
             usuarioRepository.save(admin);
-
-            System.out.println("✅ Se creó automáticamente el usuario: " + nuevoUsername);
+            System.out.println("✅ Usuario ADMIN creado: admin / admin123");
         } else {
-            System.out.println("⚠️ El usuario " + nuevoUsername + " ya existe, no se crea duplicado.");
+            System.out.println("⚠️ Ya existe un usuario ADMIN, no se crea duplicado.");
+        }
+
+        // Opcional: Crear un usuario USER de prueba si no existe
+        boolean existeUser = usuarioRepository.findAll().stream()
+                .anyMatch(usuario -> usuario.getRoles() != null && usuario.getRoles().contains("USER"));
+
+        if (!existeUser) {
+            Usuario user = new Usuario();
+            user.setUsername("user");
+            user.setPassword(passwordEncoder.encode("user123"));
+            user.setRoles(Set.of("USER"));
+            usuarioRepository.save(user);
+            System.out.println("✅ Usuario USER creado: user / user123");
         }
     }
-}*/
+}

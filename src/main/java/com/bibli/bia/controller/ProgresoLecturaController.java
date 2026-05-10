@@ -27,7 +27,7 @@ public class ProgresoLecturaController {
         }
 
         String username = authentication.getName();
-        ProgresoLectura progreso = progresoService.obtenerProgreso(username);
+        ProgresoLectura progreso = progresoService.obtenerProgreso(username); // ✅ Sigue con String
 
         return ResponseEntity.ok(progreso);
     }
@@ -50,7 +50,7 @@ public class ProgresoLecturaController {
             return ResponseEntity.badRequest().body("libroId es requerido");
         }
 
-        ProgresoLectura progreso = progresoService.guardarCapitulo(username, libroId, capitulo, totalCapitulos);
+        ProgresoLectura progreso = progresoService.guardarCapitulo(username, libroId, capitulo, totalCapitulos); // ✅ Sigue con String
 
         Map<String, Object> response = new HashMap<>();
         response.put("mensaje", "Capítulo guardado");
@@ -75,7 +75,7 @@ public class ProgresoLecturaController {
             return ResponseEntity.badRequest().body("libroId es requerido");
         }
 
-        ProgresoLectura progreso = progresoService.marcarLibroCompletado(username, libroId);
+        ProgresoLectura progreso = progresoService.marcarLibroCompletado(username, libroId); // ✅ Sigue con String
 
         Map<String, Object> response = new HashMap<>();
         response.put("mensaje", "¡Libro completado!");
@@ -94,7 +94,7 @@ public class ProgresoLecturaController {
         }
 
         String username = authentication.getName();
-        boolean completado = progresoService.haCompletadoLibro(username, libroId);
+        boolean completado = progresoService.haCompletadoLibro(username, libroId); // ✅ Sigue con String
 
         Map<String, Object> response = new HashMap<>();
         response.put("completado", completado);
@@ -110,7 +110,7 @@ public class ProgresoLecturaController {
         }
 
         String username = authentication.getName();
-        progresoService.reiniciarProgreso(username);
+        progresoService.reiniciarProgreso(username); // ✅ Sigue con String
 
         return ResponseEntity.ok("Progreso reiniciado");
     }

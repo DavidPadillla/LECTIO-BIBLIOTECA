@@ -3,7 +3,7 @@ package com.bibli.bia.service;
 import com.bibli.bia.repository.UsuarioRepository;
 import com.bibli.bia.Model.Usuario;
 import org.springframework.security.core.userdetails.*;
-import org.springframework.security.core.authority.SimpleGrantedAuthority; // vaina para representar el rol
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -32,5 +32,4 @@ public class CustomUserDetailsService implements UserDetailsService {
 
         return new User(usuario.getUsername(), usuario.getPassword(), authorities);
     }
-
 }

@@ -1,22 +1,31 @@
 package com.bibli.bia.Model;
 
-import org.springframework.data.annotation.Id;
-import org.springframework.data.mongodb.core.mapping.Document;
+import jakarta.persistence.*;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import java.util.Set;
+import java.util.HashSet;
 
-@Document(collection = "usuarios")
+@Entity
+@Table(name = "usuarios")
 @Data
 @NoArgsConstructor
 public class Usuario {
 
     @Id
+    @GeneratedValue(strategy = GenerationType.UUID)
     private String id;
 
+    @Column(unique = true, nullable = false, length = 50)
     private String username;
+
+    @Column(nullable = false)
     private String password;
-    private Set<String> roles;
+
+    @ElementCollection(fetch = FetchType.EAGER)
+    @CollectionTable(name = "usuario_roles", joinColumns = @JoinColumn(name = "usuario_id"))
+    @Column(name = "role")
+    private Set<String> roles = new HashSet<>();
 
     public Usuario(String id, String username, String password, Set<String> roles) {
         this.id = id;

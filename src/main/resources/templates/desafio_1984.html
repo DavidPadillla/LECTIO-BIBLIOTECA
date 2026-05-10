@@ -186,7 +186,6 @@
       to { opacity: 1; }
     }
 
-    /* Sidebar styling */
     .sidebar {
       width: 270px;
       background: linear-gradient(180deg, #1a0a0a, #0d0000);
@@ -252,7 +251,6 @@
       user-select: none;
     }
 
-    /* Header and hamburger button for mobile */
     header {
       background: linear-gradient(180deg, #1a0a0a, #0d0000);
       color: #fff;
@@ -300,7 +298,6 @@
       transform: rotate(-45deg) translate(6px, -6px);
     }
 
-    /* Modal styles */
     .modal {
       display: none;
       position: fixed;
@@ -368,7 +365,6 @@
       opacity: 1;
     }
 
-    /* Responsive for mobile */
     @media (max-width: 900px) {
       header h1 {
         font-size: 1.3rem;
@@ -442,7 +438,7 @@
       <ul>
         <li onclick="location.href='/api/inicio'" tabindex="0" role="link" aria-label="Inicio">🏠 Inicio</li>
         <li onclick="location.href='/api/libros'" tabindex="0" role="link" aria-label="Biblioteca">📚 Biblioteca</li>
-        <li onclick="location.href='/api/historia_pensamiento.html'" tabindex="0" role="link" aria-label="Historia del Pensamiento">💡 Historia del Pensamiento</li>
+        <li onclick="location.href='/api/historia_pensamiento'" tabindex="0" role="link" aria-label="Historia del Pensamiento">💡 Historia del Pensamiento</li>
         <li onclick="location.href='/api/logiado'" tabindex="0" role="link" aria-label="Volver a Lectio">🏠 Volver a Lectio</li>
       </ul>
     </div>
@@ -464,7 +460,6 @@
   const menuToggle = document.getElementById('menu-toggle');
   const sidebar = document.getElementById('sidebar');
 
-  // Toggle menu open/close
   function toggleMenu() {
     const isOpen = sidebar.classList.toggle('show');
     sidebar.classList.toggle('hide', !isOpen);
@@ -477,7 +472,6 @@
 
   menuToggle.addEventListener('click', toggleMenu);
 
-  // Close menu when clicking outside or pressing Escape
   document.addEventListener('click', (e) => {
     if (!sidebar.contains(e.target) && !menuToggle.contains(e.target)) {
       if (sidebar.classList.contains('show')) {
@@ -547,40 +541,77 @@ Winston es liberado, pero transformado. Su espíritu ha sido quebrado. Ahora cre
           }
 
           const data = await response.json();
+          console.log("📚 Progreso cargado:", data);
 
-          if (data.capitulosPorLibro && data.capitulosPorLibro[LIBRO_ID]) {
-              capitulosLeidos = Array.from(data.capitulosPorLibro[LIBRO_ID]);
+          let capitulosMap = data.capitulosPorLibro;
+
+          if (typeof capitulosMap === 'string') {
+              try {
+                  capitulosMap = JSON.parse(capitulosMap);
+              } catch(e) {
+                  capitulosMap = {};
+              }
           }
+
+          // ✅ CORRECCIÓN: Convertir de base 1 (BD) a base 0 (array)
+          if (capitulosMap && capitulosMap[LIBRO_ID]) {
+              let capitulosRaw = capitulosMap[LIBRO_ID];
+
+              // Convertir a array si es necesario
+              if (typeof capitulosRaw === 'object' && !Array.isArray(capitulosRaw)) {
+                  capitulosRaw = Array.from(capitulosRaw);
+              }
+
+              if (Array.isArray(capitulosRaw)) {
+                  // Restar 1 a cada capítulo porque la BD guarda 1,2,3... y el array espera 0,1,2...
+                  capitulosLeidos = capitulosRaw.map(c => c - 1);
+              } else {
+                  capitulosLeidos = [];
+              }
+          } else {
+              capitulosLeidos = [];
+          }
+
+          console.log("📚 Capítulos leídos (base 0):", capitulosLeidos);
           desbloquearSiguientes();
+
       } catch (error) {
+          console.error("Error cargando progreso:", error);
           desbloquearSiguientes();
       }
   }
 
   async function guardarProgreso(capituloIndex) {
       try {
+          const capituloNumero = capituloIndex + 1;  // Convertir a base 1 para BD
+          console.log("💾 Guardando capítulo:", capituloNumero);
+
           const response = await fetch('/api/progreso/guardar-capitulo', {
               method: 'POST',
               headers: { 'Content-Type': 'application/json' },
               credentials: 'include',
               body: JSON.stringify({
                   libroId: LIBRO_ID,
-                  capitulo: capituloIndex,
+                  capitulo: capituloNumero,
                   totalCapitulos: capitulos.length
               })
           });
 
           if (response.ok) {
+              const data = await response.json();
+              console.log("✅ Progreso guardado:", data);
+
               if (capitulosLeidos.length === capitulos.length) {
                   mostrarMensaje('🎉 ¡Felicitaciones! Has completado 1984. +100 puntos 👁️');
               }
+          } else {
+              console.error("❌ Error guardando progreso:", response.status);
           }
       } catch (error) {
           console.error('Error guardando progreso:', error);
       }
   }
 
-  // Render chapters
   function renderChapters() {
     capitulos.forEach((txt, i) => {
       const nodo = document.createElement('div');
@@ -596,7 +627,7 @@ Winston es liberado, pero transformado. Su espíritu ha sido quebrado. Ahora cre
       if (i < capitulos.length - 1) {
         const f = document.createElement('div');
         f.className = 'flecha';
-        f.innerHTML = '&#8595;';
+        f.innerHTML = '↓';
         cont.appendChild(f);
       }
     });
@@ -605,10 +636,13 @@ Winston es liberado, pero transformado. Su espíritu ha sido quebrado. Ahora cre
   function desbloquearSiguientes() {
     const nodos = document.querySelectorAll('.capitulo-nodo');
     nodos.forEach((n, i) => {
+      // Desbloquear capítulo 0 siempre, o si el anterior está leído
       if (i === 0 || capitulosLeidos.includes(i - 1)) {
         n.classList.remove('locked');
       }
-      if (capitulosLeidos.includes(i)) n.classList.add('leido');
+      if (capitulosLeidos.includes(i)) {
+        n.classList.add('leido');
+      }
     });
   }
 
@@ -664,7 +698,6 @@ Winston es liberado, pero transformado. Su espíritu ha sido quebrado. Ahora cre
     renderChapters();
     cargarProgreso();
   };
-
 </script>
 </body>
 </html>

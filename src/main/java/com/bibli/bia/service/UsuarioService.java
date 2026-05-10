@@ -13,7 +13,7 @@ public class UsuarioService {
     private UsuarioRepository usuarioRepository;
 
     @Autowired
-    private SyncService realTimeSyncService;  // ← Solo agregar esto
+
 
     public List<Usuario> obtenerTodosLosUsuarios() {
         return usuarioRepository.findAll();
@@ -21,8 +21,6 @@ public class UsuarioService {
 
     public Usuario guardarUsuario(Usuario usuario) {
         Usuario saved = usuarioRepository.save(usuario);
-        // Sincronizar automáticamente a Neon
-        realTimeSyncService.sincronizarUsuario(saved);
         return saved;
     }
 }

@@ -647,8 +647,6 @@
             <li><a href="/api/logiado">Inicio</a></li>
             <li><a href="/api/libroVirtualesLog" class="active">Libros Virtuales</a></li>
             <li><a href="/api/reservaLibro">Reserva de Libros</a></li>
-
-
         </ul>
     </nav>
 </header>
@@ -663,7 +661,7 @@
         <div class="filter-option"><input type="checkbox" id="filterHistoria" checked><label for="filterHistoria">Historia</label></div>
         <div class="filter-option"><input type="checkbox" id="filterArte" checked><label for="filterArte">Arte</label></div>
         <div class="filter-option"><input type="checkbox" id="filterFantasía" checked><label for="filterFantasía">Fantasía</label></div>
-        <div class="filter-option"><input type="checkbox" id="filterFilosofia" checked><label for="filterFilosofia">Filosofía</label></div>
+        <div class="filter-option"><input type="checkbox" id="filterFilosofía" checked><label for="filterFilosofía">Filosofía</label></div>
     </div>
 </div>
 
@@ -745,7 +743,7 @@
             historia: document.getElementById('filterHistoria'),
             arte: document.getElementById('filterArte'),
             fantasia: document.getElementById('filterFantasía'),
-            filosofia: document.getElementById('filterFilosofia')
+            filosofia: document.getElementById('filterFilosofía')  // ✅ CORREGIDO: con tilde
         };
 
         // ===== FUNCIÓN PARA MENÚ MÓVIL =====
@@ -803,7 +801,18 @@
             const term = normalizeText(searchInput.value.trim());
             const selectedCategories = Object.entries(categoryFilters)
                 .filter(([key, input]) => input.checked)
-                .map(([key]) => key.charAt(0).toUpperCase() + key.slice(1));
+                .map(([key]) => {
+                    // Mapear keys a nombres de categoría exactos
+                    const categoryMap = {
+                        novelas: 'Novelas',
+                        ciencia: 'Ciencia',
+                        historia: 'Historia',
+                        arte: 'Arte',
+                        fantasia: 'Fantasía',
+                        filosofia: 'Filosofía'
+                    };
+                    return categoryMap[key];
+                });
 
             filteredBooks = bookCards.filter(card => {
                 const title = normalizeText(card.getAttribute('data-title'));
@@ -882,13 +891,8 @@
         }
 
         function showPageError(requestedPage) {
-            // Actualizar el mensaje con el número total de páginas disponibles
             pageErrorMessage.textContent = `Solo tenemos ${totalPages} página${totalPages !== 1 ? 's' : ''} disponible${totalPages !== 1 ? 's' : ''}. Por favor, ingresa un número entre 1 y ${totalPages}.`;
-
-            // Mostrar el modal
             pageErrorModal.classList.add('active');
-
-            // Actualizar el valor del input con la página actual
             pageInput.value = currentPage;
         }
 
@@ -908,14 +912,12 @@
             pageErrorModal.classList.remove('active');
         });
 
-        // Cerrar el modal al hacer clic fuera del contenido
         pageErrorModal.addEventListener('click', function(e) {
             if(e.target === pageErrorModal) {
                 pageErrorModal.classList.remove('active');
             }
         });
 
-        // Cerrar el modal con la tecla Escape
         document.addEventListener('keydown', function(e) {
             if(e.key === 'Escape' && pageErrorModal.classList.contains('active')) {
                 pageErrorModal.classList.remove('active');

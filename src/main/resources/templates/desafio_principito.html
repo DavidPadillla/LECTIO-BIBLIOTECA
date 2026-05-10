@@ -20,7 +20,7 @@
       overflow-x: hidden;
       display: flex;
       flex-direction: column;
-      padding-right: 0; /* Removed fixed margin for mobile support */
+      padding-right: 0;
     }
 
     .background-stars {
@@ -190,7 +190,6 @@
       to { opacity: 1; }
     }
 
-    /* Sidebar styling for desktop with background matching page */
     .sidebar {
       width: 270px;
       background: linear-gradient(to bottom, #1b2735 0%, #0d121c 100%);
@@ -255,7 +254,6 @@
       user-select: none;
     }
 
-    /* Header and hamburger */
     header {
       background: linear-gradient(to bottom, #1b2735 0%, #0d121c 100%);
       color: #fff;
@@ -303,7 +301,6 @@
       transform: rotate(-45deg) translate(6px, -6px);
     }
 
-    /* Modal styles */
     .modal {
       display: none;
       position: fixed;
@@ -371,7 +368,6 @@
       opacity: 1;
     }
 
-    /* Responsive for mobile */
     @media (max-width: 900px) {
       header h1 {
         font-size: 1.3rem;
@@ -475,7 +471,6 @@
   const menuToggle = document.getElementById('menu-toggle');
   const sidebar = document.getElementById('sidebar');
 
-  // Toggle menu open/close
   function toggleMenu() {
     const isOpen = sidebar.classList.toggle('show');
     sidebar.classList.toggle('hide', !isOpen);
@@ -488,7 +483,6 @@
 
   menuToggle.addEventListener('click', toggleMenu);
 
-  // Close menu when clicking outside or pressing Escape
   document.addEventListener('click', (e) => {
     if (!sidebar.contains(e.target) && !menuToggle.contains(e.target)) {
       if (sidebar.classList.contains('show')) {
@@ -558,42 +552,69 @@ En la Tierra, el Principito conoce al **Zorro**, quien le enseña el significado
       }
 
       const data = await response.json();
+      console.log("📚 Progreso cargado:", data);
 
-      if (data.capitulosPorLibro && data.capitulosPorLibro[LIBRO_ID]) {
-        capitulosLeidos = Array.from(data.capitulosPorLibro[LIBRO_ID]);
+      let capitulosMap = data.capitulosPorLibro;
+
+      if (typeof capitulosMap === 'string') {
+        try {
+          capitulosMap = JSON.parse(capitulosMap);
+        } catch(e) {
+          capitulosMap = {};
+        }
       }
 
+      if (capitulosMap && capitulosMap[LIBRO_ID]) {
+        if (Array.isArray(capitulosMap[LIBRO_ID])) {
+          capitulosLeidos = capitulosMap[LIBRO_ID];
+        } else if (typeof capitulosMap[LIBRO_ID] === 'object') {
+          capitulosLeidos = Array.from(capitulosMap[LIBRO_ID]);
+        } else {
+          capitulosLeidos = [];
+        }
+      } else {
+        capitulosLeidos = [];
+      }
+
+      console.log("📚 Capítulos leídos:", capitulosLeidos);
       desbloquearSiguientes();
+
     } catch (error) {
+      console.error("Error cargando progreso:", error);
       desbloquearSiguientes();
     }
   }
 
   async function guardarProgreso(capituloIndex) {
     try {
+      console.log("💾 Guardando capítulo:", capituloIndex + 1);
+
       const response = await fetch('/api/progreso/guardar-capitulo', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         credentials: 'include',
         body: JSON.stringify({
           libroId: LIBRO_ID,
-          capitulo: capituloIndex,
+          capitulo: capituloIndex + 1,
           totalCapitulos: capitulos.length
         })
       });
 
       if (response.ok) {
         const data = await response.json();
+        console.log("✅ Progreso guardado:", data);
+
         if (capitulosLeidos.length === capitulos.length) {
           mostrarMensaje('🎉 ¡Felicitaciones! Has completado El Principito. +100 puntos 🌟');
         }
+      } else {
+        console.error("❌ Error guardando progreso:", response.status);
       }
     } catch (error) {
       console.error('Error guardando progreso:', error);
     }
   }
 
-  // Render chapters
   function renderChapters() {
     capitulos.forEach((txt, i) => {
       const nodo = document.createElement('div');
@@ -618,7 +639,9 @@ En la Tierra, el Principito conoce al **Zorro**, quien le enseña el significado
   function desbloquearSiguientes() {
     const nodos = document.querySelectorAll('.capitulo-nodo');
     nodos.forEach((n, i) => {
-      if (i === 0 || capitulosLeidos.includes(i - 1)) {
+      if (i === 0 || capitulosLeidos.includes(i)) {
+        n.classList.remove('locked');
+      } else if (i > 0 && capitulosLeidos.includes(i - 1)) {
         n.classList.remove('locked');
       }
       if (capitulosLeidos.includes(i)) n.classList.add('leido');

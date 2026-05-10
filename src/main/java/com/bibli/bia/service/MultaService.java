@@ -15,17 +15,13 @@ public class MultaService {
     @Autowired
     private MultaRepository multaRepository;
 
-    @Autowired
-    private SyncService syncService;  // ← AGREGAR ESTO
-
     public MultaModel crearMulta(MultaModel multa) {
-        MultaModel saved = multaRepository.save(multa);
-        syncService.sincronizarMulta(saved);  // ← SINCRONIZAR
-        return saved;
+        return multaRepository.save(multa);
     }
 
+    // ✅ Cambiado: ahora usa findByUsuarioId en lugar de findByIdUsuario
     public List<MultaModel> obtenerMultasPorUsuario(String idUsuario) {
-        return multaRepository.findByIdUsuario(idUsuario);
+        return multaRepository.findByUsuarioId(idUsuario);
     }
 
     public List<MultaModel> obtenerMultasPorNombre(String nombreUsuario) {
@@ -43,9 +39,7 @@ public class MultaService {
             if (!multa.isPagada()) {
                 multa.setPagada(true);
                 multa.setFechaPago(LocalDate.now());
-                MultaModel saved = multaRepository.save(multa);
-                syncService.sincronizarMulta(saved);  // ← SINCRONIZAR
-                return saved;
+                return multaRepository.save(multa);
             }
             return multa;
         }
@@ -54,7 +48,7 @@ public class MultaService {
 
     public void eliminarMulta(String idMulta) {
         multaRepository.deleteById(idMulta);
-        System.out.println("⚠️ Multa eliminada de MongoDB. Neon no se actualiza automáticamente.");
+        System.out.println("✅ Multa eliminada de PostgreSQL");
     }
 
     public List<MultaModel> obtenerTodasMultas() {

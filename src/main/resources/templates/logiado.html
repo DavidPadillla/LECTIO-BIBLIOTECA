@@ -483,9 +483,8 @@
 <section class="section reseñas" id="reseñas">
     <h2 class="section-title">Deja Tu Reseña</h2>
     <p class="section-subtitle">Tu opinión nos ayuda a mejorar nuestra biblioteca.</p>
+    <!-- ✅ FORMULARIO CORREGIDO - Ya no tiene campo nombre -->
     <form id="reseña-form" class="reseña-form">
-        <label for="nombre">Nombre:</label>
-        <input type="text" id="nombre" name="nombre" required>
         <label for="comentario">Comentario:</label>
         <textarea id="comentario" name="comentario" rows="4" required></textarea>
         <button type="submit" class="btn">Enviar Reseña</button>
@@ -542,26 +541,28 @@
     window.addEventListener('scroll', () => scrollToTopBtn.classList.toggle('visible', pageYOffset > 300));
     scrollToTopBtn.addEventListener('click', () => window.scrollTo({ top: 0, behavior: 'smooth' }));
 
-    // ========== RESEÑAS ==========
+    // ========== RESEÑAS - CORREGIDO ==========
     document.getElementById('reseña-form').addEventListener('submit', function (e) {
         e.preventDefault();
-        const nombre = document.getElementById('nombre').value;
         const comentario = document.getElementById('comentario').value;
         const mensajeEnvio = document.getElementById('mensaje-envio');
         mensajeEnvio.style.display = 'block';
         mensajeEnvio.style.color = '#333';
         mensajeEnvio.textContent = 'Enviando reseña...';
+
+        // ✅ Ya no envía 'nombre', solo 'comentario'
         fetch('/api/guardarResena', {
             method: 'POST',
             headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-            body: `nombre=${encodeURIComponent(nombre)}&comentario=${encodeURIComponent(comentario)}`
+            body: `comentario=${encodeURIComponent(comentario)}`
         })
         .then(r => { if (!r.ok) throw new Error(); return r.text(); })
         .then(() => {
             mensajeEnvio.textContent = '¡Gracias por tu reseña!';
             mensajeEnvio.style.color = 'green';
             showFloating('✅ Reseña enviada con éxito', '#4CAF50');
-            setTimeout(() => { this.reset(); mensajeEnvio.style.display = 'none'; }, 3000);
+            document.getElementById('comentario').value = '';
+            setTimeout(() => { mensajeEnvio.style.display = 'none'; }, 3000);
         })
         .catch(() => {
             mensajeEnvio.textContent = 'Error al enviar. Intenta nuevamente.';
@@ -614,7 +615,6 @@
         return (typeof marked !== 'undefined') ? marked.parse(text) : escapeHtml(text);
     }
 
-    // ✅ FIX: decodificar Base64 con soporte para UTF-8 (tildes, ñ, emojis)
     function decodeBase64(str) {
         try {
             return decodeURIComponent(
@@ -623,7 +623,7 @@
                 ).join('')
             );
         } catch (e) {
-            return str; // fallback si no es base64 válido
+            return str;
         }
     }
 
@@ -702,7 +702,6 @@
             if (data === '[DONE]') {
                 evtSource.close();
                 currentEvtSource = null;
-                // Renderizar markdown completo al final
                 if (streamingContent && fullResponse) {
                     streamingContent.innerHTML = renderMarkdown(fullResponse);
                     chatBody.scrollTop = chatBody.scrollHeight;
@@ -728,10 +727,8 @@
                 return;
             }
 
-            // ✅ FIX: decodificar el chunk Base64 antes de usarlo
             const chunk = decodeBase64(data);
 
-            // Primer chunk: crear burbuja de respuesta
             if (!streamingDiv) {
                 hideTyping();
                 const msgDiv = document.createElement('div');
@@ -747,7 +744,6 @@
                 streamingContent = document.getElementById('streamingContent');
             }
 
-            // Acumular texto plano durante el stream, markdown al final
             fullResponse += chunk;
             if (streamingContent) {
                 streamingContent.textContent = fullResponse;
@@ -777,7 +773,6 @@
         sendMessageToGroq(msg);
     }
 
-    // ── Eventos UI ──
     chatBubble?.addEventListener('click', () => {
         chatWindow.classList.add('active');
         if (chatBadge) chatBadge.style.display = 'none';
@@ -798,14 +793,9 @@
     });
 
     chatSend.addEventListener('click', sendMessage);
-
-    chatInput.addEventListener('keypress', e => {
-        if (e.key === 'Enter') sendMessage();
-    });
-
+    chatInput.addEventListener('keypress', e => { if (e.key === 'Enter') sendMessage(); });
     chatWindow.addEventListener('click', e => e.stopPropagation());
 
-    // ── Chips de sugerencias ──
     document.querySelectorAll('.suggestion-chip').forEach(chip => {
         chip.addEventListener('click', () => {
             const text = chip.getAttribute('data-suggestion');
