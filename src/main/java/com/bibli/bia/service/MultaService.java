@@ -45,6 +45,9 @@ public class MultaService {
         }
         return null;
     }
+    public long contarMultas() {
+        return multaRepository.count();
+    }
 
     public void eliminarMulta(String idMulta) {
         multaRepository.deleteById(idMulta);

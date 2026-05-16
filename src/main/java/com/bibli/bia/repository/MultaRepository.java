@@ -15,6 +15,9 @@ public interface MultaRepository extends JpaRepository<MultaModel, String> {
     // Buscar por ID de usuario
     List<MultaModel> findByUsuarioId(String usuarioId);
 
+    // En MultaRepository.java
+    List<MultaModel> findByUsuarioAndPagada(Usuario usuario, boolean pagada);
+
     // Buscar por nombre de usuario (parcial, ignorando mayúsculas)
     List<MultaModel> findByNombreUsuarioContainingIgnoreCase(String nombreUsuario);
 

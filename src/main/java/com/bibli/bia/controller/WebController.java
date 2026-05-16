@@ -218,18 +218,20 @@ public class WebController {
     @GetMapping("/admin")
     public String adminPage(Model model) {
         try {
-            long totalUsuarios = usuarioService.obtenerTodosLosUsuarios().size();
-            long totalReservas = reservaService.obtenerTodasReservas().size();
-            long totalMultas = multaService.obtenerTodasMultas().size();
-            long totalResenas = resenaService.obtenerTodasLasResenas().size();
-            long totalLibros = libroService.obtenerTodosLosLibros().size();
-            long totalLibrosFisicos = libroFisicoService.obtenerTodosLosLibrosFisicos().size();
+            // ✅ AHORA SÓLO CUENTA, NO CARGA TODOS LOS DATOS
+            long totalUsuarios = usuarioService.contarUsuarios();
+            long totalReservas = reservaService.contarReservas();
+            long totalMultas = multaService.contarMultas();
+            long totalResenas = resenaService.contarResenas();
+            long totalLibros = libroService.contarLibros();
+            long totalLibrosFisicos = libroFisicoService.contarLibrosFisicos();
 
             model.addAttribute("totalUsuarios", totalUsuarios);
             model.addAttribute("totalReservas", totalReservas);
             model.addAttribute("totalMultas", totalMultas);
             model.addAttribute("totalResenas", totalResenas);
             model.addAttribute("totalLibros", totalLibros + totalLibrosFisicos);
+
         } catch (Exception e) {
             System.err.println("Error al cargar estadísticas del admin: " + e.getMessage());
             e.printStackTrace();

@@ -39,6 +39,9 @@ public class LibroFisicoService {
         libroFisicoRepository.save(libro);
         return true;
     }
+    public long contarLibrosFisicos() {
+        return libroFisicoRepository.count();
+    }
 
     public boolean cancelarReservaLibroFisico(String id) {
         Optional<LibroFisicoModel> libroOptional = libroFisicoRepository.findById(id);

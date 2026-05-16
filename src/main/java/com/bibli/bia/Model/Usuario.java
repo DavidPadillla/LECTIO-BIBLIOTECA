@@ -22,15 +22,29 @@ public class Usuario {
     @Column(nullable = false)
     private String password;
 
-    @ElementCollection(fetch = FetchType.EAGER)
+    @ElementCollection(fetch = FetchType.LAZY)
     @CollectionTable(name = "usuario_roles", joinColumns = @JoinColumn(name = "usuario_id"))
     @Column(name = "role")
     private Set<String> roles = new HashSet<>();
+
+    // ✅ NUEVO CAMPO: Estado activo/inactivo del usuario
+    @Column(nullable = false)
+    private Boolean activo = true;  // Por defecto, true (activo)
 
     public Usuario(String id, String username, String password, Set<String> roles) {
         this.id = id;
         this.username = username;
         this.password = password;
         this.roles = roles;
+        this.activo = true;  // Por defecto activo
+    }
+
+    // Constructor adicional con estado activo
+    public Usuario(String id, String username, String password, Set<String> roles, Boolean activo) {
+        this.id = id;
+        this.username = username;
+        this.password = password;
+        this.roles = roles;
+        this.activo = activo;
     }
 }

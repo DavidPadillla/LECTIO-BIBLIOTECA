@@ -5,6 +5,9 @@ import com.bibli.bia.Model.Usuario;
 import org.springframework.security.core.userdetails.*;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -12,6 +15,7 @@ import java.util.stream.Collectors;
 @Service
 public class CustomUserDetailsService implements UserDetailsService {
 
+    private static final Logger log = LoggerFactory.getLogger(CustomUserDetailsService.class);
     private final UsuarioRepository usuarioRepository;
 
     public CustomUserDetailsService(UsuarioRepository usuarioRepository) {
@@ -19,17 +23,28 @@ public class CustomUserDetailsService implements UserDetailsService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        Usuario usuario = usuarioRepository.findByUsername(username)
-                .orElseThrow(() -> new UsernameNotFoundException("Usuario no encontrado"));
 
-        System.out.println("Cargando usuario: " + usuario.getUsername());
-        System.out.println("Roles del usuario: " + usuario.getRoles());
+        // ✅ USAR EL MÉTODO OPTIMIZADO que carga roles con JOIN FETCH
+        Usuario usuario = usuarioRepository.findByUsernameWithRoles(username)
+                .orElseThrow(() -> {
+                    log.error("Usuario no encontrado: {}", username);
+                    return new UsernameNotFoundException("Usuario no encontrado: " + username);
+                });
 
+        log.info("✅ Usuario cargado correctamente: {}", usuario.getUsername());
+        log.debug("Roles del usuario {}: {}", usuario.getUsername(), usuario.getRoles());
+
+        // Convertir roles a autoridades de Spring Security
         List<SimpleGrantedAuthority> authorities = usuario.getRoles().stream()
                 .map(role -> new SimpleGrantedAuthority("ROLE_" + role))
                 .collect(Collectors.toList());
 
-        return new User(usuario.getUsername(), usuario.getPassword(), authorities);
+        return new User(
+                usuario.getUsername(),
+                usuario.getPassword(),
+                authorities
+        );
     }
 }

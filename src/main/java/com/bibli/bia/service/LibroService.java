@@ -16,6 +16,9 @@ public class LibroService {
     public LibroModel guardarLibro(LibroModel libro) {
         return libroRepository.save(libro);
     }
+    public long contarLibros() {
+        return libroRepository.count();
+    }
 
     public List<LibroModel> obtenerTodosLosLibros() {
         return libroRepository.findAll();

@@ -15,7 +15,9 @@ public class ReservaService {
     @Autowired
     private ReservaRepository reservaRepository;
 
-
+    public long contarReservas() {
+        return reservaRepository.count();
+    }
 
     public ReservaModel crearReserva(ReservaModel reserva) {
         ReservaModel saved = reservaRepository.save(reserva);

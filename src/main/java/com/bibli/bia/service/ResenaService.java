@@ -12,7 +12,9 @@ public class ResenaService {
     @Autowired
     private Resenarepository resenarepository;
 
-
+    public long contarResenas() {
+        return resenarepository.count();
+    }
 
     public void guardarResena(ResenaModel resena) {
         ResenaModel saved = resenarepository.save(resena);

@@ -217,6 +217,7 @@
         .chat-message {
             display: flex; align-items: flex-end; gap: 8px;
             animation: messageSlideIn 0.3s ease;
+            width: 100%;
         }
         @keyframes messageSlideIn {
             from { opacity: 0; transform: translateY(8px); }
@@ -483,7 +484,6 @@
 <section class="section reseñas" id="reseñas">
     <h2 class="section-title">Deja Tu Reseña</h2>
     <p class="section-subtitle">Tu opinión nos ayuda a mejorar nuestra biblioteca.</p>
-    <!-- ✅ FORMULARIO CORREGIDO - Ya no tiene campo nombre -->
     <form id="reseña-form" class="reseña-form">
         <label for="comentario">Comentario:</label>
         <textarea id="comentario" name="comentario" rows="4" required></textarea>
@@ -541,7 +541,7 @@
     window.addEventListener('scroll', () => scrollToTopBtn.classList.toggle('visible', pageYOffset > 300));
     scrollToTopBtn.addEventListener('click', () => window.scrollTo({ top: 0, behavior: 'smooth' }));
 
-    // ========== RESEÑAS - CORREGIDO ==========
+    // ========== RESEÑAS ==========
     document.getElementById('reseña-form').addEventListener('submit', function (e) {
         e.preventDefault();
         const comentario = document.getElementById('comentario').value;
@@ -550,7 +550,6 @@
         mensajeEnvio.style.color = '#333';
         mensajeEnvio.textContent = 'Enviando reseña...';
 
-        // ✅ Ya no envía 'nombre', solo 'comentario'
         fetch('/api/guardarResena', {
             method: 'POST',
             headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
@@ -618,9 +617,7 @@
     function decodeBase64(str) {
         try {
             return decodeURIComponent(
-                atob(str).split('').map(c =>
-                    '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2)
-                ).join('')
+                atob(str).split('').map(c => '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2)).join('')
             );
         } catch (e) {
             return str;
@@ -635,7 +632,8 @@
                 <div class="md-content">${escapeHtml(text)}</div>
                 <span class="chat-time">${getTime()}</span>
             </div>
-            <div class="chat-avatar"><i class="fas fa-user"></i></div>`;
+            <div class="chat-avatar"><i class="fas fa-user"></i></div>
+        `;
         chatBody.appendChild(div);
         chatBody.scrollTop = chatBody.scrollHeight;
     }
@@ -648,7 +646,8 @@
             <div class="chat-bubble-msg${isError ? ' chat-error' : ''}">
                 <div class="md-content">${isError ? escapeHtml(text) : renderMarkdown(text)}</div>
                 <span class="chat-time">${getTime()}</span>
-            </div>`;
+            </div>
+        `;
         chatBody.appendChild(div);
         chatBody.scrollTop = chatBody.scrollHeight;
         return div;
@@ -663,7 +662,8 @@
             <div class="chat-avatar"><i class="fas fa-robot"></i></div>
             <div class="typing-indicator">
                 <span></span><span></span><span></span>
-            </div>`;
+            </div>
+        `;
         chatBody.appendChild(div);
         chatBody.scrollTop = chatBody.scrollHeight;
     }
@@ -676,6 +676,53 @@
     function setWaiting(val) {
         isWaiting = val;
         chatSend.disabled = val;
+        if (val) {
+            chatInput.disabled = true;
+        } else {
+            chatInput.disabled = false;
+            chatInput.focus();
+        }
+    }
+
+    // ✅ Función para cerrar el chat correctamente
+    function closeChat() {
+        // Cerrar conexión SSE si está activa
+        if (currentEvtSource) {
+            currentEvtSource.close();
+            currentEvtSource = null;
+        }
+        // Limpiar estado de espera
+        setWaiting(false);
+        // Cerrar la ventana del chat
+        chatWindow.classList.remove('active');
+        // Resetear badge si es necesario
+        if (chatBadge) chatBadge.style.display = 'flex';
+    }
+
+    // ✅ Función para limpiar chat (con historial)
+    function clearChat() {
+        if (currentEvtSource) {
+            currentEvtSource.close();
+            currentEvtSource = null;
+        }
+        setWaiting(false);
+
+        // Limpiar historial en el backend
+        fetch('/api/chat/limpiar', {
+            method: 'POST',
+            credentials: 'include'
+        })
+        .then(response => response.json())
+        .then(data => {
+            console.log('🧹 Historial limpiado:', data);
+        })
+        .catch(error => {
+            console.error('Error limpiando historial:', error);
+        });
+
+        // Limpiar el chat visualmente
+        chatBody.innerHTML = '<div class="chat-date-sep">Hoy</div>';
+        addBotMessage('🧹 Chat limpiado. ¿En qué te puedo ayudar? 😊');
     }
 
     function sendMessageToGroq(message) {
@@ -692,9 +739,9 @@
         const evtSource = new EventSource(url);
         currentEvtSource = evtSource;
 
-        let streamingDiv     = null;
+        let streamingDiv = null;
         let streamingContent = null;
-        let fullResponse     = '';
+        let fullResponse = '';
 
         evtSource.onmessage = function (event) {
             const data = event.data;
@@ -706,12 +753,7 @@
                     streamingContent.innerHTML = renderMarkdown(fullResponse);
                     chatBody.scrollTop = chatBody.scrollHeight;
                 }
-                if (!fullResponse) {
-                    hideTyping();
-                    addBotMessage('⚠️ No se recibió respuesta del asistente.', true);
-                }
                 setWaiting(false);
-                chatInput.focus();
                 return;
             }
 
@@ -723,7 +765,6 @@
                     addBotMessage('⚠️ El asistente tuvo un error. Intenta de nuevo.', true);
                 }
                 setWaiting(false);
-                chatInput.focus();
                 return;
             }
 
@@ -736,12 +777,13 @@
                 msgDiv.innerHTML = `
                     <div class="chat-avatar"><i class="fas fa-robot"></i></div>
                     <div class="chat-bubble-msg">
-                        <div class="md-content" id="streamingContent"></div>
+                        <div class="md-content" id="streamingContent_${Date.now()}"></div>
                         <span class="chat-time">${getTime()}</span>
-                    </div>`;
+                    </div>
+                `;
                 chatBody.appendChild(msgDiv);
-                streamingDiv     = msgDiv;
-                streamingContent = document.getElementById('streamingContent');
+                streamingDiv = msgDiv;
+                streamingContent = msgDiv.querySelector('.md-content');
             }
 
             fullResponse += chunk;
@@ -761,7 +803,6 @@
                 addBotMessage('⚠️ Error de conexión. Verifica tu red e intenta de nuevo.', true);
             }
             setWaiting(false);
-            chatInput.focus();
         };
     }
 
@@ -773,29 +814,29 @@
         sendMessageToGroq(msg);
     }
 
+    // ✅ Eventos del chat
     chatBubble?.addEventListener('click', () => {
         chatWindow.classList.add('active');
         if (chatBadge) chatBadge.style.display = 'none';
+        chatInput.focus();
     });
 
-    chatClose?.addEventListener('click', () => {
-        chatWindow.classList.remove('active');
-    });
+    chatClose?.addEventListener('click', closeChat);
 
-    chatClear?.addEventListener('click', () => {
-        if (currentEvtSource) {
-            currentEvtSource.close();
-            currentEvtSource = null;
-        }
-        setWaiting(false);
-        chatBody.innerHTML = '<div class="chat-date-sep">Hoy</div>';
-        addBotMessage('Chat limpiado. ¿En qué te puedo ayudar? 😊');
-    });
+    chatClear?.addEventListener('click', clearChat);
 
     chatSend.addEventListener('click', sendMessage);
     chatInput.addEventListener('keypress', e => { if (e.key === 'Enter') sendMessage(); });
     chatWindow.addEventListener('click', e => e.stopPropagation());
 
+    // ✅ Cerrar chat con ESC
+    document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape' && chatWindow.classList.contains('active')) {
+            closeChat();
+        }
+    });
+
+    // Sugerencias
     document.querySelectorAll('.suggestion-chip').forEach(chip => {
         chip.addEventListener('click', () => {
             const text = chip.getAttribute('data-suggestion');

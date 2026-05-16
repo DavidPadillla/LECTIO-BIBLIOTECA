@@ -23,4 +23,7 @@ public class UsuarioService {
         Usuario saved = usuarioRepository.save(usuario);
         return saved;
     }
+    public long contarUsuarios() {
+        return usuarioRepository.count();
+    }
 }
