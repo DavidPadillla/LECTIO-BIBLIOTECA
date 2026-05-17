@@ -690,6 +690,8 @@ public class WebController {
 
     @GetMapping("/optimizador")
     public String optimizadorFormulario(Model model) {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        model.addAttribute("username", auth.getName());
         model.addAttribute("solicitud", new SolicitudOptimizacion());       // ✅ FIX: paquete correcto (com.bibli.bia.Model)
         model.addAttribute("totalLibros", libroOptimizadorRepository.findByDisponibleTrue().size());
         model.addAttribute("categorias", List.of(
