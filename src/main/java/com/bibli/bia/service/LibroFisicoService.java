@@ -25,7 +25,7 @@ public class LibroFisicoService {
     }
 
     public List<LibroFisicoModel> obtenerLibrosFisicosPorCategoria(String categoria) {
-        // ✅ Cambiado: ahora usa findByCategoriaIgnoreCase
+
         return libroFisicoRepository.findByCategoriaIgnoreCase(categoria);
     }
 

@@ -43,9 +43,6 @@ public class ResultadoOptimizacion {
         calcularPorcentajeCategoria();
     }
 
-    // =========================
-    // GETTERS Y SETTERS
-    // =========================
 
     public List<LibroAsignado> getLibrosSeleccionados() {
         return librosSeleccionados;
@@ -111,9 +108,7 @@ public class ResultadoOptimizacion {
         this.porcentajeCategoria = porcentajeCategoria;
     }
 
-    // =========================
-    // MÉTODO AUXILIAR
-    // =========================
+
 
     private void calcularPorcentajeCategoria() {
 
@@ -136,9 +131,7 @@ public class ResultadoOptimizacion {
                 ((double) cantidad / librosSeleccionados.size()) * 100.0;
     }
 
-    // =====================================================
-    // CLASE INTERNA
-    // =====================================================
+
 
     public static class LibroAsignado {
 

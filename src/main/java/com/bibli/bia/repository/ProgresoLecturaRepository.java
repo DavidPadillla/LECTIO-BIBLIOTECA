@@ -9,9 +9,9 @@ import java.util.Optional;
 @Repository
 public interface ProgresoLecturaRepository extends JpaRepository<ProgresoLectura, String> {
 
-    // Buscar por usuario (ahora usa la relación @OneToOne)
+
     Optional<ProgresoLectura> findByUsuario(Usuario usuario);
 
-    // Buscar por ID de usuario
+
     Optional<ProgresoLectura> findByUsuarioId(String usuarioId);
 }

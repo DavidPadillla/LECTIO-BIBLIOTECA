@@ -22,11 +22,11 @@ public class ProgresoLecturaService {
     }
 
     public ProgresoLectura obtenerProgreso(String username) {
-        // Primero buscar el usuario por username
+
         Usuario usuario = usuarioRepository.findByUsername(username)
                 .orElseThrow(() -> new RuntimeException("Usuario no encontrado: " + username));
 
-        // Buscar progreso por usuario
+
         Optional<ProgresoLectura> progreso = progresoRepository.findByUsuario(usuario);
 
         if (progreso.isPresent()) {
@@ -41,7 +41,7 @@ public class ProgresoLecturaService {
     public ProgresoLectura guardarCapitulo(String username, String libroId, int capitulo, int totalCapitulos) {
         ProgresoLectura progreso = obtenerProgreso(username);
 
-        // Obtener el mapa de capítulos (como JSON en PostgreSQL)
+
         Map<String, Set<Integer>> capitulosPorLibro = progreso.getCapitulosPorLibro();
 
         if (capitulosPorLibro == null) {
@@ -55,7 +55,7 @@ public class ProgresoLecturaService {
         capitulosPorLibro.get(libroId).add(capitulo);
         progreso.setCapitulosPorLibro(capitulosPorLibro);
 
-        // Verificar si completó el libro
+
         if (capitulosPorLibro.get(libroId).size() == totalCapitulos) {
             Set<String> librosCompletados = progreso.getLibrosCompletados();
             if (librosCompletados == null) {

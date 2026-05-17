@@ -9,20 +9,20 @@ import java.util.Optional;
 @Repository
 public interface LibroRepository extends JpaRepository<LibroModel, String> {
 
-    // Buscar por categoría (ignorando mayúsculas/minúsculas)
+
     List<LibroModel> findByCategoriaIgnoreCase(String categoria);
 
-    // En LibroRepository.java
+
     List<LibroModel> findByCategoria(String categoria);
 
 
 
-    // Buscar por título
+
     List<LibroModel> findByTituloContainingIgnoreCase(String titulo);
 
-    // Buscar por autor
+
     List<LibroModel> findByAutorContainingIgnoreCase(String autor);
 
-    // Buscar por categoría y autor combinados
+
     List<LibroModel> findByCategoriaIgnoreCaseAndAutorContainingIgnoreCase(String categoria, String autor);
 }

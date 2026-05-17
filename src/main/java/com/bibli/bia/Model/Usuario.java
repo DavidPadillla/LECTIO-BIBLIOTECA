@@ -27,19 +27,19 @@ public class Usuario {
     @Column(name = "role")
     private Set<String> roles = new HashSet<>();
 
-    // ✅ NUEVO CAMPO: Estado activo/inactivo del usuario
+
     @Column(nullable = false)
-    private Boolean activo = true;  // Por defecto, true (activo)
+    private Boolean activo = true;
 
     public Usuario(String id, String username, String password, Set<String> roles) {
         this.id = id;
         this.username = username;
         this.password = password;
         this.roles = roles;
-        this.activo = true;  // Por defecto activo
+        this.activo = true;
     }
 
-    // Constructor adicional con estado activo
+
     public Usuario(String id, String username, String password, Set<String> roles, Boolean activo) {
         this.id = id;
         this.username = username;

@@ -11,8 +11,8 @@ public class RespuestaDashboardService {
     @Autowired
     private RespuestaDashboardRepository respuestaRepository;
 
-    // ✅ Elimina esta línea - no va aquí:
-    // @Autowired
+
+
 
     public RespuestaDashboard guardarRespuesta(RespuestaDashboard respuestaDashboard) {
         RespuestaDashboard saved = respuestaRepository.save(respuestaDashboard);

@@ -24,7 +24,7 @@ public class ChatbotService {
     private static final String MODEL = "llama-3.3-70b-versatile";
     private final ObjectMapper mapper = new ObjectMapper();
 
-    // ✅ MEMORIA: Guardar historial por usuario (últimos 10 mensajes)
+    // MEMORIA: Guardar historial por usuario (últimos 10 mensajes)
     private final Map<String, List<Map<String, String>>> historialPorUsuario = new ConcurrentHashMap<>();
     private static final int MAX_HISTORIAL = 10;
 
@@ -40,11 +40,11 @@ public class ChatbotService {
         String tempKey = System.getenv("GROQ_API_KEY");
         if (tempKey == null || tempKey.isBlank()) {
             throw new IllegalStateException(
-                    "❌ ERROR: GROQ_API_KEY no está configurada en las variables de entorno."
+                    " ERROR: GROQ_API_KEY no está configurada en las variables de entorno."
             );
         }
         this.GROQ_KEY = tempKey;
-        System.out.println("✅ API Key cargada desde variable de entorno");
+        System.out.println(" API Key cargada desde variable de entorno");
 
         this.webClient = WebClient.builder()
                 .baseUrl("https://api.groq.com")
@@ -53,12 +53,12 @@ public class ChatbotService {
                 .build();
     }
 
-    // ✅ Obtener historial del usuario
+    //  Obtener historial del usuario
     private List<Map<String, String>> getHistorial(String username) {
         return historialPorUsuario.computeIfAbsent(username, k -> new ArrayList<>());
     }
 
-    // ✅ Agregar mensaje al historial
+    //  Agregar mensaje al historial
     private void agregarAlHistorial(String username, String rol, String contenido) {
         List<Map<String, String>> historial = getHistorial(username);
         Map<String, String> mensaje = new HashMap<>();
@@ -72,10 +72,10 @@ public class ChatbotService {
         }
     }
 
-    // ✅ Limpiar historial del usuario
+    // Limpiar historial del usuario
     public void limpiarHistorial(String username) {
         historialPorUsuario.remove(username);
-        System.out.println("🧹 Historial limpiado para usuario: " + username);
+        System.out.println(" Historial limpiado para usuario: " + username);
     }
 
     private String procesarConsultaLocal(String pregunta, String username) {
@@ -117,8 +117,8 @@ public class ChatbotService {
     public void streamRespuesta(String pregunta, String username, SseEmitter emitter) {
         executor.submit(() -> {
             try {
-                System.out.println("📝 Pregunta: " + pregunta);
-                System.out.println("👤 Usuario: " + username);
+                System.out.println(" Pregunta: " + pregunta);
+                System.out.println(" Usuario: " + username);
 
                 // Guardar pregunta del usuario en el historial
                 agregarAlHistorial(username, "user", pregunta);
@@ -127,7 +127,7 @@ public class ChatbotService {
                 String respuestaLocal = procesarConsultaLocal(pregunta, username);
 
                 if (respuestaLocal != null) {
-                    System.out.println("✅ Respondiendo desde base de datos");
+                    System.out.println(" Respondiendo desde base de datos");
                     // Guardar respuesta en historial
                     agregarAlHistorial(username, "assistant", respuestaLocal);
                     String encoded = Base64.getEncoder()
@@ -161,7 +161,7 @@ public class ChatbotService {
                 // Construir lista de mensajes (sistema + historial)
                 List<Map<String, String>> mensajes = new ArrayList<>();
                 mensajes.add(Map.of("role", "system", "content", systemPrompt));
-                mensajes.addAll(historial); // ✅ Aquí está la magia: incluye el historial
+                mensajes.addAll(historial); //  Aquí está la magia: incluye el historial
 
                 Map<String, Object> body = Map.of(
                         "model", MODEL,

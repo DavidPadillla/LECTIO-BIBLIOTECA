@@ -28,18 +28,18 @@ public class ChatController {
 
         String username = obtenerUsernameActual();
 
-        // Timeout infinito
+
         SseEmitter emitter = new SseEmitter(0L);
 
         emitter.onCompletion(() -> System.out.println("✅ SSE completado"));
 
         emitter.onTimeout(() -> {
-            System.out.println("⏰ Timeout SSE");
+            System.out.println("Timeout SSE");
             emitter.complete();
         });
 
         emitter.onError((e) -> {
-            System.out.println("🔥 Error SSE: " + e.getMessage());
+            System.out.println(" Error SSE: " + e.getMessage());
             e.printStackTrace();
             emitter.completeWithError(e);
         });
@@ -49,7 +49,7 @@ public class ChatController {
         return emitter;
     }
 
-    // ✅ Endpoint para limpiar el historial del chat
+
     @PostMapping("/limpiar")
     public ResponseEntity<?> limpiarHistorial() {
         String username = obtenerUsernameActual();
@@ -67,7 +67,7 @@ public class ChatController {
         ));
     }
 
-    // ✅ Endpoint para obtener el historial (opcional, para depuración)
+
     @GetMapping("/historial")
     public ResponseEntity<?> obtenerHistorial() {
         String username = obtenerUsernameActual();

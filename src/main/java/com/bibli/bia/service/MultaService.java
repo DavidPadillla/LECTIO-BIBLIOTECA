@@ -19,7 +19,7 @@ public class MultaService {
         return multaRepository.save(multa);
     }
 
-    // ✅ Cambiado: ahora usa findByUsuarioId en lugar de findByIdUsuario
+
     public List<MultaModel> obtenerMultasPorUsuario(String idUsuario) {
         return multaRepository.findByUsuarioId(idUsuario);
     }

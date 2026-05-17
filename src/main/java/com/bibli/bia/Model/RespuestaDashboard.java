@@ -74,7 +74,7 @@ public class RespuestaDashboard {
     @Column(name = "fecha_registro", nullable = false)
     private LocalDateTime fechaRegistro = LocalDateTime.now();
 
-    // Constructores
+
     public RespuestaDashboard() {}
 
     public RespuestaDashboard(String id, Usuario usuario, Integer edad, String genero, String educacion,
@@ -105,7 +105,7 @@ public class RespuestaDashboard {
         this.fechaRegistro = fechaRegistro;
     }
 
-    // Getters y Setters
+
     public String getId() { return id; }
     public void setId(String id) { this.id = id; }
 

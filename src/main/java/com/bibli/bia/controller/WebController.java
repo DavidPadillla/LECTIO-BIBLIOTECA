@@ -343,7 +343,13 @@ public class WebController {
     @GetMapping("/cargarLibrosPorCategoria")
     @ResponseBody
     public List<LibroFisicoModel> cargarLibrosPorCategoria(@RequestParam String categoria) {
-        return libroFisicoService.obtenerLibrosFisicosPorCategoria(categoria);
+        System.out.println(" Buscando libros de categoría: " + categoria);
+        List<LibroFisicoModel> libros = libroFisicoService.obtenerLibrosFisicosPorCategoria(categoria);
+        System.out.println(" Encontrados: " + libros.size());
+        for (LibroFisicoModel libro : libros) {
+            System.out.println("   - " + libro.getTitulo() + " (Stock: " + libro.getStock() + ")");
+        }
+        return libros;
     }
 
     // ========== GESTIÓN DE RESERVAS ==========
@@ -357,6 +363,7 @@ public class WebController {
         }
         return "reservaAdmin";
     }
+
 
     @PostMapping("/guardarReservaUsuario")
     @ResponseBody

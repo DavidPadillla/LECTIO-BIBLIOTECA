@@ -25,7 +25,7 @@ public class LibroOptimizadorService {
         return libroRepositoryOptimizador.save(libro);
     }
 
-    // ✅ FIX: el ID es Long (igual que en LibroOptimizador y JpaRepository<LibroOptimizador, Long>)
+
     public void eliminar(Long id) {
         libroRepositoryOptimizador.deleteById(id);
     }

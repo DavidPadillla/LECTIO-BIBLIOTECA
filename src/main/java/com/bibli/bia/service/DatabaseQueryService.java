@@ -28,14 +28,14 @@ public class DatabaseQueryService {
     @Autowired
     private ProgresoLecturaRepository progresoLecturaRepository;
 
-    // Obtener información del usuario actual
+
     public String getUsuarioInfo(String username) {
         Usuario usuario = usuarioRepository.findByUsername(username).orElse(null);
         if (usuario == null) return "Usuario no encontrado";
         return "Usuario: " + usuario.getUsername() + ", Roles: " + usuario.getRoles();
     }
 
-    // Obtener libros virtuales por categoría
+
     public String getLibrosVirtualesPorCategoria(String categoria) {
         List<LibroModel> libros = libroRepository.findByCategoriaIgnoreCase(categoria);
         if (libros.isEmpty()) return "No hay libros virtuales en la categoría '" + categoria + "'";
@@ -55,7 +55,7 @@ public class DatabaseQueryService {
                         .collect(Collectors.joining(", "));
     }
 
-    // Obtener reservas del usuario actual
+
     public String getMisReservas(String username) {
         Usuario usuario = usuarioRepository.findByUsername(username).orElse(null);
         if (usuario == null) return "Usuario no encontrado";
@@ -66,7 +66,7 @@ public class DatabaseQueryService {
                         .collect(Collectors.joining(", "));
     }
 
-    // Obtener multas del usuario actual (no pagadas)
+
     public String getMisMultas(String username) {
         Usuario usuario = usuarioRepository.findByUsername(username).orElse(null);
         if (usuario == null) return "Usuario no encontrado";
@@ -78,7 +78,7 @@ public class DatabaseQueryService {
                         .collect(Collectors.joining(", "));
     }
 
-    // Obtener progreso de lectura del usuario
+
     public String getMiProgreso(String username) {
         Usuario usuario = usuarioRepository.findByUsername(username).orElse(null);
         if (usuario == null) return "Usuario no encontrado";

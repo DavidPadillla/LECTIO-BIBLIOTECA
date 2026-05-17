@@ -12,24 +12,24 @@ import java.util.List;
 @Repository
 public interface ReservaRepository extends JpaRepository<ReservaModel, String> {
 
-    // Buscar reservas por usuario
+
     List<ReservaModel> findByUsuario(Usuario usuario);
 
-    // Buscar reservas por ID de usuario
+
     List<ReservaModel> findByUsuarioId(String usuarioId);
 
-    // Buscar reservas por libro
+
     List<ReservaModel> findByLibro(String libro);
 
-    // Buscar reservas por categoría
+
     List<ReservaModel> findByCategoria(String categoria);
 
-    // Buscar reservas por fecha
+
     List<ReservaModel> findByFecha(LocalDate fecha);
 
-    // Buscar reservas entre fechas
+
     List<ReservaModel> findByFechaBetween(LocalDate fechaInicio, LocalDate fechaFin);
 
-    // Buscar reservas futuras (fecha >= hoy)
+
     List<ReservaModel> findByFechaGreaterThanEqual(LocalDate fecha);
 }

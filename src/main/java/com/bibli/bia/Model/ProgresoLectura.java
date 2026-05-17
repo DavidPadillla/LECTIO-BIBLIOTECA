@@ -27,10 +27,10 @@ public class ProgresoLectura {
     private Usuario usuario;
 
     @Column(columnDefinition = "TEXT")
-    private String librosCompletados = "[]"; // Guardas como JSON: ["libro1", "libro2"]
+    private String librosCompletados = "[]";
 
     @Column(columnDefinition = "TEXT")
-    private String capitulosPorLibro = "{}"; // Guardas como JSON: {"libro1": [1,2,3], "libro2": [1]}
+    private String capitulosPorLibro = "{}";
 
     private int totalLibrosLeidos = 0;
 
@@ -47,14 +47,14 @@ public class ProgresoLectura {
         this.puntos = 0;
     }
 
-    // Getters y Setters
+
     public String getId() { return id; }
     public void setId(String id) { this.id = id; }
 
     public Usuario getUsuario() { return usuario; }
     public void setUsuario(Usuario usuario) { this.usuario = usuario; }
 
-    // ✅ CORREGIDO: Convierte JSON string a Set<String>
+
     public Set<String> getLibrosCompletados() {
         if (librosCompletados == null || librosCompletados.isEmpty() || librosCompletados.equals("[]")) {
             return new HashSet<>();
@@ -67,7 +67,7 @@ public class ProgresoLectura {
         }
     }
 
-    // ✅ CORREGIDO: Convierte Set<String> a JSON string
+
     public void setLibrosCompletados(Set<String> libros) {
         if (libros == null) {
             this.librosCompletados = "[]";
@@ -81,7 +81,7 @@ public class ProgresoLectura {
         }
     }
 
-    // ✅ CORREGIDO: Convierte JSON string a Map<String, Set<Integer>>
+
     public Map<String, Set<Integer>> getCapitulosPorLibro() {
         if (capitulosPorLibro == null || capitulosPorLibro.isEmpty() || capitulosPorLibro.equals("{}")) {
             return new HashMap<>();
@@ -94,7 +94,7 @@ public class ProgresoLectura {
         }
     }
 
-    // ✅ CORREGIDO: Convierte Map<String, Set<Integer>> a JSON string
+
     public void setCapitulosPorLibro(Map<String, Set<Integer>> capitulos) {
         if (capitulos == null) {
             this.capitulosPorLibro = "{}";

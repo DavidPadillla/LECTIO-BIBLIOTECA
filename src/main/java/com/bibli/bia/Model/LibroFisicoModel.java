@@ -33,7 +33,7 @@ public class LibroFisicoModel {
     @Column(nullable = false)
     private int reservado = 0;
 
-    // Relación con reservas (opcional)
+
     @OneToMany(mappedBy = "libro", fetch = FetchType.LAZY)
     private List<ReservaModel> reservas = new ArrayList<>();
 
@@ -48,7 +48,7 @@ public class LibroFisicoModel {
         this.reservado = reservado;
     }
 
-    // Getters y Setters
+
     public String getId() { return id; }
     public void setId(String id) { this.id = id; }
 

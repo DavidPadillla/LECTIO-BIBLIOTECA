@@ -27,7 +27,7 @@ public class ProgresoLecturaController {
         }
 
         String username = authentication.getName();
-        ProgresoLectura progreso = progresoService.obtenerProgreso(username); // ✅ Sigue con String
+        ProgresoLectura progreso = progresoService.obtenerProgreso(username);
 
         return ResponseEntity.ok(progreso);
     }
@@ -75,7 +75,7 @@ public class ProgresoLecturaController {
             return ResponseEntity.badRequest().body("libroId es requerido");
         }
 
-        ProgresoLectura progreso = progresoService.marcarLibroCompletado(username, libroId); // ✅ Sigue con String
+        ProgresoLectura progreso = progresoService.marcarLibroCompletado(username, libroId);
 
         Map<String, Object> response = new HashMap<>();
         response.put("mensaje", "¡Libro completado!");
@@ -94,7 +94,7 @@ public class ProgresoLecturaController {
         }
 
         String username = authentication.getName();
-        boolean completado = progresoService.haCompletadoLibro(username, libroId); // ✅ Sigue con String
+        boolean completado = progresoService.haCompletadoLibro(username, libroId);
 
         Map<String, Object> response = new HashMap<>();
         response.put("completado", completado);
@@ -110,7 +110,7 @@ public class ProgresoLecturaController {
         }
 
         String username = authentication.getName();
-        progresoService.reiniciarProgreso(username); // ✅ Sigue con String
+        progresoService.reiniciarProgreso(username);
 
         return ResponseEntity.ok("Progreso reiniciado");
     }

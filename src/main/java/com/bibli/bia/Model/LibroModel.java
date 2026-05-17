@@ -30,7 +30,7 @@ public class LibroModel {
     @Column(nullable = false, length = 50)
     private String categoria;
 
-    // Relaciones inversas (opcionales, para consultas)
+
     @OneToMany(mappedBy = "libroId", fetch = FetchType.LAZY)
     private List<ResenaModel> resenas = new ArrayList<>();
 
@@ -47,7 +47,7 @@ public class LibroModel {
         this.categoria = categoria;
     }
 
-    // Getters y Setters
+
     public String getId() { return id; }
     public void setId(String id) { this.id = id; }
 

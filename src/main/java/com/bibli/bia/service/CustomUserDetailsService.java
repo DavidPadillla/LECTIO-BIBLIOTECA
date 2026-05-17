@@ -36,7 +36,7 @@ public class CustomUserDetailsService implements UserDetailsService {
         log.info("✅ Usuario cargado correctamente: {}", usuario.getUsername());
         log.debug("Roles del usuario {}: {}", usuario.getUsername(), usuario.getRoles());
 
-        // Convertir roles a autoridades de Spring Security
+
         List<SimpleGrantedAuthority> authorities = usuario.getRoles().stream()
                 .map(role -> new SimpleGrantedAuthority("ROLE_" + role))
                 .collect(Collectors.toList());

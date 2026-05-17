@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Lectio Admin</title>
+    <title>Lectio Admin - Gestión de Reservas</title>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
@@ -19,7 +19,6 @@
             color: #2c3e50;
         }
 
-        /* Header Sticky */
         .navbar {
             background: #fff;
             display: flex;
@@ -51,7 +50,7 @@
             border-radius: 30px;
             font-weight: 500;
             cursor: pointer;
-            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            transition: all 0.4s ease;
             text-decoration: none;
             display: inline-flex;
             align-items: center;
@@ -65,7 +64,6 @@
             box-shadow: 0 8px 20px rgba(39, 174, 96, 0.4);
         }
 
-        /* Container */
         .container {
             max-width: 1400px;
             margin: 40px auto;
@@ -100,7 +98,6 @@
             color: #7f8c8d;
         }
 
-        /* Filters Card */
         .filters-card {
             background: white;
             border-radius: 12px;
@@ -162,7 +159,6 @@
             box-shadow: 0 0 0 4px rgba(39, 174, 96, 0.1);
         }
 
-        /* Results Card */
         .results-card {
             background: white;
             border-radius: 12px;
@@ -189,7 +185,7 @@
             gap: 10px;
         }
 
-        .results-header i {
+        .results-header h3 i {
             color: #27ae60;
             font-size: 1.3rem;
         }
@@ -203,7 +199,6 @@
             font-weight: 600;
         }
 
-        /* Books Grid */
         .books-grid {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
@@ -244,7 +239,6 @@
             color: #2c3e50;
         }
 
-        /* Badge de stock para admin */
         .stock-badge {
             position: absolute;
             top: 15px;
@@ -259,15 +253,6 @@
             letter-spacing: 0.5px;
             min-width: 40px;
             text-align: center;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 4px;
-        }
-
-        .stock-badge::before {
-            content: '📚';
-            font-size: 0.85rem;
         }
 
         .stock-badge.agotado {
@@ -275,17 +260,9 @@
             box-shadow: 0 2px 8px rgba(255, 107, 107, 0.3);
         }
 
-        .stock-badge.agotado::before {
-            content: '📕';
-        }
-
         .stock-badge.bajo-stock {
             background: linear-gradient(135deg, #ffa94d 0%, #fd7e14 100%);
             box-shadow: 0 2px 8px rgba(255, 169, 77, 0.3);
-        }
-
-        .stock-badge.bajo-stock::before {
-            content: '📙';
         }
 
         .btn-select {
@@ -316,7 +293,6 @@
             cursor: not-allowed;
         }
 
-        /* Modal Overlay */
         .modal-overlay {
             display: none;
             position: fixed;
@@ -342,7 +318,6 @@
             }
         }
 
-        /* Formulario Flotante Modal */
         #formulario-reserva {
             display: none;
             position: fixed;
@@ -439,27 +414,6 @@
             background: #d0d0d0;
         }
 
-        /* Success Message */
-        .success-message {
-            background: linear-gradient(135deg, #d4edda 0%, #c3e6cb 100%);
-            color: #155724;
-            padding: 14px 20px;
-            border-radius: 8px;
-            margin-bottom: 20px;
-            display: none;
-            align-items: center;
-            gap: 12px;
-            font-size: 14px;
-            font-weight: 600;
-            border: 2px solid #28a745;
-            animation: slideInBounce 0.5s ease;
-        }
-
-        .success-message i {
-            font-size: 1.2rem;
-        }
-
-        /* Loading */
         .loading {
             text-align: center;
             padding: 40px;
@@ -481,7 +435,6 @@
             }
         }
 
-        /* Empty State */
         .empty-state {
             text-align: center;
             padding: 60px 20px;
@@ -498,48 +451,6 @@
             margin-bottom: 10px;
         }
 
-        /* Responsive */
-        @media (max-width: 768px) {
-            .navbar {
-                flex-direction: column;
-                gap: 15px;
-                padding: 15px 20px;
-            }
-
-            .container {
-                padding: 0 20px;
-                margin: 30px auto;
-            }
-
-            .filters-grid {
-                grid-template-columns: 1fr;
-            }
-
-            .books-grid {
-                grid-template-columns: 1fr;
-            }
-
-            .form-actions {
-                flex-direction: column;
-            }
-
-            #formulario-reserva {
-                width: 95%;
-                padding: 20px;
-            }
-        }
-
-        /* Footer */
-        footer {
-            background: #2c3e50;
-            color: #fff;
-            text-align: center;
-            padding: 20px;
-            font-size: 0.9rem;
-            margin-top: 60px;
-        }
-
-        /* Mensaje flotante */
         #mensaje-reserva {
             display: none;
             position: fixed;
@@ -565,10 +476,44 @@
                 opacity: 1;
             }
         }
+
+        footer {
+            background: #2c3e50;
+            color: #fff;
+            text-align: center;
+            padding: 20px;
+            font-size: 0.9rem;
+            margin-top: 60px;
+        }
+
+        @media (max-width: 768px) {
+            .navbar {
+                flex-direction: column;
+                gap: 15px;
+                padding: 15px 20px;
+            }
+            .container {
+                padding: 0 20px;
+                margin: 30px auto;
+            }
+            .filters-grid {
+                grid-template-columns: 1fr;
+            }
+            .books-grid {
+                grid-template-columns: 1fr;
+            }
+            .form-actions {
+                flex-direction: column;
+            }
+            #formulario-reserva {
+                width: 95%;
+                padding: 20px;
+            }
+        }
     </style>
 </head>
 <body>
-<!-- Header -->
+
 <header class="navbar">
     <div class="logo">
         <h1>Lectio <span>Admin</span></h1>
@@ -578,59 +523,41 @@
     </a>
 </header>
 
-<!-- Modal Overlay -->
 <div class="modal-overlay" id="modal-overlay"></div>
 
-<!-- Container -->
 <div class="container">
     <div class="page-header">
-        <h1 class="page-title">Gestión de Reservas</h1>
+        <h1 class="page-title">Gestion de Reservas</h1>
         <p class="page-subtitle">Crea y administra reservas de libros para los usuarios</p>
     </div>
 
-    <!-- Filters -->
     <div class="filters-card">
         <div class="filters-grid">
             <div class="form-group">
-                <label>
-                    <i class="fas fa-tags"></i> Categoría
-                </label>
+                <label><i class="fas fa-tags"></i> Categoria</label>
                 <select id="categoria" required>
-                    <option value="" disabled selected>Selecciona una categoría</option>
-                    <option th:each="cat : ${categorias}" th:value="${cat}" th:text="${cat}">Categoría</option>
+                    <option value="" disabled selected>Selecciona una categoria</option>
+                    <option th:each="cat : ${categorias}" th:value="${cat}" th:text="${cat}"></option>
                 </select>
             </div>
-
             <div class="form-group" id="grupo-busqueda" style="display:none;">
-                <label>
-                    <i class="fas fa-search"></i> Buscar Libro
-                </label>
-                <input type="text" id="busqueda" placeholder="Título, autor...">
+                <label><i class="fas fa-search"></i> Buscar Libro</label>
+                <input type="text" id="busqueda" placeholder="Titulo, autor...">
             </div>
         </div>
     </div>
 
-    <!-- Results -->
     <div class="results-card" id="resultados-container" style="display:none;">
         <div class="results-header">
-            <h3>
-                <i class="fas fa-book"></i> Libros Disponibles
-            </h3>
+            <h3><i class="fas fa-book"></i> Libros Disponibles</h3>
             <span class="counter" id="contador">0 libros encontrados</span>
         </div>
-
-        <div class="books-grid" id="lista-libros">
-            <!-- Los libros se cargarán aquí dinámicamente -->
-        </div>
+        <div class="books-grid" id="lista-libros"></div>
     </div>
 </div>
 
-<!-- Formulario Flotante Modal -->
 <div id="formulario-reserva">
-    <h3>
-        <i class="fas fa-clipboard-check"></i> Completar Reserva
-    </h3>
-
+    <h3><i class="fas fa-clipboard-check"></i> Completar Reserva</h3>
     <form id="reserva-form">
         <input type="hidden" id="libro-seleccionado" name="libro">
         <input type="hidden" id="libro-id" name="libroId">
@@ -638,37 +565,23 @@
 
         <div class="form-grid">
             <div class="form-group">
-                <label>
-                    <i class="fas fa-book-open"></i> Libro Seleccionado
-                </label>
+                <label><i class="fas fa-book-open"></i> Libro Seleccionado</label>
                 <input type="text" id="libro-display" disabled style="background: #f8f9fa;">
             </div>
-
             <div class="form-group">
-                <label>
-                    <i class="fas fa-id-card"></i> ID de Usuario
-                </label>
+                <label><i class="fas fa-id-card"></i> ID de Usuario</label>
                 <input type="text" id="idUsuario" name="idUsuario" required placeholder="Ej: 12345">
             </div>
-
             <div class="form-group">
-                <label>
-                    <i class="fas fa-user"></i> Nombre Completo
-                </label>
-                <input type="text" id="nombreCompleto" name="nombreCompleto" required placeholder="Ej: Juan Pérez">
+                <label><i class="fas fa-user"></i> Nombre Completo</label>
+                <input type="text" id="nombreCompleto" name="nombreCompleto" required placeholder="Ej: Juan Perez">
             </div>
-
             <div class="form-group">
-                <label>
-                    <i class="fas fa-envelope"></i> Correo Electrónico
-                </label>
+                <label><i class="fas fa-envelope"></i> Correo Electronico</label>
                 <input type="email" id="correo" name="correo" required placeholder="usuario@ejemplo.com">
             </div>
-
             <div class="form-group">
-                <label>
-                    <i class="fas fa-calendar-alt"></i> Fecha de Reserva
-                </label>
+                <label><i class="fas fa-calendar-alt"></i> Fecha de Reserva</label>
                 <input type="date" id="fecha" name="fecha" required>
             </div>
         </div>
@@ -684,10 +597,8 @@
     </form>
 </div>
 
-<!-- Mensaje flotante -->
 <div id="mensaje-reserva"></div>
 
-<!-- Footer -->
 <footer>
     <p>&copy; 2025 Lectio Biblioteca. Todos los derechos reservados.</p>
 </footer>
@@ -711,17 +622,15 @@
             }
         });
 
-        $('#busqueda').keyup(function() {
+        $('#busqueda').on('keyup', function() {
             filtrarLibros();
         });
 
-        // Cerrar modal
-        $('#cancelar-reserva, #modal-overlay').click(function() {
+        $('#cancelar-reserva, #modal-overlay').on('click', function() {
             cerrarModal();
         });
 
-        // Cerrar con tecla Escape
-        $(document).keydown(function(e) {
+        $(document).on('keydown', function(e) {
             if (e.key === 'Escape' && $('#formulario-reserva').is(':visible')) {
                 cerrarModal();
             }
@@ -739,28 +648,44 @@
             $('body').css('overflow', 'hidden');
         }
 
-        $('#reserva-form').submit(function(e) {
+        $('#reserva-form').on('submit', function(e) {
             e.preventDefault();
             enviarReserva();
         });
 
         function cargarLibros(categoria) {
+            console.log("Cargando libros para categoria:", categoria);
+
             $.ajax({
                 url: '/api/cargarLibrosPorCategoria',
                 type: 'GET',
                 data: { categoria: categoria },
                 beforeSend: function() {
                     $('#lista-libros').html('<div class="loading"><i class="fas fa-spinner"></i><p>Cargando libros...</p></div>');
+                    $('#resultados-container').show();
                 },
                 success: function(data) {
-                    todosLosLibros = data;
-                    librosFiltrados = data;
-                    mostrarLibros(data);
-                    $('#categoria-seleccionada').val(categoria);
-                    $('#resultados-container').slideDown();
+                    console.log("Libros cargados:", data);
+                    console.log("Cantidad:", data ? data.length : 0);
+
+                    if (data && Array.isArray(data) && data.length > 0) {
+                        todosLosLibros = data;
+                        librosFiltrados = data;
+                        mostrarLibros(data);
+                        $('#categoria-seleccionada').val(categoria);
+                    } else {
+                        todosLosLibros = [];
+                        librosFiltrados = [];
+                        mostrarLibros([]);
+                        mostrarMensaje('No hay libros disponibles en esta categoria', 'error');
+                    }
                 },
-                error: function() {
-                    mostrarMensaje('Error al cargar los libros', 'error');
+                error: function(xhr, status, error) {
+                    console.error("Error cargando libros:", error);
+                    console.error("Status:", status);
+                    console.error("Respuesta:", xhr.responseText);
+                    mostrarLibros([]);
+                    mostrarMensaje('Error al cargar los libros: ' + error, 'error');
                 }
             });
         }
@@ -771,7 +696,7 @@
                 librosFiltrados = todosLosLibros;
             } else {
                 librosFiltrados = todosLosLibros.filter(function(libro) {
-                    return libro.titulo.toLowerCase().includes(busqueda) ||
+                    return (libro.titulo && libro.titulo.toLowerCase().includes(busqueda)) ||
                            (libro.autor && libro.autor.toLowerCase().includes(busqueda));
                 });
             }
@@ -782,8 +707,8 @@
             const $lista = $('#lista-libros');
             $lista.empty();
 
-            if (libros.length === 0) {
-                $lista.html('<div class="empty-state"><i class="fas fa-search"></i><h3>No se encontraron libros</h3><p>Intenta con otro término de búsqueda</p></div>');
+            if (!libros || libros.length === 0) {
+                $lista.html('<div class="empty-state"><i class="fas fa-search"></i><h3>No se encontraron libros</h3><p>Intenta con otra categoria o termino de busqueda</p></div>');
                 $('#contador').text('0 libros encontrados');
                 return;
             }
@@ -798,20 +723,20 @@
                 let btnDisabled = '';
 
                 if (stock === 0) {
-                    stockBadge = `<div class="stock-badge agotado">Agotado</div>`;
+                    stockBadge = '<div class="stock-badge agotado">Agotado</div>';
                     btnDisabled = 'disabled';
                 } else if (stock <= 3) {
-                    stockBadge = `<div class="stock-badge bajo-stock">${stock}</div>`;
+                    stockBadge = '<div class="stock-badge bajo-stock">' + stock + '</div>';
                 } else {
-                    stockBadge = `<div class="stock-badge">${stock}</div>`;
+                    stockBadge = '<div class="stock-badge">' + stock + '</div>';
                 }
 
                 $lista.append(`
                     <div class="book-card" data-titulo="${escapeHtml(libro.titulo)}" data-id="${id}">
                         ${stockBadge}
                         <h4>${escapeHtml(libro.titulo)}</h4>
-                        ${libro.autor ? `<p><strong>Autor:</strong> ${escapeHtml(libro.autor)}</p>` : ''}
-                        ${libro.anioPublicacion ? `<p><strong>Año:</strong> ${libro.anioPublicacion}</p>` : ''}
+                        ${libro.autor ? '<p><strong>Autor:</strong> ' + escapeHtml(libro.autor) + '</p>' : ''}
+                        ${libro.categoria ? '<p><strong>Categoria:</strong> ' + escapeHtml(libro.categoria) + '</p>' : ''}
                         <button class="btn-select" ${btnDisabled}>
                             <i class="fas fa-check-circle"></i> ${stock > 0 ? 'Seleccionar' : 'Sin stock'}
                         </button>
@@ -819,13 +744,15 @@
                 `);
             });
 
-            $('.btn-select:not(:disabled)').click(function() {
+            $('.btn-select:not(:disabled)').off('click').on('click', function() {
                 const titulo = $(this).closest('.book-card').data('titulo');
                 const id = $(this).closest('.book-card').data('id');
+                const categoria = $('#categoria').val();
 
                 $('#libro-seleccionado').val(titulo);
                 $('#libro-id').val(id);
                 $('#libro-display').val(titulo);
+                $('#categoria-seleccionada').val(categoria);
 
                 abrirModal();
             });
@@ -835,16 +762,14 @@
             const libroId = $('#libro-id').val();
 
             if (!libroId) {
-                mostrarMensaje('Error: no se seleccionó un libro', 'error');
+                mostrarMensaje('Error: no se selecciono un libro', 'error');
                 return;
             }
 
-            // 1) Decrementar stock
             $.ajax({
                 url: '/api/reservar/' + encodeURIComponent(libroId),
                 type: 'POST'
             }).done(function() {
-                // 2) Guardar reserva
                 const formData = $('#reserva-form').serialize();
                 $.ajax({
                     url: '/api/guardarReservaUsuario',
@@ -852,17 +777,20 @@
                     data: formData,
                     success: function(response) {
                         $('#reserva-form')[0].reset();
+                        $('#libro-display').val('');
                         cerrarModal();
-                        mostrarMensaje('¡Reserva realizada con éxito!', 'exito');
-
-                        // Recargar libros
+                        mostrarMensaje('Reserva realizada con exito!', 'exito');
                         const categoria = $('#categoria').val();
                         if (categoria) {
                             cargarLibros(categoria);
                         }
                     },
-                    error: function() {
-                        mostrarMensaje('Error al guardar la reserva', 'error');
+                    error: function(xhr) {
+                        let msg = 'Error al guardar la reserva';
+                        if (xhr.responseJSON && xhr.responseJSON.error) {
+                            msg = xhr.responseJSON.error;
+                        }
+                        mostrarMensaje(msg, 'error');
                     }
                 });
             }).fail(function() {
@@ -873,13 +801,11 @@
         function mostrarMensaje(texto, tipo) {
             const $msg = $('#mensaje-reserva');
             $msg.text(texto);
-            if (tipo === 'exito') {
-                $msg.css('background-color', '#4CAF50');
-            } else {
-                $msg.css('background-color', '#e74c3c');
-            }
+            $msg.css('background-color', tipo === 'exito' ? '#4CAF50' : '#e74c3c');
             $msg.fadeIn();
-            setTimeout(() => { $msg.fadeOut(); }, 3000);
+            setTimeout(function() {
+                $msg.fadeOut();
+            }, 3000);
         }
 
         function escapeHtml(text) {

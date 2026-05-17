@@ -12,25 +12,23 @@ import java.util.Optional;
 @Repository
 public interface UsuarioRepository extends JpaRepository<Usuario, String> {
 
-    // Buscar por username (único)
+
     Optional<Usuario> findByUsername(String username);
 
-    // Verificar si existe un username
+
     boolean existsByUsername(String username);
 
-    // Buscar por username ignorando mayúsculas
+
     Optional<Usuario> findByUsernameIgnoreCase(String username);
 
     @Query("SELECT u FROM Usuario u LEFT JOIN FETCH u.roles WHERE u.username = :username")
     Optional<Usuario> findByUsernameWithRoles(@Param("username") String username);
 
 
-
-    // ✅ Métodos para contar usuarios activos e inactivos
     long countByActivoTrue();
     long countByActivoFalse();
 
-    // ✅ Método para obtener usuarios por estado
+
     List<Usuario> findByActivoTrue();
     List<Usuario> findByActivoFalse();
 

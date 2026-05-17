@@ -25,7 +25,7 @@ public class LibroService {
     }
 
     public List<LibroModel> obtenerLibrosPorCategoria(String categoria) {
-        // ✅ Cambiado: ahora usa findByCategoriaIgnoreCase
+
         return libroRepository.findByCategoriaIgnoreCase(categoria);
     }
 

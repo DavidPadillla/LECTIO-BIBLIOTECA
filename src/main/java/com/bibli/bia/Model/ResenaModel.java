@@ -30,14 +30,14 @@ public class ResenaModel {
     @Column(name = "libro_id", length = 100)
     private String libroId;
 
-    // Constructor
+
     public ResenaModel(Usuario usuario, String nombre, String comentario) {
         this.usuario = usuario;
         this.nombre = nombre;
         this.comentario = comentario;
     }
 
-    // Getters y Setters
+
     public String getId() { return id; }
     public void setId(String id) { this.id = id; }
 
