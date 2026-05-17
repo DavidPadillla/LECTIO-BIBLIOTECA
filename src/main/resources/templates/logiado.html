@@ -405,6 +405,7 @@
         <a href="#centro-ayuda">Ayuda</a>
         <a href="/api/libroVirtualesLog">Libros Virtuales</a>
         <a href="/api/reservaLibro">Reserva</a>
+        <a href="/api/optimizador">Optimizador</a>
         <a href="/api/inicio" class="desafio-link">
             <span id="desafio-icon">
                 <span class="desafio-icon-trophy">🏆</span>
@@ -555,19 +556,19 @@
             headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
             body: `comentario=${encodeURIComponent(comentario)}`
         })
-        .then(r => { if (!r.ok) throw new Error(); return r.text(); })
-        .then(() => {
-            mensajeEnvio.textContent = '¡Gracias por tu reseña!';
-            mensajeEnvio.style.color = 'green';
-            showFloating('✅ Reseña enviada con éxito', '#4CAF50');
-            document.getElementById('comentario').value = '';
-            setTimeout(() => { mensajeEnvio.style.display = 'none'; }, 3000);
-        })
-        .catch(() => {
-            mensajeEnvio.textContent = 'Error al enviar. Intenta nuevamente.';
-            mensajeEnvio.style.color = 'red';
-            showFloating('⚠️ Error al enviar la reseña', '#f44336');
-        });
+            .then(r => { if (!r.ok) throw new Error(); return r.text(); })
+            .then(() => {
+                mensajeEnvio.textContent = '¡Gracias por tu reseña!';
+                mensajeEnvio.style.color = 'green';
+                showFloating('✅ Reseña enviada con éxito', '#4CAF50');
+                document.getElementById('comentario').value = '';
+                setTimeout(() => { mensajeEnvio.style.display = 'none'; }, 3000);
+            })
+            .catch(() => {
+                mensajeEnvio.textContent = 'Error al enviar. Intenta nuevamente.';
+                mensajeEnvio.style.color = 'red';
+                showFloating('⚠️ Error al enviar la reseña', '#f44336');
+            });
     });
 
     function showFloating(msg, color) {
@@ -712,13 +713,13 @@
             method: 'POST',
             credentials: 'include'
         })
-        .then(response => response.json())
-        .then(data => {
-            console.log('🧹 Historial limpiado:', data);
-        })
-        .catch(error => {
-            console.error('Error limpiando historial:', error);
-        });
+            .then(response => response.json())
+            .then(data => {
+                console.log('🧹 Historial limpiado:', data);
+            })
+            .catch(error => {
+                console.error('Error limpiando historial:', error);
+            });
 
         // Limpiar el chat visualmente
         chatBody.innerHTML = '<div class="chat-date-sep">Hoy</div>';

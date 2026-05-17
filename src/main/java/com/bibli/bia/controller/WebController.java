@@ -15,7 +15,8 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
-
+import jakarta.validation.Valid;
+import org.springframework.validation.BindingResult;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
@@ -156,7 +157,7 @@ public class WebController {
     @GetMapping("/libroVirtualesLog")
     public String listarLibros(Model model) {
         List<LibroModel> libros = libroService.obtenerTodosLosLibros();
-        System.out.println("📚 TOTAL LIBROS EN BD: " + libros.size());  // 👈 Agrega esto
+        System.out.println("📚 TOTAL LIBROS EN BD: " + libros.size());
 
         model.addAttribute("libros", libros);
         model.addAttribute("librosNovela", libroService.obtenerLibrosPorCategoria("Novelas"));
@@ -191,7 +192,6 @@ public class WebController {
             Usuario usuario = usuarioRepository.findByUsername(authentication.getName())
                     .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
 
-            // Usa el username del usuario autenticado como nombre
             ResenaModel resena = new ResenaModel(usuario, usuario.getUsername(), comentario);
             resenaService.guardarResena(resena);
             redirectAttributes.addFlashAttribute("mensaje", "¡Gracias por tu reseña!");
@@ -210,7 +210,7 @@ public class WebController {
             respuesta.setUsuario(usuario);
         }
         respuestaService.guardarRespuesta(respuesta);
-        return "redirect:/api/logiado";  // ✅ Redirige después de guardar
+        return "redirect:/api/logiado";
     }
 
     // ==================== ÁREA ADMINISTRACIÓN ====================
@@ -218,7 +218,6 @@ public class WebController {
     @GetMapping("/admin")
     public String adminPage(Model model) {
         try {
-            // ✅ AHORA SÓLO CUENTA, NO CARGA TODOS LOS DATOS
             long totalUsuarios = usuarioService.contarUsuarios();
             long totalReservas = reservaService.contarReservas();
             long totalMultas = multaService.contarMultas();
@@ -679,5 +678,50 @@ public class WebController {
 
         model.addAttribute("librosFisicos", libroFisicoService.obtenerTodosLosLibrosFisicos());
         return "reservaLibro";
+    }
+
+    // ==================== OPTIMIZADOR MILP ====================
+
+    @Autowired
+    private OptimizadorService optimizadorService;                          // ✅ FIX: inyección correcta del bean
+
+    @Autowired
+    private com.bibli.bia.repository.LibroOptimizadorRepository libroOptimizadorRepository;
+
+    @GetMapping("/optimizador")
+    public String optimizadorFormulario(Model model) {
+        model.addAttribute("solicitud", new SolicitudOptimizacion());       // ✅ FIX: paquete correcto (com.bibli.bia.Model)
+        model.addAttribute("totalLibros", libroOptimizadorRepository.findByDisponibleTrue().size());
+        model.addAttribute("categorias", List.of(
+                "Clásico", "Distopía", "Ciencia ficción", "Fantasía", "Thriller",
+                "Romance", "Historia", "Ficción", "Autoayuda", "Tecnología",
+                "Negocios", "Terror", "Poesía", "Filosofía", "Infantil",
+                "Misterio", "Ciencia", "Fábula"
+        ));
+        return "formulario";
+    }
+
+    @PostMapping("/optimizador")
+    public String optimizadorCalcular(
+            @Valid @ModelAttribute("solicitud") SolicitudOptimizacion solicitud, // ✅ FIX: paquete correcto
+            BindingResult bindingResult,
+            Model model) {
+
+        if (bindingResult.hasErrors()) {
+            model.addAttribute("totalLibros", libroOptimizadorRepository.findByDisponibleTrue().size());
+            model.addAttribute("categorias", List.of(
+                    "Clásico", "Distopía", "Ciencia ficción", "Fantasía", "Thriller",
+                    "Romance", "Historia", "Ficción", "Autoayuda", "Tecnología",
+                    "Negocios", "Terror", "Poesía", "Filosofía", "Infantil",
+                    "Misterio", "Ciencia", "Fábula"
+            ));
+            return "formulario";
+        }
+
+        // ✅ FIX: se llama al bean inyectado, no como método estático de la clase equivocada
+        ResultadoOptimizacion resultado = optimizadorService.optimizar(solicitud);
+        model.addAttribute("resultado", resultado);
+        model.addAttribute("solicitud", solicitud);
+        return "resultado";
     }
 }
