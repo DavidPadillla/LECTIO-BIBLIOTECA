@@ -1,0 +1,12 @@
+REGLAMENTO DE LA BIBLIOTECA LECTIO
+
+Los usuarios pueden reservar hasta 3 libros físicos al mismo tiempo.
+El tiempo máximo de préstamo es de 15 días calendario.
+Los libros deben devolverse en buen estado y dentro de la fecha establecida.
+Las multas por retraso son de $2.000 COP por día.
+Está prohibido compartir cuentas entre usuarios.
+Los usuarios pueden acceder gratuitamente a los libros virtuales disponibles en la plataforma.
+El sistema permite renovar préstamos únicamente si el libro no tiene reservas pendientes.
+El comportamiento irrespetuoso dentro de la biblioteca puede generar suspensión temporal de la cuenta.
+Los usuarios deben mantener actualizada su información personal.
+Lectio protege la privacidad y seguridad de los datos de todos los usuarios.

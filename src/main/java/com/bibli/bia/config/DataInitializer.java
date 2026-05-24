@@ -394,8 +394,8 @@ public class DataInitializer implements CommandLineRunner {
             }
         }
 
-        System.out.println("🎉 TODOS los datos de ejemplo han sido cargados exitosamente!");
-        System.out.println("📊 Resumen final:");
+        System.out.println(" TODOS los datos de ejemplo han sido cargados exitosamente!");
+        System.out.println(" Resumen final:");
         System.out.println("   - Usuarios: " + usuarioRepository.count() + " (20 activos + 10 inactivos)");
         System.out.println("   - Libros Virtuales: " + libroRepository.count());
         System.out.println("   - Libros Físicos: " + libroFisicoRepository.count());

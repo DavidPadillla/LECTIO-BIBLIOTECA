@@ -1,0 +1,18 @@
+LECTIO es una biblioteca virtual desarrollada con Spring Boot y PostgreSQL.
+
+La plataforma permite:
+- Gestionar préstamos de libros
+- Reservar libros físicos
+- Consultar libros virtuales
+- Administrar multas
+- Llevar seguimiento del progreso lector
+
+LECTIO integra inteligencia artificial mediante GROQ API y RAG para responder preguntas usando documentos internos.
+
+El sistema fue diseñado con arquitectura por capas:
+- Controller
+- Service
+- Repository
+- Model
+
+También utiliza Spring Security para autenticación de usuarios.

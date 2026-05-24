@@ -1,0 +1,14 @@
+LECTIO utiliza tecnología RAG (Retrieval-Augmented Generation).
+
+RAG permite combinar inteligencia artificial con documentos reales almacenados en archivos de texto.
+
+El sistema busca información relevante dentro de documentos TXT y luego GROQ genera respuestas más precisas usando ese contexto.
+
+La aplicación utiliza:
+- Spring Boot
+- WebClient
+- SSE Streaming
+- GROQ API
+- Modelo Llama 3.3 70B
+
+El chatbot responde en tiempo real y mantiene memoria conversacional.

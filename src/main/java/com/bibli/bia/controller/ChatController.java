@@ -23,71 +23,140 @@ public class ChatController {
         this.chatbotService = chatbotService;
     }
 
-    @GetMapping(value = "/groq", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
-    public SseEmitter preguntarGroq(@RequestParam String pregunta) {
+    // ==========================================
+    // CHAT RAG + GROQ STREAMING
+    // ==========================================
+
+    @GetMapping(
+            value = "/rag",
+            produces = MediaType.TEXT_EVENT_STREAM_VALUE
+    )
+    public SseEmitter preguntarRag(
+            @RequestParam String pregunta
+    ) {
 
         String username = obtenerUsernameActual();
 
+        if (username == null) {
+            username = "anonimo";
+        }
+
+        System.out.println("==================================");
+        System.out.println("NUEVA PREGUNTA RAG");
+        System.out.println("Usuario: " + username);
+        System.out.println(" Pregunta: " + pregunta);
+        System.out.println("==================================");
 
         SseEmitter emitter = new SseEmitter(0L);
 
-        emitter.onCompletion(() -> System.out.println("✅ SSE completado"));
+        emitter.onCompletion(() ->
+                System.out.println(" SSE completado")
+        );
 
         emitter.onTimeout(() -> {
-            System.out.println("Timeout SSE");
+
+            System.out.println(" Timeout SSE");
+
             emitter.complete();
         });
 
         emitter.onError((e) -> {
-            System.out.println(" Error SSE: " + e.getMessage());
-            e.printStackTrace();
+
+            System.out.println(
+                    "Error SSE: " + e.getMessage()
+            );
+
             emitter.completeWithError(e);
         });
 
-        chatbotService.streamRespuesta(pregunta, username, emitter);
+        chatbotService.streamRespuesta(
+                pregunta,
+                username,
+                emitter
+        );
 
         return emitter;
     }
 
 
+
     @PostMapping("/limpiar")
     public ResponseEntity<?> limpiarHistorial() {
+
         String username = obtenerUsernameActual();
 
         if (username == null) {
-            return ResponseEntity.status(401).body(Map.of("error", "No autenticado"));
+
+            return ResponseEntity
+                    .status(401)
+                    .body(
+                            Map.of(
+                                    "success", false,
+                                    "error", "Usuario no autenticado"
+                            )
+                    );
         }
 
         chatbotService.limpiarHistorial(username);
-        System.out.println("🧹 Historial limpiado para usuario: " + username);
 
-        return ResponseEntity.ok().body(Map.of(
-                "success", true,
-                "mensaje", "Historial limpiado correctamente"
-        ));
+        System.out.println(
+                " Historial limpiado para usuario: "
+                        + username
+        );
+
+        return ResponseEntity.ok(
+                Map.of(
+                        "success", true,
+                        "mensaje", "Historial limpiado correctamente"
+                )
+        );
     }
+
 
 
     @GetMapping("/historial")
     public ResponseEntity<?> obtenerHistorial() {
+
         String username = obtenerUsernameActual();
 
         if (username == null) {
-            return ResponseEntity.status(401).body(Map.of("error", "No autenticado"));
+
+            return ResponseEntity
+                    .status(401)
+                    .body(
+                            Map.of(
+                                    "success", false,
+                                    "error", "Usuario no autenticado"
+                            )
+                    );
         }
 
-        var historial = chatbotService.obtenerHistorial(username);
-        return ResponseEntity.ok().body(Map.of(
-                "usuario", username,
-                "historial", historial
-        ));
+        var historial =
+                chatbotService.obtenerHistorial(username);
+
+        return ResponseEntity.ok(
+                Map.of(
+                        "success", true,
+                        "usuario", username,
+                        "historial", historial
+                )
+        );
     }
 
     private String obtenerUsernameActual() {
-        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
 
-        if (auth != null && auth.isAuthenticated()
-                && !"anonymousUser".equals(auth.getPrincipal())) {
+        Authentication auth =
+                SecurityContextHolder
+                        .getContext()
+                        .getAuthentication();
+
+        if (
+                auth != null
+                        && auth.isAuthenticated()
+                        && !"anonymousUser"
+                        .equals(auth.getPrincipal())
+        ) {
+
             return auth.getName();
         }
 

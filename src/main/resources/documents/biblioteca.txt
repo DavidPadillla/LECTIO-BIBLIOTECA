@@ -1,0 +1,12 @@
+La biblioteca virtual de LECTIO permite acceder a libros digitales desde cualquier dispositivo.
+
+Los usuarios pueden:
+- Leer libros virtuales
+- Buscar por categoría
+- Consultar autores
+- Revisar historial lector
+- Obtener recomendaciones
+
+LECTIO fue creada para mejorar la experiencia de lectura mediante herramientas digitales e inteligencia artificial.
+
+La plataforma también cuenta con dashboard analítico en Power BI integrado con Spring Boot.ervar libros físicos y acceder a libros virtuales.
