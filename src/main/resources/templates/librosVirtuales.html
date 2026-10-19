@@ -2,323 +2,993 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>BookLab - Libros Virtuales</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" />
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;500;700&display=swap" rel="stylesheet" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="description" content="Lectio - Libros virtuales disponibles en nuestra biblioteca digital" />
+    <meta name="keywords" content="libros, biblioteca, virtual, lectura, autores" />
+    <title>Libros Virtuales — Lectio Biblioteca</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
+
     <style>
-        /* ----------- RESET Y FUENTES ----------- */
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
+        :root{
+            --white:#ffffff;
+            --off-white:#f7faf8;
+            --paper:#eef7f1;
+            --paper-2:#e3efe7;
+
+            --ink:#0d2b1d;
+            --ink-soft:#2d4a3a;
+            --muted:#6b8377;
+            --line:#d4e5d9;
+            --line-2:#bcd8c6;
+
+            --green:#1a6b45;
+            --green-2:#2a8055;
+            --green-3:#34a06c;
+            --green-4:#7fc9a0;
+            --green-tint:#e6f3eb;
+            --green-deep:#0f4a2e;
+
+            --serif:'Instrument Serif','Times New Roman',serif;
+            --sans:'Inter',-apple-system,sans-serif;
+            --mono:'JetBrains Mono','Courier New',monospace;
+
+            --ease:cubic-bezier(.22,1,.36,1);
         }
 
-        body {
-            font-family: 'Poppins', sans-serif;
-            background-color: #f4f6fc;
-            color: #2c3e50;
-            line-height: 1.6;
+        *{margin:0;padding:0;box-sizing:border-box}
+        html{scroll-behavior:smooth;scroll-padding-top:90px}
+        body{
+            font-family:var(--sans);
+            background:var(--white);
+            color:var(--ink);
+            font-size:16px;
+            line-height:1.55;
+            overflow-x:hidden;
+            -webkit-font-smoothing:antialiased;
+        }
+        img{max-width:100%;display:block}
+        a{color:inherit;text-decoration:none}
+        button{font-family:inherit;cursor:pointer;border:none;background:none;color:inherit}
+        ul{list-style:none}
+        ::selection{background:var(--green);color:var(--white)}
+        ::-webkit-scrollbar{width:10px}
+        ::-webkit-scrollbar-track{background:var(--green-tint)}
+        ::-webkit-scrollbar-thumb{background:var(--green-3);border:3px solid var(--green-tint);border-radius:20px}
+
+        .wrap{max-width:1320px;margin:0 auto;padding:0 40px;width:100%}
+        @media(max-width:768px){ .wrap{padding:0 22px} }
+
+        h1,h2,h3,h4{
+            font-family:var(--serif);
+            font-weight:400;
+            letter-spacing:-.02em;
+            line-height:1;
+            color:var(--ink);
+        }
+        h1{font-size:clamp(2.4rem,5.5vw,5.2rem)}
+        h2{font-size:clamp(2rem,4.5vw,3.6rem)}
+        h3{font-size:clamp(1.2rem,1.6vw,1.5rem);line-height:1.15}
+        em{font-style:italic;color:var(--green-2)}
+
+        .label{
+            font-family:var(--mono);font-size:.7rem;font-weight:500;
+            letter-spacing:.14em;text-transform:uppercase;color:var(--green);
+            display:inline-flex;align-items:center;gap:10px;
+        }
+        .label .sq{width:8px;height:8px;background:var(--green-3);display:inline-block}
+
+        /* ============================================================
+           NAV
+        ============================================================ */
+        .nav{
+            position:fixed;top:0;left:0;right:0;z-index:100;
+            transition:all .4s var(--ease);
+            border-bottom:1px solid transparent;
+            background:rgba(255,255,255,.7);
+            backdrop-filter:blur(18px);
+            -webkit-backdrop-filter:blur(18px);
+        }
+        .nav.scrolled{
+            background:rgba(255,255,255,.96);
+            border-bottom-color:var(--line);
+        }
+        .nav-inner{
+            display:grid;grid-template-columns:auto 1fr auto;
+            align-items:center;gap:40px;padding:20px 0;
+            transition:padding .3s var(--ease);
+        }
+        .nav.scrolled .nav-inner{padding:14px 0}
+
+        .brand{
+            display:flex;align-items:center;gap:10px;
+            font-family:var(--mono);font-weight:700;
+            font-size:.85rem;letter-spacing:.1em;text-transform:uppercase;
+            color:var(--ink);transition:color .3s var(--ease);
+        }
+        .brand .sq{width:10px;height:10px;background:var(--green-3);transition:all .4s var(--ease)}
+        .brand:hover .sq{background:var(--green);transform:rotate(45deg)}
+        .brand small{color:var(--green-3);font-weight:500;font-family:var(--mono)}
+
+        .nav-links{display:flex;align-items:center;justify-content:center;gap:36px}
+        .nav-links a{
+            font-family:var(--sans);font-size:.86rem;font-weight:500;
+            color:var(--ink-soft);position:relative;padding:6px 0;
+            transition:color .3s var(--ease);
+        }
+        .nav-links a::after{
+            content:'';position:absolute;left:0;bottom:0;
+            width:100%;height:1px;background:currentColor;
+            transform:scaleX(0);transform-origin:right;
+            transition:transform .4s var(--ease);
+        }
+        .nav-links a:hover,
+        .nav-links a.active{color:var(--green)}
+        .nav-links a:hover::after,
+        .nav-links a.active::after{transform:scaleX(1);transform-origin:left}
+
+        .nav-cta{
+            display:inline-flex;align-items:center;gap:10px;
+            font-family:var(--mono);font-size:.72rem;font-weight:500;
+            letter-spacing:.1em;text-transform:uppercase;
+            color:var(--white);padding:11px 20px;
+            background:var(--green);border:1px solid var(--green);
+            transition:all .3s var(--ease);
+        }
+        .nav-cta:hover{background:var(--green-deep);border-color:var(--green-deep);color:var(--white)}
+        .nav-cta i{transition:transform .3s var(--ease)}
+        .nav-cta:hover i{transform:translateX(4px)}
+
+        .nav-toggle{
+            display:none;width:44px;height:44px;
+            place-items:center;color:var(--ink);
+            font-size:1rem;border:1px solid var(--line);
+            background:var(--white);
         }
 
-        /* ----------- HEADER Y NAV ----------- */
-        header {
-            background-color: #ffffff;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
-            position: sticky;
-            top: 0;
-            z-index: 1000;
-            transition: background-color 0.3s ease, box-shadow 0.3s ease;
+        /* ============================================================
+           PAGE HERO (compacto, sin video)
+        ============================================================ */
+        .page-hero{
+            position:relative;
+            padding:180px 0 70px;
+            background:var(--off-white);
+            border-bottom:1px solid var(--line);
+            overflow:hidden;
+        }
+        .page-hero::before{
+            content:'LIBROS';position:absolute;
+            right:-3%;top:40%;transform:translateY(-50%);
+            font-family:var(--serif);font-style:italic;
+            font-size:18rem;line-height:.8;letter-spacing:-.05em;
+            color:rgba(26,107,69,.05);pointer-events:none;
+            white-space:nowrap;z-index:0;
+        }
+        .page-hero .wrap{position:relative;z-index:1}
+
+        .hero-top{
+            display:flex;
+            justify-content:space-between;
+            align-items:center;
+            font-family:var(--mono);
+            font-size:.68rem;
+            letter-spacing:.14em;
+            text-transform:uppercase;
+            color:var(--muted);
+            padding-bottom:18px;
+            border-bottom:1px solid var(--line);
+            margin-bottom:36px;
+            flex-wrap:wrap;
+            gap:8px;
+        }
+        .hero-top span{display:flex;align-items:center;gap:8px}
+        .hero-top .dot{
+            width:7px;height:7px;background:var(--green-3);border-radius:50%;
+            box-shadow:0 0 0 4px rgba(52,160,108,.25);
+            animation:pulse 2s ease-in-out infinite;
+        }
+        @keyframes pulse{
+            0%,100%{opacity:1;transform:scale(1)}
+            50%{opacity:.5;transform:scale(.75)}
         }
 
-        nav {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 18px 50px;
-            flex-wrap: wrap;
+        .page-hero .eyebrow{
+            color:var(--green);font-family:var(--mono);
+            font-size:.72rem;letter-spacing:.18em;text-transform:uppercase;
+            display:inline-flex;align-items:center;gap:14px;
+            margin-bottom:22px;
+        }
+        .page-hero .eyebrow::before{
+            content:'';width:32px;height:1px;background:var(--green);
+        }
+        .page-hero h1{
+            font-size:clamp(2.2rem,5vw,4.4rem);
+            line-height:1;
+            letter-spacing:-.035em;
+            margin-bottom:22px;
+            max-width:18ch;
+        }
+        .page-hero h1 em{color:var(--green-2);font-style:italic}
+        .page-hero p{
+            font-size:1.02rem;color:var(--muted);
+            max-width:56ch;line-height:1.7;margin-bottom:32px;
         }
 
-        .logo h1 {
-            font-size: 1.9rem;
-            font-weight: 700;
-            color: #2c3e50;
-            letter-spacing: 1px;
+        .hero-meta-strip{
+            position:relative;z-index:1;
+            margin-top:44px;padding-top:34px;
+            border-top:1px solid var(--line);
+            display:grid;grid-template-columns:repeat(4,1fr);gap:40px;
+        }
+        .hero-meta .k{
+            font-family:var(--mono);font-size:.65rem;letter-spacing:.14em;
+            text-transform:uppercase;color:var(--green);margin-bottom:10px;
+        }
+        .hero-meta .v{
+            font-family:var(--serif);font-size:1.5rem;
+            color:var(--ink);line-height:1.1;letter-spacing:-.02em;
+        }
+        .hero-meta .v em{color:var(--green-2);font-style:italic}
+
+        /* ============================================================
+           TICKER
+        ============================================================ */
+        .ticker{
+            background:var(--green-tint);
+            color:var(--green-deep);
+            border-bottom:1px solid var(--line);
+            overflow:hidden;padding:14px 0;
+        }
+        .ticker-track{
+            display:flex;gap:44px;white-space:nowrap;
+            width:max-content;animation:slide 42s linear infinite;
+        }
+        .ticker:hover .ticker-track{animation-play-state:paused}
+        .ticker-item{
+            font-family:var(--mono);font-size:.68rem;font-weight:500;
+            letter-spacing:.18em;text-transform:uppercase;
+            color:var(--green-deep);display:flex;align-items:center;gap:44px;
+        }
+        .ticker-item .sq{width:6px;height:6px;background:var(--green-3);transform:rotate(45deg)}
+        .ticker-item em{
+            color:var(--green);font-style:italic;
+            font-family:var(--serif);font-size:.95rem;
+            letter-spacing:.02em;text-transform:none;
+        }
+        @keyframes slide{to{transform:translateX(-50%)}}
+
+        /* ============================================================
+           SECCIONES
+        ============================================================ */
+        .section{
+            padding:100px 0;position:relative;
+            border-bottom:1px solid var(--line);
+            background:var(--white);
+        }
+        .section.no-border{border-bottom:none}
+        .section.alt{background:var(--off-white)}
+
+        .sec-head{
+            display:grid;grid-template-columns:140px 1fr;
+            gap:50px;align-items:end;
+            padding-bottom:32px;border-bottom:1px solid var(--line);
+            margin-bottom:50px;
+        }
+        .sec-head .kicker{display:flex;flex-direction:column;gap:8px}
+        .sec-head .kicker .num{
+            font-family:var(--serif);font-size:4rem;line-height:.85;
+            color:var(--green-4);letter-spacing:-.05em;font-style:italic;
+        }
+        .sec-head .title-block h2{
+            font-size:clamp(1.8rem,4vw,2.8rem);margin-bottom:12px;
+            max-width:18ch;
+        }
+        .sec-head .title-block p{
+            color:var(--muted);font-size:.95rem;max-width:56ch;line-height:1.6;
         }
 
-        .logo span {
-            color: #27ae60; /* Verde oficial BookLab */
-            font-weight: 800;
+        /* Barra de filtros / buscador simple */
+        .toolbar{
+            display:flex;justify-content:space-between;align-items:center;
+            gap:20px;flex-wrap:wrap;margin-bottom:44px;
+        }
+        .toolbar .count{
+            font-family:var(--mono);font-size:.7rem;
+            letter-spacing:.14em;text-transform:uppercase;color:var(--muted);
+        }
+        .toolbar .count em{color:var(--green-2);font-style:italic;font-family:var(--serif);font-size:1rem}
+        .search{
+            display:flex;border:1px solid var(--line);background:var(--white);
+            min-width:280px;transition:border-color .3s var(--ease);
+        }
+        .search:focus-within{border-color:var(--green-3)}
+        .search input{
+            flex:1;background:transparent;border:none;outline:none;
+            padding:12px 16px;font-family:var(--mono);
+            font-size:.78rem;color:var(--ink);
+        }
+        .search input::placeholder{color:var(--muted)}
+        .search button{
+            padding:0 18px;color:var(--green);
+            border-left:1px solid var(--line);
+            transition:all .3s var(--ease);
+        }
+        .search button:hover{background:var(--green-tint)}
+
+        /* ============================================================
+           COLECCIÓN — grilla de libros
+        ============================================================ */
+        .books{
+            display:grid;
+            grid-template-columns:repeat(4, 1fr);
+            gap:22px;
+        }
+        .book{
+            background:var(--white);
+            border:1px solid var(--line);
+            overflow:hidden;
+            display:flex;
+            flex-direction:column;
+            transition:all .5s var(--ease);
+        }
+        .book:hover{
+            border-color:var(--green-3);
+            transform:translateY(-4px);
+            box-shadow:0 20px 40px -25px rgba(15,74,46,.3);
+        }
+        .book-media{
+            position:relative;
+            aspect-ratio:3/4;
+            overflow:hidden;
+            background:var(--paper);
+        }
+        .book-media img{
+            width:100%;height:100%;
+            object-fit:cover;
+            transition:transform 1.2s var(--ease);
+            filter:saturate(.9);
+        }
+        .book:hover .book-media img{
+            transform:scale(1.05);
+            filter:saturate(1.05);
+        }
+        .book-media::after{
+            content:'';position:absolute;inset:0;
+            background:linear-gradient(180deg,transparent 45%,rgba(15,74,46,.65) 100%);
+            pointer-events:none;
+        }
+        .book-tag{
+            position:absolute;top:10px;left:10px;
+            background:var(--white);color:var(--green-deep);
+            font-family:var(--mono);font-size:.56rem;font-weight:700;
+            letter-spacing:.14em;text-transform:uppercase;
+            padding:5px 9px;z-index:2;
+        }
+        .book-num{
+            position:absolute;top:10px;right:12px;
+            font-family:var(--serif);font-style:italic;
+            font-size:1.2rem;color:var(--white);
+            line-height:1;z-index:2;
+            text-shadow:0 2px 8px rgba(0,0,0,.35);
+        }
+        .book-title-overlay{
+            position:absolute;bottom:14px;left:14px;right:14px;
+            color:var(--white);z-index:2;
+        }
+        .book-title-overlay .t-cat{
+            font-family:var(--mono);font-size:.55rem;font-weight:700;
+            letter-spacing:.16em;text-transform:uppercase;
+            color:var(--green-4);margin-bottom:4px;
+        }
+        .book-title-overlay .t-title{
+            font-family:var(--serif);font-size:1rem;
+            line-height:1.15;letter-spacing:-.01em;color:var(--white);
         }
 
-        /* --- Enlaces del nav --- */
-        .nav-links {
-            list-style: none;
-            display: flex;
-            gap: 30px;
+        .book-body{
+            padding:16px 16px 14px;
+            display:flex;flex-direction:column;flex:1;gap:12px;
         }
-
-        .nav-links a {
-            text-decoration: none;
-            color: #2c3e50;
-            font-weight: 500;
-            font-size: 1rem;
-            padding: 8px 16px;
-            border-radius: 8px;
-            transition: all 0.3s ease-in-out;
+        .book-body p{
+            color:var(--muted);font-size:.82rem;
+            line-height:1.5;flex:1;
         }
-
-        .nav-links a:hover {
-            background-color: #27ae60;
-            color: white;
-            transform: translateY(-2px);
-            box-shadow: 0 4px 10px rgba(39, 174, 96, 0.3);
+        .book-foot{
+            display:flex;justify-content:space-between;align-items:center;
+            padding-top:12px;border-top:1px solid var(--line);
         }
-
-        /* ----------- SECCIÓN PRINCIPAL ----------- */
-        .section {
-            padding: 80px 40px;
-            text-align: center;
-            background: linear-gradient(to bottom, #ffffff, #eef2f7);
+        .book-foot .author{
+            font-family:var(--mono);font-size:.6rem;
+            letter-spacing:.08em;color:var(--green-deep);text-transform:uppercase;
         }
-
-        .section-title {
-            font-size: 2.5rem;
-            margin-bottom: 10px;
-            color: #2c3e50;
-            font-weight: 700;
+        .book-link{
+            display:inline-flex;align-items:center;gap:6px;
+            font-family:var(--mono);font-size:.6rem;font-weight:500;
+            letter-spacing:.14em;text-transform:uppercase;
+            color:var(--green);padding:6px 0;position:relative;
         }
-
-        .section-subtitle {
-            font-size: 1.2rem;
-            color: #7f8c8d;
-            margin-bottom: 50px;
+        .book-link::after{
+            content:'';position:absolute;left:0;bottom:2px;
+            width:100%;height:1px;background:var(--green-3);
+            transform-origin:right;transition:transform .5s var(--ease);
         }
+        .book:hover .book-link::after{transform:scaleX(0);transform-origin:right}
+        .book-link i{transition:transform .3s var(--ease);font-size:.65rem}
+        .book:hover .book-link i{transform:translateX(3px)}
 
-        /* ----------- CONTENEDOR DE LIBROS ----------- */
-        .shop-container {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-            gap: 30px;
-            padding: 0 15px;
+        /* ============================================================
+           CTA
+        ============================================================ */
+        .cta{
+            background:var(--green-tint);color:var(--green-deep);
+            padding:90px 0;position:relative;overflow:hidden;
+            border-top:1px solid var(--line);
+            border-bottom:1px solid var(--line);
         }
-
-        .shop-item {
-            background: white;
-            border-radius: 15px;
-            overflow: hidden;
-            box-shadow: 0 12px 24px rgba(0, 0, 0, 0.10);
-            display: flex;
-            flex-direction: column;
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        .cta::before{
+            content:'LECTIO';position:absolute;
+            left:-4%;bottom:-6rem;font-family:var(--serif);
+            font-size:24rem;line-height:.8;letter-spacing:-.06em;
+            color:rgba(26,107,69,.06);font-style:italic;
+            pointer-events:none;white-space:nowrap;
         }
-
-        .shop-item:hover {
-            transform: translateY(-8px);
-            box-shadow: 0 18px 35px rgba(0, 0, 0, 0.15);
+        .cta-inner{
+            position:relative;z-index:1;
+            display:grid;grid-template-columns:1.2fr 1fr;
+            gap:50px;align-items:center;
         }
-
-        .shop-item img {
-            width: 100%;
-            height: auto;
-            max-height: 280px;
-            object-fit: cover;
-            border-bottom: 3px solid #27ae60;
-            border-top-left-radius: 15px;
-            border-top-right-radius: 15px;
-            transition: transform 0.35s ease;
+        .cta h2{
+            color:var(--green-deep);
+            font-size:clamp(1.8rem,3.4vw,2.8rem);
+            margin-bottom:16px;letter-spacing:-.03em;
         }
+        .cta h2 em{color:var(--green-2)}
+        .cta p{color:var(--ink-soft);font-size:.95rem;max-width:46ch;line-height:1.65}
 
-        .shop-item:hover img {
-            transform: scale(1.05);
+        .cta-actions{display:flex;flex-wrap:wrap;gap:12px;justify-content:flex-end}
+        .btn{
+            display:inline-flex;align-items:center;gap:12px;
+            font-family:var(--mono);font-size:.72rem;font-weight:500;
+            letter-spacing:.14em;text-transform:uppercase;
+            padding:16px 26px;border:1px solid transparent;
+            transition:all .35s var(--ease);position:relative;overflow:hidden;
         }
-
-        .shop-item h3 {
-            font-size: 1.3rem;
-            margin: 16px 20px 8px;
-            color: #2c3e50;
-            font-weight: 700;
+        .btn-solid{
+            background:var(--green);color:var(--white);border-color:var(--green);
+            box-shadow:0 12px 30px -12px rgba(15,74,46,.5);
         }
-
-        .shop-item p {
-            margin: 0 20px 20px;
-            font-size: 1rem;
-            color: #5a6d7c;
-            flex-grow: 1;
-            line-height: 1.4;
+        .btn-solid::before{
+            content:'';position:absolute;inset:0;background:var(--green-3);
+            transform:translateY(100%);transition:transform .4s var(--ease);
+            z-index:0;
         }
+        .btn-solid:hover::before{transform:translateY(0)}
+        .btn-solid span,.btn-solid i{position:relative;z-index:1}
+        .btn-solid i{transition:transform .3s var(--ease)}
+        .btn-solid:hover i{transform:translateX(4px)}
 
-        .shop-item a.btn {
-            display: inline-block;
-            margin: 0 20px 20px;
-            padding: 12px 26px;
-            background-color: #27ae60;
-            color: white;
-            text-decoration: none;
-            font-weight: 600;
-            border-radius: 28px;
-            transition: background-color 0.3s ease, transform 0.2s ease;
-            text-align: center;
+        .btn-outline{
+            background:transparent;color:var(--green);border-color:var(--green);
         }
+        .btn-outline:hover{background:var(--green);color:var(--white)}
+        .btn-outline i{transition:transform .3s var(--ease)}
+        .btn-outline:hover i{transform:translateX(4px)}
 
-        .shop-item a.btn:hover {
-            background-color: #1e8449;
-            transform: translateY(-3px);
+        /* ============================================================
+           FOOTER
+        ============================================================ */
+        footer{background:var(--green-deep);color:var(--white);padding:80px 0 0}
+        .foot-top{
+            display:grid;grid-template-columns:2fr 1fr 1fr 1fr;
+            gap:50px;padding-bottom:60px;
+            border-bottom:1px solid rgba(255,255,255,.15);
         }
+        .foot-brand .brand{color:var(--white);margin-bottom:22px}
+        .foot-brand .brand small{color:var(--green-4)}
+        .foot-brand p{
+            color:rgba(255,255,255,.7);font-size:.9rem;
+            max-width:34ch;line-height:1.65;margin-bottom:24px;
+        }
+        .foot-social{display:flex;gap:8px}
+        .foot-social a{
+            width:40px;height:40px;
+            border:1px solid rgba(255,255,255,.25);
+            display:grid;place-items:center;
+            color:var(--white);font-size:.8rem;
+            transition:all .3s var(--ease);
+        }
+        .foot-social a:hover{
+            background:var(--green-3);border-color:var(--green-3);
+            transform:translateY(-4px);
+        }
+        .foot-col h5{
+            font-family:var(--mono);font-size:.66rem;font-weight:500;
+            letter-spacing:.16em;text-transform:uppercase;
+            color:var(--green-4);margin-bottom:22px;
+        }
+        .foot-col ul{list-style:none;display:flex;flex-direction:column;gap:12px}
+        .foot-col a{
+            color:rgba(255,255,255,.85);font-size:.9rem;
+            transition:all .3s var(--ease);
+            display:inline-flex;align-items:center;gap:0;
+        }
+        .foot-col a::before{
+            content:'→';width:0;overflow:hidden;
+            transition:all .3s var(--ease);color:var(--green-4);
+        }
+        .foot-col a:hover{color:var(--white)}
+        .foot-col a:hover::before{width:18px}
+        .foot-bot{
+            padding:26px 0;display:flex;
+            justify-content:space-between;align-items:center;
+            gap:20px;flex-wrap:wrap;
+            font-family:var(--mono);font-size:.68rem;
+            letter-spacing:.08em;color:rgba(255,255,255,.6);
+            text-transform:uppercase;
+        }
+        .foot-bot i{color:var(--green-4);margin:0 4px}
 
-        /* Mejoras para dispositivos móviles */
+        /* ============================================================
+           BACK TO TOP
+        ============================================================ */
+        .to-top{
+            position:fixed;bottom:26px;right:26px;
+            width:46px;height:46px;
+            background:var(--green);color:var(--white);
+            display:grid;place-items:center;font-size:.85rem;
+            opacity:0;visibility:hidden;transform:translateY(10px);
+            transition:all .4s var(--ease);z-index:90;
+            box-shadow:0 10px 24px -8px rgba(26,107,69,.4);
+        }
+        .to-top.show{opacity:1;visibility:visible;transform:translateY(0)}
+        .to-top:hover{background:var(--green-3);transform:translateY(-4px)}
 
-        @media (max-width: 768px) {
-            .shop-container {
-                grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
-                gap: 20px;
-                padding: 0 10px;
+        /* ============================================================
+           REVEAL
+        ============================================================ */
+        .reveal{
+            opacity:0;transform:translateY(24px);
+            transition:opacity .9s var(--ease),transform .9s var(--ease);
+        }
+        .reveal.in{opacity:1;transform:none}
+        .stagger > *{
+            opacity:0;transform:translateY(24px);
+            transition:opacity .9s var(--ease),transform .9s var(--ease);
+        }
+        .stagger.in > *{opacity:1;transform:none}
+        .stagger.in > *:nth-child(1){transition-delay:0s}
+        .stagger.in > *:nth-child(2){transition-delay:.08s}
+        .stagger.in > *:nth-child(3){transition-delay:.16s}
+        .stagger.in > *:nth-child(4){transition-delay:.24s}
+        .stagger.in > *:nth-child(5){transition-delay:.32s}
+        .stagger.in > *:nth-child(6){transition-delay:.40s}
+
+        /* ============================================================
+           RESPONSIVE
+        ============================================================ */
+        @media(max-width:1100px){
+            .books{grid-template-columns:repeat(3,1fr)}
+        }
+        @media(max-width:1024px){
+            .nav-links{gap:22px}
+            .sec-head{grid-template-columns:1fr;gap:20px;padding-bottom:26px;margin-bottom:44px}
+            .sec-head .kicker{flex-direction:row;align-items:baseline;gap:20px}
+            .sec-head .kicker .num{font-size:3rem}
+            .cta-inner{grid-template-columns:1fr;gap:36px}
+            .cta-actions{justify-content:flex-start}
+            .cta::before{font-size:16rem}
+            .foot-top{grid-template-columns:1fr 1fr;gap:36px}
+            .page-hero::before{font-size:13rem}
+        }
+        @media(max-width:768px){
+            .nav-toggle{display:grid}
+            .nav-links{
+                position:fixed;top:0;right:0;
+                width:min(320px,88vw);height:100vh;
+                background:var(--white);flex-direction:column;
+                justify-content:center;gap:22px;padding:80px 30px;
+                transform:translateX(100%);
+                transition:transform .5s var(--ease);
+                box-shadow:-30px 0 80px -30px rgba(13,43,29,.2);
+                border-left:1px solid var(--line);
             }
+            .nav-links.open{transform:translateX(0)}
+            .nav-links a{color:var(--ink)!important;font-size:1.05rem;font-family:var(--serif)}
+            .nav-cta{display:none}
 
-            .shop-item img {
-                max-height: 200px;
-            }
+            .page-hero{padding:130px 0 50px}
+            .page-hero::before{font-size:8rem;top:30%}
+            .hero-top{font-size:.6rem}
+            .hero-meta-strip{grid-template-columns:repeat(2,1fr);gap:22px;margin-top:36px}
+            .hero-meta .v{font-size:1.2rem}
 
-            .shop-item h3 {
-                font-size: 1.1rem;
-                margin: 12px 16px 6px;
-            }
+            .section{padding:70px 0}
+            .sec-head .kicker .num{font-size:2.6rem}
+            .books{grid-template-columns:1fr 1fr;gap:14px}
+            .book-body{padding:14px 13px 12px}
+            .book-title-overlay .t-title{font-size:.9rem}
 
-            .shop-item p {
-                font-size: 0.9rem;
-                margin: 0 16px 16px;
-            }
+            .toolbar{flex-direction:column;align-items:stretch}
+            .search{min-width:0;width:100%}
 
-            .shop-item a.btn {
-                margin: 0 16px 16px;
-                padding: 10px 20px;
-                font-size: 0.9rem;
-            }
+            .cta{padding:70px 0}
+            .cta::before{font-size:9rem;bottom:-2rem}
+
+            .foot-top{grid-template-columns:1fr;gap:32px;padding-bottom:40px}
+            .foot-bot{flex-direction:column;text-align:center}
         }
-
-        @media (max-width: 480px) {
-            nav {
-                padding: 22px 16px;
-            }
-
-            .nav-links {
-                gap: 8px;
-            }
-
-            .shop-container {
-                grid-template-columns: 1fr;
-                padding: 0 15px;
-                gap: 18px;
-            }
-
-            .shop-item img {
-                max-height: 180px;
-                border-radius: 15px 15px 0 0;
-            }
+        @media(max-width:480px){
+            .books{grid-template-columns:1fr}
+            .brand{font-size:.72rem}
+            .hero-meta .v{font-size:1rem}
         }
-
-        /* ----------- FOOTER ----------- */
-        footer {
-            background-color: #2c3e50;
-            color: #ecf0f1;
-            text-align: center;
-            padding: 25px;
-            font-size: 0.95rem;
-            letter-spacing: 0.3px;
-        }
-
-        /* ----------- RESPONSIVE ----------- */
-        @media (max-width: 768px) {
-            nav {
-                flex-direction: column;
-                align-items: flex-start;
-                gap: 10px;
-                padding: 20px;
-            }
-
-            .nav-links {
-                flex-direction: column;
-                width: 100%;
-                gap: 10px;
-            }
-
-            .nav-links a {
-                width: 100%;
-                text-align: left;
-            }
-
-            .section {
-                padding: 50px 20px;
-            }
+        @media(prefers-reduced-motion:reduce){
+            *{animation-duration:.01ms!important;transition-duration:.01ms!important}
+            html{scroll-behavior:auto}
         }
     </style>
 </head>
 <body>
 
-<header>
-    <nav>
-        <div class="logo">
-            <h1>Lectio <span>Biblioteca</span></h1>
-        </div>
-        <ul class="nav-links">
-            <li><a href="/api/index">Inicio</a></li>
-            <li><a href="/api/librosVirtuales">Libros virtuales</a></li>
-        </ul>
-    </nav>
+<!-- NAV -->
+<header class="nav" id="nav">
+    <div class="wrap nav-inner">
+        <a href="/api/index" class="brand">
+            <span class="sq"></span>
+            LECTIO <small>/ BIBLIOTECA</small>
+        </a>
+
+        <nav class="nav-links" id="navLinks">
+            <a href="/api/index">Inicio</a>
+            <a href="/api/index#coleccion">Colección</a>
+            <a href="/api/index#autores">Autores</a>
+            <a href="/api/index#ayuda">Ayuda</a>
+            <a href="/api/librosVirtuales" class="active">Libros Virtuales</a>
+        </nav>
+
+        <a href="/api/login" class="nav-cta">
+            Iniciar Sesión <i class="fas fa-arrow-right"></i>
+        </a>
+
+        <button class="nav-toggle" id="navToggle" aria-label="Menú">
+            <i class="fas fa-bars"></i>
+        </button>
+    </div>
 </header>
 
-<section class="section coleccion" id="coleccion">
-    <h2 class="section-title">Libros Disponibles</h2>
-    <p class="section-subtitle">Accede a nuestra selección de libros virtuales</p>
-
-    <div class="shop-container">
-        <div class="shop-item">
-            <img src="/img/libro1.jpeg" alt="Libro 1" />
-            <h3>El Gran Libro del Conocimiento</h3>
-            <p>Una exploración profunda de los temas más importantes.</p>
-            <a href="/api/login" class="btn">Leer</a>
+<!-- PAGE HERO -->
+<section class="page-hero" id="inicio">
+    <div class="wrap">
+        <div class="hero-top">
+            <span><span class="dot"></span> En línea · Bogotá</span>
+            <span>Catálogo digital — N° 002</span>
         </div>
 
-        <div class="shop-item">
-            <img src="/img/reyes.jpeg" alt="Libro 2" />
-            <h3>Misterios del Universo</h3>
-            <p>Una guía fascinante sobre los secretos del cosmos.</p>
-            <a href="/api/login" class="btn">Leer</a>
-        </div>
+        <span class="eyebrow">Libros Virtuales</span>
+        <h1>Lecturas disponibles <em>ahora mismo</em>.</h1>
+        <p>
+            Explora nuestro catálogo de libros virtuales, seleccionados para acompañarte
+            en cada momento. Inicia sesión para comenzar a leer desde cualquier dispositivo.
+        </p>
 
-        <div class="shop-item">
-            <img src="/img/libro3.jpeg" alt="Libro 3" />
-            <h3>Historias de la Antigua Civilización</h3>
-            <p>Relatos impresionantes sobre las primeras sociedades humanas.</p>
-            <a href="/api/login" class="btn">Leer</a>
-        </div>
-
-        <div class="shop-item">
-            <img src="/img/d3.jpeg" alt="Libro 4" />
-            <h3>Aventuras de la Ciencia</h3>
-            <p>Exploraciones asombrosas en el mundo de la física moderna.</p>
-            <a href="/api/login" class="btn">Leer</a>
-        </div>
-
-        <div class="shop-item">
-            <img src="/img/d1.png" alt="Libro 5" />
-            <h3>Descubrimientos del Futuro</h3>
-            <p>Innovaciones científicas que cambiarán el mundo.</p>
-            <a href="/api/login" class="btn">Leer</a>
-        </div>
-
-        <div class="shop-item">
-            <img src="/img/d5.jpeg" alt="Libro 6" />
-            <h3>Viajes por la Mente</h3>
-            <p>Un recorrido por los misterios de la conciencia humana.</p>
-            <a href="/api/login" class="btn">Leer</a>
+        <div class="hero-meta-strip">
+            <div class="hero-meta">
+                <div class="k">Títulos</div>
+                <div class="v">06<em>disponibles</em></div>
+            </div>
+            <div class="hero-meta">
+                <div class="k">Categorías</div>
+                <div class="v">06<em>temas</em></div>
+            </div>
+            <div class="hero-meta">
+                <div class="k">Acceso</div>
+                <div class="v">24<em>/7</em></div>
+            </div>
+            <div class="hero-meta">
+                <div class="k">Formato</div>
+                <div class="v">Digital<em>web</em></div>
+            </div>
         </div>
     </div>
 </section>
 
+<!-- TICKER -->
+<div class="ticker">
+    <div class="ticker-track">
+        <div class="ticker-item">
+            LECTIO <span class="sq"></span> <em>Libros Virtuales</em> <span class="sq"></span>
+            LEE EN LÍNEA <span class="sq"></span> <em>Sin esperas</em> <span class="sq"></span>
+            ACCESO 24/7 <span class="sq"></span> <em>Desde cualquier lugar</em> <span class="sq"></span>
+        </div>
+        <div class="ticker-item">
+            LECTIO <span class="sq"></span> <em>Libros Virtuales</em> <span class="sq"></span>
+            LEE EN LÍNEA <span class="sq"></span> <em>Sin esperas</em> <span class="sq"></span>
+            ACCESO 24/7 <span class="sq"></span> <em>Desde cualquier lugar</em> <span class="sq"></span>
+        </div>
+    </div>
+</div>
+
+<!-- CATÁLOGO -->
+<section class="section no-border" id="catalogo">
+    <div class="wrap">
+        <div class="sec-head reveal">
+            <div class="kicker">
+                <span class="label">Catálogo</span>
+                <span class="num">01</span>
+            </div>
+            <div class="title-block">
+                <h2>Libros <em>disponibles</em>.</h2>
+                <p>Accede a nuestra selección de libros virtuales. Inicia sesión para leer cualquier título al instante.</p>
+            </div>
+        </div>
+
+        <div class="toolbar reveal">
+            <span class="count">Mostrando <em>06</em> de 06 títulos</span>
+            <form class="search" onsubmit="event.preventDefault();">
+                <input type="search" placeholder="Buscar título o tema..." aria-label="Buscar libro">
+                <button type="submit" aria-label="Buscar"><i class="fas fa-search"></i></button>
+            </form>
+        </div>
+
+        <div class="books stagger">
+
+            <article class="book">
+                <div class="book-media">
+                    <span class="book-tag">Conocimiento</span>
+                    <span class="book-num">i.</span>
+                    <img src="https://images.unsplash.com/photo-1512820790803-83ca734da794?auto=format&fit=crop&w=700&q=80"
+                         alt="Pila de libros antiguos - El Gran Libro del Conocimiento"
+                         loading="lazy" referrerpolicy="no-referrer">
+                    <div class="book-title-overlay">
+                        <div class="t-cat">Vol. 01</div>
+                        <div class="t-title">El Gran Libro del Conocimiento</div>
+                    </div>
+                </div>
+                <div class="book-body">
+                    <p>Una exploración profunda de los temas más importantes.</p>
+                    <div class="book-foot">
+                        <span class="author">Lectio</span>
+                        <a href="/api/login" class="book-link">
+                            Leer <i class="fas fa-arrow-right"></i>
+                        </a>
+                    </div>
+                </div>
+            </article>
+
+            <article class="book">
+                <div class="book-media">
+                    <span class="book-tag">Ciencia</span>
+                    <span class="book-num">ii.</span>
+                    <img src="https://images.unsplash.com/photo-1462331940025-496dfbfc7564?auto=format&fit=crop&w=700&q=80"
+                         alt="Nebulosa cósmica - Misterios del Universo"
+                         loading="lazy" referrerpolicy="no-referrer">
+                    <div class="book-title-overlay">
+                        <div class="t-cat">Vol. 02</div>
+                        <div class="t-title">Misterios del Universo</div>
+                    </div>
+                </div>
+                <div class="book-body">
+                    <p>Una guía fascinante sobre los secretos del cosmos.</p>
+                    <div class="book-foot">
+                        <span class="author">Lectio</span>
+                        <a href="/api/login" class="book-link">
+                            Leer <i class="fas fa-arrow-right"></i>
+                        </a>
+                    </div>
+                </div>
+            </article>
+
+            <article class="book">
+                <div class="book-media">
+                    <span class="book-tag">Historia</span>
+                    <span class="book-num">iii.</span>
+                    <img src="https://images.unsplash.com/photo-1568322445389-f64ac2515020?auto=format&fit=crop&w=700&q=80"
+                         alt="Pirámides de Egipto - Historias de la Antigua Civilización"
+                         loading="lazy" referrerpolicy="no-referrer">
+                    <div class="book-title-overlay">
+                        <div class="t-cat">Vol. 03</div>
+                        <div class="t-title">Historias de la Antigua Civilización</div>
+                    </div>
+                </div>
+                <div class="book-body">
+                    <p>Relatos impresionantes sobre las primeras sociedades humanas.</p>
+                    <div class="book-foot">
+                        <span class="author">Lectio</span>
+                        <a href="/api/login" class="book-link">
+                            Leer <i class="fas fa-arrow-right"></i>
+                        </a>
+                    </div>
+                </div>
+            </article>
+
+            <article class="book">
+                <div class="book-media">
+                    <span class="book-tag">Ciencia</span>
+                    <span class="book-num">iv.</span>
+                    <img src="https://images.unsplash.com/photo-1532094349884-543bc11b234d?auto=format&fit=crop&w=700&q=80"
+                         alt="Laboratorio de química - Aventuras de la Ciencia"
+                         loading="lazy" referrerpolicy="no-referrer">
+                    <div class="book-title-overlay">
+                        <div class="t-cat">Vol. 04</div>
+                        <div class="t-title">Aventuras de la Ciencia</div>
+                    </div>
+                </div>
+                <div class="book-body">
+                    <p>Exploraciones asombrosas en el mundo de la física moderna.</p>
+                    <div class="book-foot">
+                        <span class="author">Lectio</span>
+                        <a href="/api/login" class="book-link">
+                            Leer <i class="fas fa-arrow-right"></i>
+                        </a>
+                    </div>
+                </div>
+            </article>
+
+            <article class="book">
+                <div class="book-media">
+                    <span class="book-tag">Futuro</span>
+                    <span class="book-num">v.</span>
+                    <img src="https://images.unsplash.com/photo-1451187580459-43490279c0fa?auto=format&fit=crop&w=700&q=80"
+                         alt="Red digital sobre la Tierra - Descubrimientos del Futuro"
+                         loading="lazy" referrerpolicy="no-referrer">
+                    <div class="book-title-overlay">
+                        <div class="t-cat">Vol. 05</div>
+                        <div class="t-title">Descubrimientos del Futuro</div>
+                    </div>
+                </div>
+                <div class="book-body">
+                    <p>Innovaciones científicas que cambiarán el mundo.</p>
+                    <div class="book-foot">
+                        <span class="author">Lectio</span>
+                        <a href="/api/login" class="book-link">
+                            Leer <i class="fas fa-arrow-right"></i>
+                        </a>
+                    </div>
+                </div>
+            </article>
+
+            <article class="book">
+                <div class="book-media">
+                    <span class="book-tag">Mente</span>
+                    <span class="book-num">vi.</span>
+                    <img src="https://images.unsplash.com/photo-1559757175-0eb30cd8c063?auto=format&fit=crop&w=700&q=80"
+                         alt="Abstracto neuronal - Viajes por la Mente"
+                         loading="lazy" referrerpolicy="no-referrer">
+                    <div class="book-title-overlay">
+                        <div class="t-cat">Vol. 06</div>
+                        <div class="t-title">Viajes por la Mente</div>
+                    </div>
+                </div>
+                <div class="book-body">
+                    <p>Un recorrido por los misterios de la conciencia humana.</p>
+                    <div class="book-foot">
+                        <span class="author">Lectio</span>
+                        <a href="/api/login" class="book-link">
+                            Leer <i class="fas fa-arrow-right"></i>
+                        </a>
+                    </div>
+                </div>
+            </article>
+
+        </div>
+    </div>
+</section>
+
+<!-- CTA -->
+<section class="cta">
+    <div class="wrap cta-inner">
+        <div class="reveal">
+            <h2>Comienza a leer <em>hoy mismo</em>.</h2>
+            <p>Inicia sesión en tu cuenta Lectio y accede a todos los libros virtuales disponibles sin costo.</p>
+        </div>
+        <div class="cta-actions reveal">
+            <a href="/api/login" class="btn btn-solid">
+                <span>Iniciar Sesión</span> <i class="fas fa-arrow-right"></i>
+            </a>
+            <a href="/api/index" class="btn btn-outline">
+                <span>Volver al Inicio</span> <i class="fas fa-arrow-right"></i>
+            </a>
+        </div>
+    </div>
+</section>
+
+<!-- FOOTER -->
 <footer>
-    <p>&copy; 2024 NexGet Biblioteca. Todos los derechos reservados.</p>
+    <div class="wrap">
+        <div class="foot-top">
+            <div class="foot-brand">
+                <a href="/api/index" class="brand">
+                    <span class="sq"></span>
+                    LECTIO <small>/ BIBLIOTECA</small>
+                </a>
+                <p>Tu biblioteca virtual de confianza. Miles de libros y recursos digitales al alcance de un clic.</p>
+                <div class="foot-social">
+                    <a href="#" aria-label="Facebook"><i class="fab fa-facebook-f"></i></a>
+                    <a href="#" aria-label="Twitter"><i class="fab fa-twitter"></i></a>
+                    <a href="#" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
+                    <a href="#" aria-label="YouTube"><i class="fab fa-youtube"></i></a>
+                </div>
+            </div>
+
+            <div class="foot-col">
+                <h5>Explorar</h5>
+                <ul>
+                    <li><a href="/api/index">Inicio</a></li>
+                    <li><a href="/api/index#coleccion">Colección</a></li>
+                    <li><a href="/api/index#autores">Autores</a></li>
+                </ul>
+            </div>
+
+            <div class="foot-col">
+                <h5>Recursos</h5>
+                <ul>
+                    <li><a href="/api/librosVirtuales">Libros Virtuales</a></li>
+                    <li><a href="/api/index#ayuda">Centro de Ayuda</a></li>
+                    <li><a href="/api/login">Iniciar Sesión</a></li>
+                </ul>
+            </div>
+
+            <div class="foot-col">
+                <h5>Contacto</h5>
+                <ul>
+                    <li><a href="mailto:servicios@bibliote.gov.co">servicios@bibliote.gov.co</a></li>
+                    <li><a href="tel:+576013424100">(+57 601) 3424100</a></li>
+                    <li><a href="#">Calle 24 No. 5 - 60, Bogotá</a></li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="foot-bot">
+            <span>© 2025 Lectio Biblioteca · Todos los derechos reservados</span>
+            <span>Hecho con <i class="fas fa-heart"></i> para lectores</span>
+        </div>
+    </div>
 </footer>
 
+<button class="to-top" id="toTop" aria-label="Volver arriba">
+    <i class="fas fa-arrow-up"></i>
+</button>
+
+<script>
+    const nav = document.getElementById('nav');
+    const toTop = document.getElementById('toTop');
+    function onScroll(){
+        const y = window.scrollY;
+        nav.classList.toggle('scrolled', y > 30);
+        toTop.classList.toggle('show', y > 500);
+    }
+    window.addEventListener('scroll', onScroll, { passive:true });
+    onScroll();
+    toTop.addEventListener('click', () => window.scrollTo({ top:0, behavior:'smooth' }));
+
+    const navToggle = document.getElementById('navToggle');
+    const navLinks = document.getElementById('navLinks');
+    const toggleIcon = navToggle.querySelector('i');
+    navToggle.addEventListener('click', () => {
+        navLinks.classList.toggle('open');
+        const open = navLinks.classList.contains('open');
+        toggleIcon.className = open ? 'fas fa-times' : 'fas fa-bars';
+    });
+    navLinks.querySelectorAll('a').forEach(a => {
+        a.addEventListener('click', () => {
+            navLinks.classList.remove('open');
+            toggleIcon.className = 'fas fa-bars';
+        });
+    });
+
+    const io = new IntersectionObserver((entries) => {
+        entries.forEach(e => {
+            if (e.isIntersecting){
+                e.target.classList.add('in');
+                io.unobserve(e.target);
+            }
+        });
+    }, { threshold:0.15, rootMargin:'0px 0px -60px 0px' });
+    document.querySelectorAll('.reveal, .stagger').forEach(el => io.observe(el));
+</script>
 </body>
 </html>

@@ -1,704 +1,908 @@
 <!DOCTYPE html>
 <html lang="es" xmlns:th="http://www.thymeleaf.org">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Libros Virtuales</title>
-    <link rel="stylesheet" href="/estilos/libros.css">
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
-    <!-- Bootstrap 5 CDN -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="description" content="Lectio - Catálogo de libros virtuales" />
+    <title>Libros Virtuales — Lectio Biblioteca</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
+
     <style>
-        /* Estilos base */
-        body {
-            font-family: 'Poppins', sans-serif;
-            background: #f5f6fa;
-            color: #2c3e50;
-            margin:0;
+        :root{
+            --white:#ffffff;
+            --off-white:#f7faf8;
+            --paper:#eef7f1;
+            --paper-2:#e3efe7;
+
+            --ink:#0d2b1d;
+            --ink-soft:#2d4a3a;
+            --muted:#6b8377;
+            --line:#d4e5d9;
+            --line-2:#bcd8c6;
+
+            --green:#1a6b45;
+            --green-2:#2a8055;
+            --green-3:#34a06c;
+            --green-4:#7fc9a0;
+            --green-tint:#e6f3eb;
+            --green-deep:#0f4a2e;
+
+            --red:#c8464a;
+            --red-soft:#fbeaea;
+
+            --serif:'Instrument Serif','Times New Roman',serif;
+            --sans:'Inter',-apple-system,sans-serif;
+            --mono:'JetBrains Mono','Courier New',monospace;
+
+            --ease:cubic-bezier(.22,1,.36,1);
         }
 
-        /* Header y navegación */
-        header {
-            background: #fff;
-            padding: 20px 40px;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-            position: sticky;
-            top:0;
-            z-index:1000;
+        *{margin:0;padding:0;box-sizing:border-box}
+        html{scroll-behavior:smooth;scroll-padding-top:90px}
+        body{
+            font-family:var(--sans);
+            background:var(--white);
+            color:var(--ink);
+            font-size:16px;
+            line-height:1.55;
+            overflow-x:hidden;
+            -webkit-font-smoothing:antialiased;
+        }
+        img{max-width:100%;display:block}
+        a{color:inherit;text-decoration:none}
+        button{font-family:inherit;cursor:pointer;border:none;background:none;color:inherit}
+        ul{list-style:none}
+        input{font-family:inherit;outline:none;border:none;background:none;color:inherit}
+        ::selection{background:var(--green);color:var(--white)}
+        ::-webkit-scrollbar{width:10px}
+        ::-webkit-scrollbar-track{background:var(--green-tint)}
+        ::-webkit-scrollbar-thumb{background:var(--green-3);border:3px solid var(--green-tint);border-radius:20px}
+
+        .wrap{max-width:1320px;margin:0 auto;padding:0 40px;width:100%}
+        @media(max-width:768px){ .wrap{padding:0 22px} }
+
+        h1,h2,h3,h4{
+            font-family:var(--serif);
+            font-weight:400;
+            letter-spacing:-.02em;
+            line-height:1;
+            color:var(--ink);
+        }
+        h1{font-size:clamp(2.4rem,5.5vw,5.2rem)}
+        h2{font-size:clamp(2rem,4.5vw,3.6rem)}
+        h3{font-size:clamp(1.2rem,1.6vw,1.5rem);line-height:1.15}
+        em{font-style:italic;color:var(--green-2)}
+
+        .label{
+            font-family:var(--mono);font-size:.7rem;font-weight:500;
+            letter-spacing:.14em;text-transform:uppercase;color:var(--green);
+            display:inline-flex;align-items:center;gap:10px;
+        }
+        .label .sq{width:8px;height:8px;background:var(--green-3);display:inline-block}
+
+        /* ============================================================
+           NAV
+        ============================================================ */
+        .nav{
+            position:fixed;top:0;left:0;right:0;z-index:100;
+            transition:all .4s var(--ease);
+            border-bottom:1px solid transparent;
+            background:rgba(255,255,255,.7);
+            backdrop-filter:blur(18px);
+            -webkit-backdrop-filter:blur(18px);
+        }
+        .nav.scrolled{
+            background:rgba(255,255,255,.96);
+            border-bottom-color:var(--line);
+        }
+        .nav-inner{
+            display:grid;grid-template-columns:auto 1fr auto;
+            align-items:center;gap:40px;padding:20px 0;
+            transition:padding .3s var(--ease);
+        }
+        .nav.scrolled .nav-inner{padding:14px 0}
+
+        .brand{
+            display:flex;align-items:center;gap:10px;
+            font-family:var(--mono);font-weight:700;
+            font-size:.85rem;letter-spacing:.1em;text-transform:uppercase;
+            color:var(--ink);transition:color .3s var(--ease);
+        }
+        .brand .sq{width:10px;height:10px;background:var(--green-3);transition:all .4s var(--ease)}
+        .brand:hover .sq{background:var(--green);transform:rotate(45deg)}
+        .brand small{color:var(--green-3);font-weight:500;font-family:var(--mono)}
+
+        .nav-links{display:flex;align-items:center;justify-content:center;gap:30px;flex-wrap:wrap}
+        .nav-links a{
+            font-family:var(--sans);font-size:.86rem;font-weight:500;
+            color:var(--ink-soft);position:relative;padding:6px 0;
+            transition:color .3s var(--ease);
+        }
+        .nav-links a::after{
+            content:'';position:absolute;left:0;bottom:0;
+            width:100%;height:1px;background:currentColor;
+            transform:scaleX(0);transform-origin:right;
+            transition:transform .4s var(--ease);
+        }
+        .nav-links a:hover,
+        .nav-links a.active{color:var(--green)}
+        .nav-links a:hover::after,
+        .nav-links a.active::after{transform:scaleX(1);transform-origin:left}
+
+        .nav-toggle{
+            display:none;width:44px;height:44px;
+            place-items:center;color:var(--ink);
+            font-size:1rem;border:1px solid var(--line);
+            background:var(--white);
         }
 
-        nav {
-            display:flex;
-            justify-content: space-between;
-            align-items: center;
-            max-width:1400px;
-            margin:0 auto;
-            flex-wrap:wrap;
-        }
-
-        .logo h1 {
-            font-size:2rem;
-            font-weight:700;
-            color:#2c3e50;
-        }
-
-        .logo span {
-            color:#27ae60;
-        }
-
-        .nav-links {
-            list-style:none;
-            display:flex;
-            gap:25px;
-            flex-wrap:wrap;
-            margin:0;
-            padding:0;
-        }
-
-        .nav-links li a {
-            text-decoration:none;
-            color:#2c3e50;
-            font-weight:500;
-            padding:8px 15px;
-            border-radius:25px;
-            transition: all 0.3s;
-        }
-
-        .nav-links li a:hover, .nav-links li a.active {
-            background:#27ae60;
-            color:#fff;
-        }
-
-        /* Búsqueda y filtros */
-        .search-container {
-            max-width:1200px;
-            margin:40px auto;
-            padding:0 20px;
-        }
-
-        .search-box {
-            display:flex;
-            gap:15px;
-            margin-bottom:30px;
-            flex-wrap:wrap;
-        }
-
-        .search-input-container {
+        /* ============================================================
+           PAGE HERO
+        ============================================================ */
+        .page-hero{
             position:relative;
-            flex:1;
+            padding:180px 0 70px;
+            background:var(--off-white);
+            border-bottom:1px solid var(--line);
+            overflow:hidden;
         }
-
-        .search-input {
-            width:100%;
-            padding:15px 20px;
-            border:2px solid #e0e0e0;
-            border-radius:50px;
-            font-size:1rem;
-            transition:all 0.3s;
+        .page-hero::before{
+            content:'LIBROS';position:absolute;
+            right:-3%;top:50%;transform:translateY(-50%);
+            font-family:var(--serif);font-style:italic;
+            font-size:18rem;line-height:.8;letter-spacing:-.05em;
+            color:rgba(26,107,69,.05);pointer-events:none;
+            white-space:nowrap;z-index:0;
         }
+        .page-hero .wrap{position:relative;z-index:1}
 
-        .search-input:focus {
-            outline:none;
-            border-color:#27ae60;
-            box-shadow:0 2px 15px rgba(39,174,96,0.2);
-        }
-
-        .search-filters {
+        .hero-top{
             display:flex;
-            gap:15px;
+            justify-content:space-between;
+            align-items:center;
+            font-family:var(--mono);
+            font-size:.68rem;
+            letter-spacing:.14em;
+            text-transform:uppercase;
+            color:var(--muted);
+            padding-bottom:18px;
+            border-bottom:1px solid var(--line);
+            margin-bottom:36px;
             flex-wrap:wrap;
-            justify-content:center;
-            margin-bottom:30px;
+            gap:8px;
+        }
+        .hero-top span{display:flex;align-items:center;gap:8px}
+        .hero-top .dot{
+            width:7px;height:7px;background:var(--green-3);border-radius:50%;
+            box-shadow:0 0 0 4px rgba(52,160,108,.25);
+            animation:pulse 2s ease-in-out infinite;
+        }
+        @keyframes pulse{
+            0%,100%{opacity:1;transform:scale(1)}
+            50%{opacity:.5;transform:scale(.75)}
         }
 
-        .filter-option {
+        .page-hero .eyebrow{
+            color:var(--green);font-family:var(--mono);
+            font-size:.72rem;letter-spacing:.18em;text-transform:uppercase;
+            display:inline-flex;align-items:center;gap:14px;
+            margin-bottom:22px;
+        }
+        .page-hero .eyebrow::before{
+            content:'';width:32px;height:1px;background:var(--green);
+        }
+        .page-hero h1{
+            font-size:clamp(2.2rem,5vw,4.4rem);
+            line-height:1;
+            letter-spacing:-.035em;
+            margin-bottom:22px;
+            max-width:18ch;
+        }
+        .page-hero h1 em{color:var(--green-2);font-style:italic}
+        .page-hero p{
+            font-size:1.02rem;color:var(--muted);
+            max-width:56ch;line-height:1.7;
+        }
+
+        /* ============================================================
+           TOOLBAR — búsqueda y filtros
+        ============================================================ */
+        .section{
+            padding:70px 0 100px;
+            background:var(--white);
+        }
+
+        .search-box{
             display:flex;
+            margin-bottom:26px;
+            position:relative;
+        }
+        .search-box .search-icon{
+            position:absolute;
+            left:22px;top:50%;
+            transform:translateY(-50%);
+            color:var(--muted);
+            font-size:.9rem;
+            pointer-events:none;
+            transition:color .3s var(--ease);
+        }
+        .search-input{
+            width:100%;
+            padding:18px 24px 18px 54px;
+            font-family:var(--sans);
+            font-size:.98rem;
+            color:var(--ink);
+            background:var(--white);
+            border:1px solid var(--line);
+            transition:border-color .3s var(--ease),box-shadow .3s var(--ease);
+        }
+        .search-input::placeholder{color:var(--muted);opacity:.7}
+        .search-input:focus{
+            border-color:var(--green-3);
+            box-shadow:0 0 0 4px rgba(52,160,108,.12);
+        }
+        .search-box:focus-within .search-icon{color:var(--green-3)}
+
+        .search-filters{
+            display:flex;
+            gap:10px;
+            flex-wrap:wrap;
+            margin-bottom:44px;
+        }
+        .filter-option{
+            display:inline-flex;
             align-items:center;
             gap:8px;
-            background:#fff;
-            padding:10px 20px;
-            border-radius:50px;
-            box-shadow:0 2px 8px rgba(0,0,0,0.1);
+            padding:10px 16px;
+            background:var(--white);
+            border:1px solid var(--line);
             cursor:pointer;
-            transition:all 0.3s;
+            transition:all .3s var(--ease);
+            user-select:none;
         }
-
-        .filter-option:hover {
+        .filter-option:hover{
+            border-color:var(--green-3);
             transform:translateY(-2px);
-            box-shadow:0 4px 10px rgba(0,0,0,0.15);
         }
-
-        .filter-option input[type="checkbox"] {
-            width:18px;
-            height:18px;
-            accent-color:#27ae60;
+        .filter-option input[type="checkbox"]{
+            width:16px;
+            height:16px;
+            accent-color:var(--green);
             cursor:pointer;
+            appearance:none;
+            -webkit-appearance:none;
+            border:1px solid var(--line-2);
+            position:relative;
+            transition:all .25s var(--ease);
+            flex-shrink:0;
         }
-
-        .filter-option label {
-            font-size:0.95rem;
+        .filter-option input[type="checkbox"]:checked{
+            background:var(--green);
+            border-color:var(--green);
+        }
+        .filter-option input[type="checkbox"]:checked::after{
+            content:'';
+            position:absolute;
+            left:4px;top:1px;
+            width:4px;height:9px;
+            border:solid var(--white);
+            border-width:0 2px 2px 0;
+            transform:rotate(45deg);
+        }
+        .filter-option label{
+            font-family:var(--mono);
+            font-size:.7rem;
+            letter-spacing:.1em;
+            text-transform:uppercase;
+            color:var(--ink-soft);
+            cursor:pointer;
             font-weight:500;
-            color:#2c3e50;
-            cursor:pointer;
         }
+        .filter-option:has(input:checked){
+            background:var(--green-tint);
+            border-color:var(--green-3);
+        }
+        .filter-option:has(input:checked) label{color:var(--green-deep)}
 
-        /* Grid de libros */
-        .books-grid {
+        /* ============================================================
+           GRID DE LIBROS
+        ============================================================ */
+        .books-grid{
             display:grid;
-            grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
-            gap:25px;
-            padding:20px;
+            grid-template-columns:repeat(4, 1fr);
+            gap:22px;
         }
 
-        .book-card {
-            background: linear-gradient(145deg, #ffffff, #ecf0f1);
-            border-radius:20px;
-            box-shadow:0 8px 20px rgba(0,0,0,0.1);
-            transition: transform 0.3s, box-shadow 0.3s;
+        .book-card{
+            background:var(--white);
+            border:1px solid var(--line);
+            overflow:hidden;
             display:flex;
             flex-direction:column;
-            justify-content:space-between;
-            overflow:hidden;
-            padding:20px;
+            transition:all .5s var(--ease);
+            position:relative;
+        }
+        .book-card::before{
+            content:'';
+            position:absolute;
+            top:0;left:0;
+            width:3px;height:0;
+            background:var(--green-3);
+            transition:height .5s var(--ease);
+        }
+        .book-card:hover::before{height:100%}
+        .book-card:hover{
+            border-color:var(--green-3);
+            transform:translateY(-4px);
+            box-shadow:0 20px 40px -25px rgba(15,74,46,.3);
         }
 
-        .book-card:hover {
-            transform:translateY(-5px);
-            box-shadow:0 12px 25px rgba(0,0,0,0.2);
-        }
-
-        .card-content {
+        .card-content{
+            padding:24px 22px 20px;
+            display:flex;
+            flex-direction:column;
             flex:1;
-            display:flex;
-            flex-direction:column;
-            justify-content:space-between;
+            gap:10px;
         }
 
-        .card-content h3 {
-            font-size:1.3rem;
-            margin-bottom:5px;
-            color:#2c3e50;
-            word-break: break-word;
+        .card-content h3{
+            font-family:var(--serif);
+            font-size:1.25rem;
+            line-height:1.15;
+            letter-spacing:-.02em;
+            color:var(--ink);
+            margin-bottom:2px;
+            word-break:break-word;
         }
 
-        .card-content .author {
-            font-size:0.95rem;
-            color:#7f8c8d;
-            margin-bottom:5px;
-            word-break: break-word;
+        .card-content .author{
+            font-family:var(--mono);
+            font-size:.62rem;
+            letter-spacing:.1em;
+            text-transform:uppercase;
+            color:var(--green-deep);
+            margin-bottom:6px;
+            word-break:break-word;
         }
 
-        .card-content .desc {
-            font-size:0.9rem;
-            color:#34495e;
-            margin-bottom:10px;
-            min-height:55px;
+        .card-content .desc{
+            font-size:.85rem;
+            color:var(--muted);
+            line-height:1.55;
+            margin-bottom:auto;
+            word-break:break-word;
+            display:-webkit-box;
+            -webkit-line-clamp:3;
+            -webkit-box-orient:vertical;
             overflow:hidden;
-            word-break: break-word;
         }
 
-        .card-content .category {
-            display:inline-block;
-            background:#27ae60;
-            color:#fff;
-            font-size:0.8rem;
-            padding:4px 10px;
-            border-radius:50px;
-            margin-bottom:10px;
+        .card-content .category{
+            display:inline-flex;
+            align-items:center;
+            gap:6px;
+            align-self:flex-start;
+            background:var(--green-tint);
+            color:var(--green-deep);
+            font-family:var(--mono);
+            font-size:.56rem;
+            font-weight:700;
+            letter-spacing:.14em;
+            text-transform:uppercase;
+            padding:5px 10px;
+            margin-top:6px;
+        }
+        .card-content .category::before{
+            content:'';
+            width:6px;height:6px;
+            background:var(--green-3);
         }
 
-        .read-btn {
-            display:inline-block;
-            text-align:center;
-            padding:8px 16px;
-            background:#27ae60;
-            color:#fff;
-            border-radius:50px;
-            text-decoration:none;
-            font-weight:600;
-            transition:all 0.3s;
+        .read-btn{
+            display:inline-flex;
+            align-items:center;
+            justify-content:center;
+            gap:10px;
+            font-family:var(--mono);
+            font-size:.66rem;
+            font-weight:500;
+            letter-spacing:.14em;
+            text-transform:uppercase;
+            padding:12px 20px;
+            background:var(--green);
+            color:var(--white);
+            border:1px solid var(--green);
+            position:relative;
+            overflow:hidden;
+            transition:all .35s var(--ease);
+            margin-top:10px;
         }
-
-        .read-btn:hover {
-            background:#219150;
-            transform:translateY(-2px);
+        .read-btn::before{
+            content:'';
+            position:absolute;inset:0;
+            background:var(--green-3);
+            transform:translateY(100%);
+            transition:transform .4s var(--ease);
+            z-index:0;
         }
+        .read-btn:hover::before{transform:translateY(0)}
+        .read-btn span,
+        .read-btn i{position:relative;z-index:1}
+        .read-btn i{font-size:.6rem;transition:transform .3s var(--ease)}
+        .read-btn:hover i{transform:translateX(3px)}
 
-        /* Sin resultados */
-        .no-results {
-            text-align:center;
-            padding:60px 20px;
-            font-size:1.2rem;
-            color:#7f8c8d;
+        /* ============================================================
+           SIN RESULTADOS
+        ============================================================ */
+        .no-results{
             display:none;
-            background:#fff;
-            border-radius:10px;
-            margin:20px 0;
-            box-shadow:0 2px 10px rgba(0,0,0,0.05);
+            text-align:center;
+            padding:70px 30px;
+            background:var(--off-white);
+            border:1px solid var(--line);
+            margin:0 0 40px;
+        }
+        .no-results p{
+            font-family:var(--serif);
+            font-size:1.5rem;
+            letter-spacing:-.02em;
+            color:var(--muted);
+        }
+        .no-results::before{
+            content:'∅';
+            display:block;
+            font-family:var(--serif);
+            font-style:italic;
+            font-size:3rem;
+            color:var(--green-4);
+            margin-bottom:14px;
+            line-height:1;
         }
 
-        /* Paginación */
-        .pagination {
+        /* ============================================================
+           PAGINACIÓN
+        ============================================================ */
+        .pagination{
             display:flex;
             justify-content:center;
             align-items:center;
-            gap:10px;
-            margin:30px 0;
+            gap:6px;
+            margin:56px 0 20px;
             flex-wrap:wrap;
         }
-
-        .pagination button {
-            padding:8px 15px;
-            border:none;
-            border-radius:50px;
-            background:#27ae60;
-            color:#fff;
-            font-weight:600;
-            cursor:pointer;
-            transition:all 0.3s;
+        .pagination button{
+            min-width:44px;
+            height:44px;
+            padding:0 14px;
+            font-family:var(--mono);
+            font-size:.72rem;
+            font-weight:500;
+            letter-spacing:.06em;
+            color:var(--ink-soft);
+            background:var(--white);
+            border:1px solid var(--line);
+            transition:all .3s var(--ease);
+            display:inline-flex;
+            align-items:center;
+            justify-content:center;
+        }
+        .pagination button:hover:not(.disabled){
+            background:var(--green-tint);
+            border-color:var(--green-3);
+            color:var(--green-deep);
+            transform:translateY(-2px);
+        }
+        .pagination button.disabled{
+            background:var(--green);
+            border-color:var(--green);
+            color:var(--white);
+            cursor:default;
+        }
+        .pagination button:disabled{
+            cursor:not-allowed;
+            opacity:.5;
         }
 
-        .pagination button:hover {
-            background:#219150;
+        /* ============================================================
+           PAGE JUMPER
+        ============================================================ */
+        .page-jumper{
+            display:flex;
+            justify-content:center;
+            align-items:center;
+            gap:12px;
+            flex-wrap:wrap;
+            margin-bottom:60px;
+            font-family:var(--mono);
+            font-size:.68rem;
+            letter-spacing:.14em;
+            text-transform:uppercase;
+            color:var(--muted);
+        }
+        .page-jumper input{
+            width:70px;
+            padding:10px 14px;
+            font-family:var(--mono);
+            font-size:.82rem;
+            color:var(--ink);
+            background:var(--white);
+            border:1px solid var(--line);
+            text-align:center;
+            transition:border-color .3s var(--ease),box-shadow .3s var(--ease);
+        }
+        .page-jumper input:focus{
+            border-color:var(--green-3);
+            box-shadow:0 0 0 4px rgba(52,160,108,.12);
+        }
+        .page-jumper button{
+            padding:10px 20px;
+            font-family:var(--mono);
+            font-size:.68rem;
+            font-weight:500;
+            letter-spacing:.14em;
+            text-transform:uppercase;
+            color:var(--white);
+            background:var(--green);
+            border:1px solid var(--green);
+            transition:all .3s var(--ease);
+        }
+        .page-jumper button:hover{
+            background:var(--green-deep);
+            border-color:var(--green-deep);
             transform:translateY(-2px);
         }
 
-        .pagination button.disabled {
-            background:#bdc3c7;
-            cursor:not-allowed;
+        /* ============================================================
+           MODAL ERROR
+        ============================================================ */
+        .page-error-modal{
+            position:fixed;inset:0;
+            background:rgba(13,43,29,.7);
+            backdrop-filter:blur(8px);
+            -webkit-backdrop-filter:blur(8px);
+            display:flex;justify-content:center;align-items:center;
+            z-index:2000;
+            opacity:0;visibility:hidden;
+            transition:all .35s var(--ease);
+            padding:20px;
         }
+        .page-error-modal.active{opacity:1;visibility:visible}
 
-        /* Buscador de páginas */
-        .page-jumper {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            gap: 10px;
-            margin: 15px 0;
-            flex-wrap: wrap;
-        }
-
-        .page-jumper input {
-            width: 60px;
-            padding: 8px 12px;
-            border: 2px solid #e0e0e0;
-            border-radius: 50px;
-            text-align: center;
-        }
-
-        .page-jumper input:focus {
-            outline: none;
-            border-color: #27ae60;
-        }
-
-        .page-jumper button {
-            padding: 8px 15px;
-            border: none;
-            border-radius: 50px;
-            background: #2c3e50;
-            color: #fff;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s;
-        }
-
-        .page-jumper button:hover {
-            background: #1a252f;
-            transform: translateY(-2px);
-        }
-
-        /* Modal de error */
-        .page-error-modal {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.7);
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            z-index: 2000;
-            opacity: 0;
-            visibility: hidden;
-            transition: all 0.3s ease;
-        }
-
-        .page-error-modal.active {
-            opacity: 1;
-            visibility: visible;
-        }
-
-        .page-error-content {
-            background: white;
-            padding: 30px;
-            border-radius: 20px;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
-            text-align: center;
-            max-width: 400px;
-            width: 90%;
-            transform: scale(0.8);
-            transition: transform 0.3s ease;
-        }
-
-        .page-error-modal.active .page-error-content {
-            transform: scale(1);
-        }
-
-        .page-error-icon {
-            font-size: 3rem;
-            color: #e74c3c;
-            margin-bottom: 15px;
-        }
-
-        .page-error-title {
-            font-size: 1.5rem;
-            font-weight: 600;
-            color: #2c3e50;
-            margin-bottom: 10px;
-        }
-
-        .page-error-message {
-            font-size: 1rem;
-            color: #7f8c8d;
-            margin-bottom: 20px;
-            line-height: 1.5;
-        }
-
-        .page-error-close {
-            padding: 10px 25px;
-            background: #27ae60;
-            color: white;
-            border: none;
-            border-radius: 50px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s;
-        }
-
-        .page-error-close:hover {
-            background: #219150;
-            transform: translateY(-2px);
-        }
-
-        footer {
-            background:#2c3e50;
-            color:#fff;
+        .page-error-content{
+            background:var(--white);
+            padding:38px 34px;
+            max-width:420px;width:100%;
             text-align:center;
-            padding:25px;
-            font-size:0.95rem;
-            margin-top:60px;
+            border:1px solid var(--line);
+            transform:scale(.92) translateY(10px);
+            transition:transform .4s var(--ease);
+            position:relative;
+        }
+        .page-error-modal.active .page-error-content{
+            transform:scale(1) translateY(0);
+        }
+        .page-error-content::before{
+            content:'';
+            position:absolute;top:-10px;right:-10px;
+            width:50px;height:50px;
+            border-top:1.5px solid var(--red);
+            border-right:1.5px solid var(--red);
+            pointer-events:none;
+        }
+        .page-error-icon{
+            width:64px;height:64px;
+            border:1px solid var(--red);
+            color:var(--red);
+            display:grid;place-items:center;
+            font-size:1.5rem;
+            margin:0 auto 20px;
+            font-family:var(--serif);
+            font-style:italic;
+        }
+        .page-error-title{
+            font-family:var(--serif);
+            font-size:1.5rem;
+            line-height:1.1;
+            letter-spacing:-.02em;
+            margin-bottom:10px;
+            color:var(--ink);
+        }
+        .page-error-message{
+            font-size:.88rem;
+            color:var(--muted);
+            margin-bottom:26px;
+            line-height:1.6;
+        }
+        .page-error-close{
+            font-family:var(--mono);
+            font-size:.68rem;
+            font-weight:500;
+            letter-spacing:.14em;
+            text-transform:uppercase;
+            padding:12px 24px;
+            color:var(--white);
+            background:var(--green);
+            border:1px solid var(--green);
+            transition:all .3s var(--ease);
+        }
+        .page-error-close:hover{
+            background:var(--green-deep);
+            border-color:var(--green-deep);
+            transform:translateY(-2px);
         }
 
-        /* ===== RESPONSIVE DESIGN ===== */
-
-        /* Menú hamburguesa para móviles */
-        .menu-toggle {
-            display: none;
-            background: none;
-            border: none;
-            font-size: 1.5rem;
-            color: #2c3e50;
-            cursor: pointer;
-            padding: 5px;
+        /* ============================================================
+           FOOTER
+        ============================================================ */
+        footer{background:var(--green-deep);color:var(--white);padding:60px 0 0}
+        .foot-top{
+            display:grid;grid-template-columns:2fr 1fr 1fr 1fr;
+            gap:50px;padding-bottom:50px;
+            border-bottom:1px solid rgba(255,255,255,.15);
         }
-
-        .nav-overlay {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0,0,0,0.5);
-            z-index: 998;
+        .foot-brand .brand{color:var(--white);margin-bottom:22px}
+        .foot-brand .brand small{color:var(--green-4)}
+        .foot-brand p{
+            color:rgba(255,255,255,.7);font-size:.9rem;
+            max-width:34ch;line-height:1.65;margin-bottom:24px;
         }
-
-        .nav-overlay.active {
-            display: block;
+        .foot-social{display:flex;gap:8px}
+        .foot-social a{
+            width:40px;height:40px;
+            border:1px solid rgba(255,255,255,.25);
+            display:grid;place-items:center;
+            color:var(--white);font-size:.8rem;
+            transition:all .3s var(--ease);
         }
-
-        /* Tablet (768px - 1024px) */
-        @media (max-width: 1024px) {
-            header {
-                padding: 15px 20px;
-            }
-
-            .logo h1 {
-                font-size: 1.7rem;
-            }
-
-            .search-container {
-                margin: 30px auto;
-            }
-
-            .books-grid {
-                grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-                gap: 20px;
-                padding: 15px;
-            }
-
-            .book-card {
-                padding: 15px;
-            }
-
-            .card-content h3 {
-                font-size: 1.2rem;
-            }
+        .foot-social a:hover{
+            background:var(--green-3);border-color:var(--green-3);
+            transform:translateY(-4px);
         }
-
-        /* Móviles (hasta 768px) */
-        @media (max-width: 768px) {
-            /* Header y navegación móvil */
-            header {
-                padding: 15px;
-            }
-
-            nav {
-                position: relative;
-                flex-wrap: nowrap;
-            }
-
-            .menu-toggle {
-                display: block;
-                order: 2;
-            }
-
-            .logo {
-                order: 1;
-                flex: 1;
-            }
-
-            .logo h1 {
-                font-size: 1.5rem;
-            }
-
-            .nav-links {
-                position: fixed;
-                top: 0;
-                right: -100%;
-                width: 70%;
-                height: 100vh;
-                background: #fff;
-                flex-direction: column;
-                justify-content: flex-start;
-                padding-top: 80px;
-                transition: right 0.3s ease;
-                box-shadow: -5px 0 15px rgba(0,0,0,0.1);
-                z-index: 999;
-                gap: 0;
-            }
-
-            .nav-links.active {
-                right: 0;
-            }
-
-            .nav-links li {
-                width: 100%;
-                text-align: center;
-            }
-
-            .nav-links li a {
-                display: block;
-                width: 100%;
-                padding: 15px;
-                border-radius: 0;
-                margin: 0;
-            }
-
-            .user-info-mobile {
-                display: flex;
-                flex-direction: column;
-                align-items: center;
-                padding: 20px;
-                border-top: 1px solid #eee;
-                margin-top: 20px;
-            }
-
-            .user-info-mobile p {
-                margin-bottom: 10px;
-                text-align: center;
-            }
-
-            /* Búsqueda y filtros móviles */
-            .search-container {
-                padding: 0 15px;
-                margin: 20px auto;
-            }
-
-            .search-box {
-                flex-direction: column;
-                gap: 10px;
-            }
-
-            .search-filters {
-                flex-direction: column;
-                gap: 10px;
-                align-items: stretch;
-            }
-
-            .filter-option {
-                justify-content: center;
-                padding: 12px 15px;
-            }
-
-            /* Grid de libros móvil */
-            .books-grid {
-                grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
-                gap: 15px;
-                padding: 10px;
-            }
-
-            .book-card {
-                padding: 15px;
-            }
-
-            .card-content h3 {
-                font-size: 1.1rem;
-            }
-
-            .card-content .author {
-                font-size: 0.9rem;
-            }
-
-            .card-content .desc {
-                font-size: 0.85rem;
-                min-height: 50px;
-            }
-
-            .read-btn {
-                padding: 7px 14px;
-                font-size: 0.9rem;
-            }
-
-            /* Paginación móvil */
-            .pagination {
-                gap: 5px;
-                margin: 20px 0;
-            }
-
-            .pagination button {
-                padding: 6px 12px;
-                font-size: 0.9rem;
-            }
-
-            .page-jumper {
-                flex-direction: column;
-                gap: 8px;
-            }
-
-            .page-jumper input {
-                width: 80px;
-            }
-
-            footer {
-                padding: 20px 15px;
-                font-size: 0.9rem;
-            }
+        .foot-col h5{
+            font-family:var(--mono);font-size:.66rem;font-weight:500;
+            letter-spacing:.16em;text-transform:uppercase;
+            color:var(--green-4);margin-bottom:22px;
         }
+        .foot-col ul{list-style:none;display:flex;flex-direction:column;gap:12px}
+        .foot-col a{
+            color:rgba(255,255,255,.85);font-size:.9rem;
+            transition:all .3s var(--ease);
+            display:inline-flex;align-items:center;gap:0;
+        }
+        .foot-col a::before{
+            content:'→';width:0;overflow:hidden;
+            transition:all .3s var(--ease);color:var(--green-4);
+        }
+        .foot-col a:hover{color:var(--white)}
+        .foot-col a:hover::before{width:18px}
+        .foot-bot{
+            padding:26px 0;display:flex;
+            justify-content:space-between;align-items:center;
+            gap:20px;flex-wrap:wrap;
+            font-family:var(--mono);font-size:.68rem;
+            letter-spacing:.08em;color:rgba(255,255,255,.6);
+            text-transform:uppercase;
+        }
+        .foot-bot i{color:var(--green-4);margin:0 4px}
 
-        /* Móviles pequeños (hasta 480px) */
-        @media (max-width: 480px) {
-            .books-grid {
-                grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
-                gap: 12px;
+        /* ============================================================
+           RESPONSIVE
+        ============================================================ */
+        @media(max-width:1100px){
+            .books-grid{grid-template-columns:repeat(3,1fr)}
+        }
+        @media(max-width:1024px){
+            .nav-inner{grid-template-columns:auto auto;gap:20px}
+            .nav-toggle{display:grid;grid-column:3;grid-row:1}
+            .nav-links{
+                position:fixed;top:0;right:0;
+                width:min(340px,88vw);height:100vh;
+                background:var(--white);
+                flex-direction:column;
+                justify-content:flex-start;
+                align-items:stretch;
+                gap:0;padding:90px 30px 30px;
+                transform:translateX(100%);
+                transition:transform .5s var(--ease);
+                box-shadow:-30px 0 80px -30px rgba(13,43,29,.2);
+                border-left:1px solid var(--line);
+                overflow-y:auto;
+                z-index:200;
             }
-
-            .book-card {
-                padding: 12px;
+            .nav-links.active{transform:translateX(0)}
+            .nav-links a{
+                font-family:var(--serif);
+                font-size:1.15rem;
+                padding:16px 0;
+                border-bottom:1px solid var(--line);
+                color:var(--ink) !important;
             }
-
-            .card-content h3 {
-                font-size: 1rem;
-            }
-
-            .card-content .desc {
-                min-height: 45px;
-            }
-
-            .search-input {
-                padding: 12px 15px;
-            }
-
-            .filter-option {
-                padding: 10px 12px;
-            }
-
-            .filter-option label {
-                font-size: 0.9rem;
-            }
+            .nav-links a::after{display:none}
+            .foot-top{grid-template-columns:1fr 1fr;gap:36px}
+        }
+        @media(max-width:768px){
+            .page-hero{padding:130px 0 50px}
+            .page-hero::before{font-size:8rem;top:35%}
+            .hero-top{font-size:.6rem}
+            .section{padding:50px 0 70px}
+            .books-grid{grid-template-columns:repeat(2,1fr);gap:14px}
+            .card-content{padding:18px 16px 16px}
+            .card-content h3{font-size:1.05rem}
+            .card-content .desc{font-size:.8rem;-webkit-line-clamp:2}
+            .foot-top{grid-template-columns:1fr;gap:32px;padding-bottom:40px}
+            .foot-bot{flex-direction:column;text-align:center}
+            .search-filters{justify-content:flex-start}
+        }
+        @media(max-width:480px){
+            .books-grid{grid-template-columns:1fr}
+            .brand{font-size:.72rem}
+            .pagination button{min-width:40px;height:40px;padding:0 10px}
+            .filter-option{padding:8px 12px}
+            .filter-option label{font-size:.6rem}
+        }
+        @media(prefers-reduced-motion:reduce){
+            *{animation-duration:.01ms!important;transition-duration:.01ms!important}
+            html{scroll-behavior:auto}
         }
     </style>
 </head>
 <body>
 
-<header>
-    <nav>
-        <div class="logo"><h1>Lectio <span>Biblioteca</span></h1></div>
+<!-- ========== NAV ========== -->
+<header class="nav" id="nav">
+    <div class="wrap nav-inner">
+        <a href="/api/logiado" class="brand">
+            <span class="sq"></span>
+            LECTIO <small>/ BIBLIOTECA</small>
+        </a>
 
-        <!-- Menú hamburguesa para móviles -->
-        <button class="menu-toggle" aria-label="Abrir menú de navegación">
+        <nav class="nav-links" id="navLinks">
+            <a href="/api/logiado">Inicio</a>
+            <a href="/api/libroVirtualesLog" class="active">Libros Virtuales</a>
+            <a href="/api/reservaLibro">Reserva de Libros</a>
+        </nav>
+
+        <button class="nav-toggle" id="navToggle" aria-label="Menú">
             <i class="fas fa-bars"></i>
         </button>
-
-        <div class="nav-overlay"></div>
-
-        <ul class="nav-links">
-            <li><a href="/api/logiado">Inicio</a></li>
-            <li><a href="/api/libroVirtualesLog" class="active">Libros Virtuales</a></li>
-            <li><a href="/api/reservaLibro">Reserva de Libros</a></li>
-        </ul>
-    </nav>
+    </div>
 </header>
 
-<div class="container search-container">
-    <div class="search-box">
-        <input type="text" id="searchInput" class="search-input" placeholder="Buscar libros por título...">
-    </div>
-    <div class="search-filters">
-        <div class="filter-option"><input type="checkbox" id="filterNovelas" checked><label for="filterNovelas">Novelas</label></div>
-        <div class="filter-option"><input type="checkbox" id="filterCiencia" checked><label for="filterCiencia">Ciencia</label></div>
-        <div class="filter-option"><input type="checkbox" id="filterHistoria" checked><label for="filterHistoria">Historia</label></div>
-        <div class="filter-option"><input type="checkbox" id="filterArte" checked><label for="filterArte">Arte</label></div>
-        <div class="filter-option"><input type="checkbox" id="filterFantasía" checked><label for="filterFantasía">Fantasía</label></div>
-        <div class="filter-option"><input type="checkbox" id="filterFilosofía" checked><label for="filterFilosofía">Filosofía</label></div>
-    </div>
-</div>
-
-<div id="noResults" class="no-results">
-    <p>No se encontraron libros que coincidan con tu búsqueda</p>
-</div>
-
-<section class="books-section">
-    <div class="container books-grid" id="booksGrid">
-        <div th:each="libro,iterStat : ${libros}" class="book-card"
-             th:data-title="${libro.titulo.toLowerCase()}"
-             th:data-category="${libro.categoria}"
-             th:data-index="${iterStat.index}">
-            <div class="card-content">
-                <h3 th:text="${libro.titulo}">Título</h3>
-                <p class="author" th:text="${libro.autor}">Autor</p>
-                <p class="desc" th:text="${libro.descripcion}">Descripción...</p>
-                <span class="category" th:text="${libro.categoria}">Categoría</span>
-                <a th:href="${libro.url}" target="_blank" class="read-btn">Leer</a>
-            </div>
+<!-- ========== PAGE HERO ========== -->
+<section class="page-hero">
+    <div class="wrap">
+        <div class="hero-top">
+            <span><span class="dot"></span> Catálogo activo</span>
+            <span>Lectio · Biblioteca Digital</span>
         </div>
+
+        <span class="eyebrow">Libros Virtuales</span>
+        <h1>Encuentra tu próxima <em>lectura</em>.</h1>
+        <p>
+            Explora, filtra y busca por título entre toda nuestra colección de libros virtuales.
+            Todo disponible al instante, desde cualquier dispositivo.
+        </p>
     </div>
 </section>
 
-<div class="pagination" id="pagination"></div>
+<!-- ========== CONTENIDO ========== -->
+<section class="section">
+    <div class="wrap">
 
-<!-- Buscador de páginas -->
-<div class="page-jumper" id="pageJumper">
-    <span>Ir a la página:</span>
-    <input type="number" id="pageInput" min="1" value="1">
-    <button id="goToPageBtn">Ir</button>
-</div>
+        <!-- Buscador -->
+        <div class="search-box">
+            <i class="fas fa-search search-icon"></i>
+            <input type="text" id="searchInput" class="search-input" placeholder="Buscar libros por título...">
+        </div>
 
-<!-- Modal de error para páginas no existentes -->
+        <!-- Filtros -->
+        <div class="search-filters">
+            <div class="filter-option"><input type="checkbox" id="filterNovelas" checked><label for="filterNovelas">Novelas</label></div>
+            <div class="filter-option"><input type="checkbox" id="filterCiencia" checked><label for="filterCiencia">Ciencia</label></div>
+            <div class="filter-option"><input type="checkbox" id="filterHistoria" checked><label for="filterHistoria">Historia</label></div>
+            <div class="filter-option"><input type="checkbox" id="filterArte" checked><label for="filterArte">Arte</label></div>
+            <div class="filter-option"><input type="checkbox" id="filterFantasía" checked><label for="filterFantasía">Fantasía</label></div>
+            <div class="filter-option"><input type="checkbox" id="filterFilosofía" checked><label for="filterFilosofía">Filosofía</label></div>
+        </div>
+
+        <!-- Sin resultados -->
+        <div id="noResults" class="no-results">
+            <p>No se encontraron libros que coincidan con tu búsqueda</p>
+        </div>
+
+        <!-- Grid de libros -->
+        <div class="books-grid" id="booksGrid">
+            <div th:each="libro,iterStat : ${libros}" class="book-card"
+                 th:data-title="${libro.titulo.toLowerCase()}"
+                 th:data-category="${libro.categoria}"
+                 th:data-index="${iterStat.index}">
+                <div class="card-content">
+                    <span class="category" th:text="${libro.categoria}">Categoría</span>
+                    <h3 th:text="${libro.titulo}">Título</h3>
+                    <p class="author" th:text="${libro.autor}">Autor</p>
+                    <p class="desc" th:text="${libro.descripcion}">Descripción...</p>
+                    <a th:href="${libro.url}" target="_blank" class="read-btn">
+                        <span>Leer</span> <i class="fas fa-arrow-right"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Paginación -->
+        <div class="pagination" id="pagination"></div>
+
+        <!-- Page jumper -->
+        <div class="page-jumper" id="pageJumper">
+            <span>Ir a la página</span>
+            <input type="number" id="pageInput" min="1" value="1">
+            <button id="goToPageBtn">Ir</button>
+        </div>
+
+    </div>
+</section>
+
+<!-- ========== FOOTER ========== -->
+<footer>
+    <div class="wrap">
+        <div class="foot-top">
+            <div class="foot-brand">
+                <a href="/api/logiado" class="brand">
+                    <span class="sq"></span>
+                    LECTIO <small>/ BIBLIOTECA</small>
+                </a>
+                <p>Tu biblioteca virtual de confianza. Miles de libros y recursos digitales al alcance de un clic.</p>
+                <div class="foot-social">
+                    <a href="#" aria-label="Facebook"><i class="fab fa-facebook-f"></i></a>
+                    <a href="#" aria-label="Twitter"><i class="fab fa-twitter"></i></a>
+                    <a href="#" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
+                    <a href="#" aria-label="YouTube"><i class="fab fa-youtube"></i></a>
+                </div>
+            </div>
+
+            <div class="foot-col">
+                <h5>Explorar</h5>
+                <ul>
+                    <li><a href="/api/logiado">Inicio</a></li>
+                    <li><a href="/api/libroVirtualesLog">Libros Virtuales</a></li>
+                    <li><a href="/api/reservaLibro">Reserva de Libros</a></li>
+                </ul>
+            </div>
+
+            <div class="foot-col">
+                <h5>Recursos</h5>
+                <ul>
+                    <li><a href="/api/libroVirtualesLog">Catálogo Virtual</a></li>
+                    <li><a href="/api/reservaLibro">Reservas</a></li>
+                    <li><a href="/api/optimizador">Optimizador</a></li>
+                </ul>
+            </div>
+
+            <div class="foot-col">
+                <h5>Contacto</h5>
+                <ul>
+                    <li><a href="mailto:servicios@booklab.gov.co">servicios@booklab.gov.co</a></li>
+                    <li><a href="tel:+576013424100">(+57 601) 3424100</a></li>
+                    <li><a href="#">San Pedro Martin Cra 64 A</a></li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="foot-bot">
+            <span>© 2025 Lectio Biblioteca · Todos los derechos reservados</span>
+            <span>Hecho con <i class="fas fa-heart"></i> para lectores</span>
+        </div>
+    </div>
+</footer>
+
+<!-- ========== MODAL ERROR ========== -->
 <div class="page-error-modal" id="pageErrorModal">
     <div class="page-error-content">
-        <div class="page-error-icon">⚠️</div>
+        <div class="page-error-icon">!</div>
         <h2 class="page-error-title">Página no encontrada</h2>
         <p class="page-error-message" id="pageErrorMessage">
             El número de página que ingresaste no existe.
@@ -707,15 +911,9 @@
     </div>
 </div>
 
-<footer>
-    <p>&copy; 2025 BookLab Biblioteca. Todos los derechos reservados.</p>
-</footer>
-
-<!-- Font Awesome para iconos -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/js/all.min.js"></script>
-
 <script>
     document.addEventListener('DOMContentLoaded', function() {
+        const nav = document.getElementById('nav');
         const searchInput = document.getElementById('searchInput');
         const noResults = document.getElementById('noResults');
         const booksGrid = document.getElementById('booksGrid');
@@ -727,11 +925,37 @@
         const pageErrorMessage = document.getElementById('pageErrorMessage');
         const pageErrorClose = document.getElementById('pageErrorClose');
 
-        // Elementos del menú móvil
-        const menuToggle = document.querySelector('.menu-toggle');
-        const navLinks = document.querySelector('.nav-links');
-        const navOverlay = document.querySelector('.nav-overlay');
+        /* ============================================================
+           NAV SCROLL + MENÚ MÓVIL
+        ============================================================ */
+        function onScrollNav(){
+            nav.classList.toggle('scrolled', window.scrollY > 30);
+        }
+        window.addEventListener('scroll', onScrollNav, { passive:true });
+        onScrollNav();
 
+        const navToggle = document.getElementById('navToggle');
+        const navLinks = document.getElementById('navLinks');
+        const toggleIcon = navToggle.querySelector('i');
+
+        navToggle.addEventListener('click', () => {
+            navLinks.classList.toggle('active');
+            const isOpen = navLinks.classList.contains('active');
+            toggleIcon.className = isOpen ? 'fas fa-times' : 'fas fa-bars';
+            document.body.style.overflow = isOpen ? 'hidden' : '';
+        });
+
+        navLinks.querySelectorAll('a').forEach(a => {
+            a.addEventListener('click', () => {
+                navLinks.classList.remove('active');
+                toggleIcon.className = 'fas fa-bars';
+                document.body.style.overflow = '';
+            });
+        });
+
+        /* ============================================================
+           PAGINACIÓN Y FILTRADO
+        ============================================================ */
         const itemsPerPage = 12;
         let currentPage = 1;
         let filteredBooks = bookCards;
@@ -743,55 +967,8 @@
             historia: document.getElementById('filterHistoria'),
             arte: document.getElementById('filterArte'),
             fantasia: document.getElementById('filterFantasía'),
-            filosofia: document.getElementById('filterFilosofía')  // ✅ CORREGIDO: con tilde
+            filosofia: document.getElementById('filterFilosofía')
         };
-
-        // ===== FUNCIÓN PARA MENÚ MÓVIL =====
-        if (menuToggle && navLinks && navOverlay) {
-            menuToggle.addEventListener('click', function() {
-                navLinks.classList.toggle('active');
-                navOverlay.classList.toggle('active');
-                document.body.style.overflow = navLinks.classList.contains('active') ? 'hidden' : '';
-
-                // Cambiar icono del menú
-                const icon = this.querySelector('i');
-                if (navLinks.classList.contains('active')) {
-                    icon.classList.remove('fa-bars');
-                    icon.classList.add('fa-times');
-                } else {
-                    icon.classList.remove('fa-times');
-                    icon.classList.add('fa-bars');
-                }
-            });
-
-            // Cerrar menú al hacer clic en el overlay
-            navOverlay.addEventListener('click', function() {
-                navLinks.classList.remove('active');
-                this.classList.remove('active');
-                document.body.style.overflow = '';
-
-                // Restaurar icono del menú
-                const icon = menuToggle.querySelector('i');
-                icon.classList.remove('fa-times');
-                icon.classList.add('fa-bars');
-            });
-
-            // Cerrar menú al hacer clic en un enlace (en móviles)
-            document.querySelectorAll('.nav-links a').forEach(link => {
-                link.addEventListener('click', function() {
-                    if (window.innerWidth <= 768) {
-                        navLinks.classList.remove('active');
-                        navOverlay.classList.remove('active');
-                        document.body.style.overflow = '';
-
-                        // Restaurar icono del menú
-                        const icon = menuToggle.querySelector('i');
-                        icon.classList.remove('fa-times');
-                        icon.classList.add('fa-bars');
-                    }
-                });
-            });
-        }
 
         function normalizeText(text) {
             return text.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase();
@@ -802,7 +979,6 @@
             const selectedCategories = Object.entries(categoryFilters)
                 .filter(([key, input]) => input.checked)
                 .map(([key]) => {
-                    // Mapear keys a nombres de categoría exactos
                     const categoryMap = {
                         novelas: 'Novelas',
                         ciencia: 'Ciencia',
@@ -823,30 +999,30 @@
 
             noResults.style.display = filteredBooks.length ? 'none' : 'block';
             currentPage = 1;
-            totalPages = Math.ceil(filteredBooks.length/itemsPerPage);
+            totalPages = Math.ceil(filteredBooks.length / itemsPerPage);
             showPage();
             renderPagination();
         }
 
         function showPage() {
             bookCards.forEach(card => card.style.display = 'none');
-            const start = (currentPage-1)*itemsPerPage;
-            const end = start+itemsPerPage;
-            filteredBooks.slice(start,end).forEach(card => card.style.display = '');
+            const start = (currentPage - 1) * itemsPerPage;
+            const end = start + itemsPerPage;
+            filteredBooks.slice(start, end).forEach(card => card.style.display = '');
         }
 
         function renderPagination() {
             paginationContainer.innerHTML = '';
-            totalPages = Math.ceil(filteredBooks.length/itemsPerPage);
-            if(totalPages <= 1) return;
+            totalPages = Math.ceil(filteredBooks.length / itemsPerPage);
+            if (totalPages <= 1) return;
 
-            // Botón anterior
+            /* Botón anterior */
             const prevBtn = document.createElement('button');
             prevBtn.textContent = '←';
             prevBtn.disabled = currentPage === 1;
-            if(currentPage === 1) prevBtn.classList.add('disabled');
+            if (currentPage === 1) prevBtn.classList.add('disabled');
             prevBtn.addEventListener('click', () => {
-                if(currentPage > 1) {
+                if (currentPage > 1) {
                     currentPage--;
                     showPage();
                     renderPagination();
@@ -854,19 +1030,17 @@
             });
             paginationContainer.appendChild(prevBtn);
 
-            // Solo mostrar 3 números de página
+            /* Números */
             let startPage = Math.max(1, currentPage - 1);
             let endPage = Math.min(totalPages, startPage + 2);
-
-            // Ajustar si estamos cerca del final
-            if(endPage - startPage < 2) {
+            if (endPage - startPage < 2) {
                 startPage = Math.max(1, endPage - 2);
             }
 
-            for(let i = startPage; i <= endPage; i++){
+            for (let i = startPage; i <= endPage; i++) {
                 const btn = document.createElement('button');
                 btn.textContent = i;
-                if(i === currentPage) btn.classList.add('disabled');
+                if (i === currentPage) btn.classList.add('disabled');
                 btn.addEventListener('click', () => {
                     currentPage = i;
                     showPage();
@@ -875,13 +1049,13 @@
                 paginationContainer.appendChild(btn);
             }
 
-            // Botón siguiente
+            /* Botón siguiente */
             const nextBtn = document.createElement('button');
             nextBtn.textContent = '→';
             nextBtn.disabled = currentPage === totalPages;
-            if(currentPage === totalPages) nextBtn.classList.add('disabled');
+            if (currentPage === totalPages) nextBtn.classList.add('disabled');
             nextBtn.addEventListener('click', () => {
-                if(currentPage < totalPages) {
+                if (currentPage < totalPages) {
                     currentPage++;
                     showPage();
                     renderPagination();
@@ -898,7 +1072,7 @@
 
         function goToPage() {
             const pageNum = parseInt(pageInput.value);
-            if(pageNum >= 1 && pageNum <= totalPages) {
+            if (pageNum >= 1 && pageNum <= totalPages) {
                 currentPage = pageNum;
                 showPage();
                 renderPagination();
@@ -907,19 +1081,16 @@
             }
         }
 
-        // Cerrar el modal de error
         pageErrorClose.addEventListener('click', function() {
             pageErrorModal.classList.remove('active');
         });
-
         pageErrorModal.addEventListener('click', function(e) {
-            if(e.target === pageErrorModal) {
+            if (e.target === pageErrorModal) {
                 pageErrorModal.classList.remove('active');
             }
         });
-
         document.addEventListener('keydown', function(e) {
-            if(e.key === 'Escape' && pageErrorModal.classList.contains('active')) {
+            if (e.key === 'Escape' && pageErrorModal.classList.contains('active')) {
                 pageErrorModal.classList.remove('active');
             }
         });
@@ -928,7 +1099,7 @@
         Object.values(categoryFilters).forEach(input => input.addEventListener('change', filterBooks));
         goToPageBtn.addEventListener('click', goToPage);
         pageInput.addEventListener('keyup', (e) => {
-            if(e.key === 'Enter') goToPage();
+            if (e.key === 'Enter') goToPage();
         });
 
         filterBooks();

@@ -1,281 +1,401 @@
 <!DOCTYPE html>
 <html lang="es" xmlns:th="http://www.thymeleaf.org">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Lectio - Reserva de Libros</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;500;700&display=swap" rel="stylesheet">
-    <style>
-        * { margin:0; padding:0; box-sizing:border-box; font-family:'Poppins', sans-serif; }
-        body { background-color:#f5f7fa; color:#2c3e50; }
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="description" content="Lectio - Reserva de libros físicos" />
+    <title>Reserva de Libros — Lectio Biblioteca</title>
 
-        header {
-            background-color:#fff;
-            box-shadow:0 2px 10px rgba(0,0,0,0.1);
-            position:sticky;
-            top:0;
-            z-index:100;
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
+
+    <style>
+        :root{
+            --white:#ffffff;
+            --off-white:#f7faf8;
+            --paper:#eef7f1;
+            --paper-2:#e3efe7;
+
+            --ink:#0d2b1d;
+            --ink-soft:#2d4a3a;
+            --muted:#6b8377;
+            --line:#d4e5d9;
+            --line-2:#bcd8c6;
+
+            --green:#1a6b45;
+            --green-2:#2a8055;
+            --green-3:#34a06c;
+            --green-4:#7fc9a0;
+            --green-tint:#e6f3eb;
+            --green-deep:#0f4a2e;
+
+            --red:#c8464a;
+            --red-soft:#fbeaea;
+            --amber:#c88a3a;
+
+            --serif:'Instrument Serif','Times New Roman',serif;
+            --sans:'Inter',-apple-system,sans-serif;
+            --mono:'JetBrains Mono','Courier New',monospace;
+
+            --ease:cubic-bezier(.22,1,.36,1);
         }
-        nav {
+
+        *{margin:0;padding:0;box-sizing:border-box}
+        html{scroll-behavior:smooth;scroll-padding-top:90px}
+        body{
+            font-family:var(--sans);
+            background:var(--white);
+            color:var(--ink);
+            font-size:16px;
+            line-height:1.55;
+            overflow-x:hidden;
+            -webkit-font-smoothing:antialiased;
+        }
+        img{max-width:100%;display:block}
+        a{color:inherit;text-decoration:none}
+        button{font-family:inherit;cursor:pointer;border:none;background:none;color:inherit}
+        ul{list-style:none}
+        input,select{font-family:inherit;outline:none;border:none;background:none;color:inherit}
+        ::selection{background:var(--green);color:var(--white)}
+        ::-webkit-scrollbar{width:10px}
+        ::-webkit-scrollbar-track{background:var(--green-tint)}
+        ::-webkit-scrollbar-thumb{background:var(--green-3);border:3px solid var(--green-tint);border-radius:20px}
+
+        .wrap{max-width:1320px;margin:0 auto;padding:0 40px;width:100%}
+        @media(max-width:768px){ .wrap{padding:0 22px} }
+
+        h1,h2,h3,h4{
+            font-family:var(--serif);
+            font-weight:400;
+            letter-spacing:-.02em;
+            line-height:1;
+            color:var(--ink);
+        }
+        em{font-style:italic;color:var(--green-2)}
+
+        /* ============================================================
+           NAV
+        ============================================================ */
+        .nav{
+            position:fixed;top:0;left:0;right:0;z-index:100;
+            transition:all .4s var(--ease);
+            border-bottom:1px solid transparent;
+            background:rgba(255,255,255,.7);
+            backdrop-filter:blur(18px);
+            -webkit-backdrop-filter:blur(18px);
+        }
+        .nav.scrolled{
+            background:rgba(255,255,255,.96);
+            border-bottom-color:var(--line);
+        }
+        .nav-inner{
+            display:grid;grid-template-columns:auto 1fr auto;
+            align-items:center;gap:40px;padding:20px 0;
+            transition:padding .3s var(--ease);
+        }
+        .nav.scrolled .nav-inner{padding:14px 0}
+
+        .brand{
+            display:flex;align-items:center;gap:10px;
+            font-family:var(--mono);font-weight:700;
+            font-size:.85rem;letter-spacing:.1em;text-transform:uppercase;
+            color:var(--ink);transition:color .3s var(--ease);
+        }
+        .brand .sq{width:10px;height:10px;background:var(--green-3);transition:all .4s var(--ease)}
+        .brand:hover .sq{background:var(--green);transform:rotate(45deg)}
+        .brand small{color:var(--green-3);font-weight:500;font-family:var(--mono)}
+
+        .nav-links{display:flex;align-items:center;justify-content:center;gap:30px;flex-wrap:wrap}
+        .nav-links a{
+            font-family:var(--sans);font-size:.86rem;font-weight:500;
+            color:var(--ink-soft);position:relative;padding:6px 0;
+            transition:color .3s var(--ease);
+        }
+        .nav-links a::after{
+            content:'';position:absolute;left:0;bottom:0;
+            width:100%;height:1px;background:currentColor;
+            transform:scaleX(0);transform-origin:right;
+            transition:transform .4s var(--ease);
+        }
+        .nav-links a:hover,
+        .nav-links a.active{color:var(--green)}
+        .nav-links a:hover::after,
+        .nav-links a.active::after{transform:scaleX(1);transform-origin:left}
+
+        .nav-toggle{
+            display:none;width:44px;height:44px;
+            place-items:center;color:var(--ink);
+            font-size:1rem;border:1px solid var(--line);
+            background:var(--white);
+        }
+
+        .nav-overlay{
+            display:none;
+            position:fixed;inset:0;
+            background:rgba(13,43,29,.5);
+            z-index:150;
+            opacity:0;
+            transition:opacity .3s var(--ease);
+        }
+        .nav-overlay.active{display:block;opacity:1}
+
+        /* ============================================================
+           HERO
+        ============================================================ */
+        .page-hero{
+            position:relative;
+            padding:140px 0 40px;
+            background:var(--off-white);
+            border-bottom:1px solid var(--line);
+            overflow:hidden;
+        }
+        .page-hero::before{
+            content:'RESERVAS';position:absolute;
+            right:-3%;top:50%;transform:translateY(-50%);
+            font-family:var(--serif);font-style:italic;
+            font-size:14rem;line-height:.8;letter-spacing:-.05em;
+            color:rgba(26,107,69,.05);pointer-events:none;
+            white-space:nowrap;z-index:0;
+        }
+        .page-hero .wrap{
+            position:relative;z-index:1;
             display:flex;
             justify-content:space-between;
-            align-items:center;
-            padding:1rem 5%;
-            max-width:1400px;
-            margin:0 auto;
-        }
-        .logo h1 { font-size:2rem; color:#2c3e50; }
-        .logo span { color:#27ae60; }
-        .nav-links { display:flex; list-style:none; }
-        .nav-links li { margin-left:2rem; }
-        .nav-links a {
-            text-decoration:none;
-            color:#2c3e50;
-            font-weight:500;
-            padding:8px 15px;
-            border-radius:25px;
-            transition:all 0.3s ease;
-        }
-        .nav-links a:hover, .nav-links a.active { background-color:#27ae60; color:#fff; }
-
-        .menu-toggle {
-            display: none;
-            background: none;
-            border: none;
-            font-size: 1.5rem;
-            color: #2c3e50;
-            cursor: pointer;
-            padding: 5px;
-        }
-
-        .nav-overlay {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0,0,0,0.5);
-            z-index: 998;
-        }
-
-        .nav-overlay.active {
-            display: block;
-        }
-
-        main.reserva-section {
-            padding:2rem 5%;
-            max-width:1200px;
-            margin:0 auto;
-        }
-
-        .filtros-buscador {
-            display:flex;
+            align-items:flex-end;
+            gap:30px;
             flex-wrap:wrap;
-            gap:1rem;
-            margin-bottom:2.5rem;
-            padding: 1.5rem;
-            background: #fff;
-            border-radius: 15px;
-            box-shadow: 0 2px 15px rgba(0,0,0,0.08);
         }
-        .filtros-buscador select,
-        .filtros-buscador input {
-            padding:0.9rem 1.2rem;
-            border:2px solid #e8ecf1;
-            border-radius:10px;
-            font-size:1rem;
-            flex:1;
-            transition:all 0.3s ease;
-            background: #fafbfc;
+        .page-hero h1{
+            font-size:clamp(1.9rem,3.6vw,3rem);
+            line-height:1;
+            letter-spacing:-.03em;
+            margin:0;
+            max-width:20ch;
         }
-        .filtros-buscador select:focus,
-        .filtros-buscador input:focus {
-            border-color:#27ae60;
-            outline:none;
-            background: #fff;
-            box-shadow: 0 0 0 3px rgba(39, 174, 96, 0.1);
+        .page-hero h1 em{color:var(--green-2);font-style:italic}
+
+        .hero-meta{
+            font-family:var(--mono);
+            font-size:.66rem;
+            letter-spacing:.14em;
+            text-transform:uppercase;
+            color:var(--muted);
+            display:inline-flex;
+            align-items:center;
+            gap:10px;
+            padding:8px 14px;
+            background:var(--white);
+            border:1px solid var(--line);
+        }
+        .hero-meta .dot{
+            width:6px;height:6px;background:var(--green-3);border-radius:50%;
+            animation:pulse 2s ease-in-out infinite;
+        }
+        @keyframes pulse{
+            0%,100%{opacity:1;transform:scale(1)}
+            50%{opacity:.5;transform:scale(.75)}
         }
 
-        .lista-libros {
+        /* ============================================================
+           SECCIÓN RESERVA
+        ============================================================ */
+        .reserva-section{
+            padding:50px 0 90px;
+            background:var(--white);
+        }
+
+        .filtros-buscador{
             display:grid;
-            grid-template-columns:repeat(auto-fill, minmax(240px,1fr));
-            gap:1.5rem;
-            min-height: 400px;
+            grid-template-columns:1fr 1.4fr;
+            gap:12px;
+            margin-bottom:32px;
         }
 
-        .libro-item {
-            background:#fff;
-            padding:1.2rem;
-            border-radius:16px;
-            box-shadow:0 2px 12px rgba(0,0,0,0.08);
-            transition:all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-            position:relative;
-            padding-top: 2.8rem;
-            display: flex;
-            flex-direction: column;
-            min-height: 300px;
-            border: 1px solid rgba(0,0,0,0.05);
-        }
-
-        .libro-item:hover {
-            transform:translateY(-8px) scale(1.02);
-            box-shadow:0 12px 28px rgba(0,0,0,0.15);
-            border-color: rgba(39, 174, 96, 0.3);
-        }
-
-        .libro-contenido {
-            flex-grow: 1;
-            display: flex;
-            flex-direction: column;
-            gap: 0.5rem;
-        }
-
-        .libro-item h3 {
-            font-size:1.15rem;
-            margin-bottom:0.6rem;
-            margin-top: 0.3rem;
-            color: #1a1a1a;
-            font-weight: 600;
-            line-height: 1.4;
-            display: -webkit-box;
-            -webkit-line-clamp: 2;
-            -webkit-box-orient: vertical;
-            overflow: hidden;
-        }
-
-        .libro-item p {
-            font-size:0.88rem;
-            margin-bottom:0.4rem;
-            color:#6c757d;
-            line-height: 1.5;
-        }
-
-        .libro-item p strong {
-            color: #495057;
-            font-weight: 600;
-        }
-
-        .stock-badge {
-            position: absolute;
-            top: 0;
-            left: 0;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: #fff;
-            padding: 7px 14px;
-            border-radius: 16px 0 16px 0;
-            font-weight: 700;
-            font-size: 0.7rem;
-            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.35);
-            letter-spacing: 0.5px;
-            z-index: 10;
-            display: flex;
-            align-items: center;
-            gap: 5px;
-            max-width: 55%;
-            text-transform: uppercase;
-        }
-
-        .stock-badge::after {
-            content: '';
-            position: absolute;
-            bottom: -10px;
-            left: 0;
-            width: 0;
-            height: 0;
-            border-left: 10px solid rgba(102, 126, 234, 0.5);
-            border-bottom: 10px solid transparent;
-        }
-
-        .stock-badge.agotado {
-            background: linear-gradient(135deg, #ff6b6b 0%, #ee5a6f 100%);
-            box-shadow: 0 4px 12px rgba(255, 107, 107, 0.35);
-        }
-
-        .stock-badge.agotado::after {
-            border-left-color: rgba(255, 107, 107, 0.5);
-        }
-
-        .stock-badge.bajo-stock {
-            background: linear-gradient(135deg, #ffa94d 0%, #ff8b3d 100%);
-            box-shadow: 0 4px 12px rgba(255, 169, 77, 0.35);
-        }
-
-        .stock-badge.bajo-stock::after {
-            border-left-color: rgba(255, 169, 77, 0.5);
-        }
-
-        .stock-badge .dot {
-            width: 7px;
-            height: 7px;
-            border-radius: 50%;
-            background: rgba(255, 255, 255, 0.95);
-            animation: pulse 2s ease-in-out infinite;
-            flex-shrink: 0;
-            box-shadow: 0 0 8px rgba(255, 255, 255, 0.5);
-        }
-
-        @keyframes pulse {
-            0%, 100% {
-                opacity: 1;
-                transform: scale(1);
-            }
-            50% {
-                opacity: 0.7;
-                transform: scale(1.3);
-            }
-        }
-
-        .btn-seleccionar {
+        .filtros-buscador select,
+        .filtros-buscador input{
             width:100%;
-            padding:0.7rem;
-            border-radius:12px;
-            background: linear-gradient(135deg, #27ae60 0%, #229954 100%);
-            color:#fff;
-            border:none;
+            padding:15px 20px;
+            font-size:.9rem;
+            color:var(--ink);
+            background:var(--white);
+            border:1px solid var(--line);
+            transition:border-color .3s var(--ease),box-shadow .3s var(--ease);
+            appearance:none;
+            -webkit-appearance:none;
             cursor:pointer;
-            transition:all 0.3s ease;
-            font-weight: 600;
-            margin-top: auto;
-            font-size: 0.95rem;
-            box-shadow: 0 4px 12px rgba(39, 174, 96, 0.25);
-            position: relative;
-            overflow: hidden;
+        }
+        .filtros-buscador input{cursor:text}
+
+        .filtros-buscador select{
+            background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%236b8377' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E");
+            background-repeat:no-repeat;
+            background-position:right 18px center;
+            padding-right:44px;
         }
 
-        .btn-seleccionar::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: -100%;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
-            transition: left 0.5s;
+        .filtros-buscador select:focus,
+        .filtros-buscador input:focus{
+            border-color:var(--green-3);
+            box-shadow:0 0 0 4px rgba(52,160,108,.12);
+        }
+        .filtros-buscador input::placeholder{color:var(--muted);opacity:.7}
+
+        /* ============================================================
+           LISTA DE LIBROS
+        ============================================================ */
+        .lista-libros{
+            display:grid;
+            grid-template-columns:repeat(3, 1fr);
+            gap:18px;
+            align-items:start;
+            min-height:400px;
         }
 
-        .btn-seleccionar:hover::before {
-            left: 100%;
+        .libro-item{
+            background:var(--white);
+            border:1px solid var(--line);
+            padding:26px 22px 22px;
+            display:flex;
+            flex-direction:column;
+            position:relative;
+            transition:all .5s var(--ease);
+            overflow:hidden;
+            min-height:260px;
+        }
+        .libro-item::before{
+            content:'';
+            position:absolute;
+            top:0;left:0;
+            width:3px;height:0;
+            background:var(--green-3);
+            transition:height .5s var(--ease);
+            z-index:1;
+        }
+        .libro-item:hover::before{height:100%}
+        .libro-item:hover{
+            border-color:var(--green-3);
+            transform:translateY(-4px);
+            box-shadow:0 20px 40px -25px rgba(15,74,46,.3);
         }
 
-        .btn-seleccionar:hover {
-            background: linear-gradient(135deg, #229954 0%, #1e8449 100%);
-            transform: translateY(-2px);
-            box-shadow: 0 6px 16px rgba(39, 174, 96, 0.35);
+        .stock-badge{
+            position:absolute;
+            top:14px;right:14px;
+            display:inline-flex;
+            align-items:center;
+            gap:6px;
+            font-family:var(--mono);
+            font-size:.55rem;
+            font-weight:700;
+            letter-spacing:.14em;
+            text-transform:uppercase;
+            padding:5px 10px;
+            background:var(--green-tint);
+            color:var(--green-deep);
+            z-index:2;
+        }
+        .stock-badge .dot{
+            width:5px;height:5px;
+            border-radius:50%;
+            background:var(--green-3);
+            animation:pulse 2s ease-in-out infinite;
+            flex-shrink:0;
+        }
+        .stock-badge.agotado{
+            background:var(--red-soft);
+            color:#8f2a2e;
+        }
+        .stock-badge.agotado .dot{background:var(--red)}
+        .stock-badge.bajo-stock{
+            background:#fdf4e6;
+            color:#8a5e22;
+        }
+        .stock-badge.bajo-stock .dot{background:var(--amber)}
+
+        .libro-contenido{
+            flex:1;
+            display:flex;
+            flex-direction:column;
+            gap:6px;
+            margin-top:12px;
         }
 
-        .btn-seleccionar:active {
-            transform: translateY(0);
+        .libro-item h3{
+            font-family:var(--serif);
+            font-size:1.2rem;
+            line-height:1.15;
+            letter-spacing:-.02em;
+            color:var(--ink);
+            margin-bottom:6px;
+            padding-right:80px;
+            display:-webkit-box;
+            -webkit-line-clamp:2;
+            -webkit-box-orient:vertical;
+            overflow:hidden;
         }
 
-        .btn-seleccionar:disabled {
-            background: linear-gradient(135deg, #bdc3c7 0%, #95a5a6 100%);
+        .libro-item p{
+            font-size:.84rem;
+            color:var(--muted);
+            line-height:1.55;
+        }
+        .libro-item p strong{
+            font-family:var(--mono);
+            font-size:.58rem;
+            font-weight:500;
+            letter-spacing:.1em;
+            text-transform:uppercase;
+            color:var(--green-deep);
+            margin-right:4px;
+        }
+
+        .btn-seleccionar{
+            display:inline-flex;
+            align-items:center;
+            justify-content:center;
+            gap:10px;
+            font-family:var(--mono);
+            font-size:.66rem;
+            font-weight:500;
+            letter-spacing:.14em;
+            text-transform:uppercase;
+            padding:13px 22px;
+            background:var(--green);
+            color:var(--white);
+            border:1px solid var(--green);
+            position:relative;
+            overflow:hidden;
+            transition:all .35s var(--ease);
+            margin-top:18px;
+            width:100%;
+        }
+        .btn-seleccionar::before{
+            content:'';
+            position:absolute;inset:0;
+            background:var(--green-3);
+            transform:translateY(100%);
+            transition:transform .4s var(--ease);
+            z-index:0;
+        }
+        .btn-seleccionar:hover:not(:disabled)::before{transform:translateY(0)}
+        .btn-seleccionar span,
+        .btn-seleccionar i{position:relative;z-index:1}
+        .btn-seleccionar:disabled{
+            background:var(--paper-2);
+            color:var(--muted);
+            border-color:var(--line);
             cursor:not-allowed;
-            box-shadow: none;
+            opacity:.85;
         }
+        .btn-seleccionar:disabled::before{display:none}
 
-        #formulario-reserva {
+        /* ============================================================
+           FORMULARIO RESERVA — MODAL CENTRADO (como el original)
+        ============================================================ */
+        #formulario-reserva{
             display:none;
             position:fixed;
             top:50%;
@@ -283,510 +403,546 @@
             transform:translate(-50%, -50%);
             width:90%;
             max-width:440px;
-            background:#fff;
-            padding:2rem;
-            border-radius:20px;
-            box-shadow:0 10px 40px rgba(0,0,0,0.25);
-            z-index:999;
-            animation: fadeInScale 0.3s ease;
-        }
-
-        @keyframes fadeInScale {
-            from {
-                opacity: 0;
-                transform: translate(-50%, -50%) scale(0.9);
-            }
-            to {
-                opacity: 1;
-                transform: translate(-50%, -50%) scale(1);
-            }
-        }
-
-        #formulario-reserva h2 {
-            text-align:center;
-            margin-bottom:1.5rem;
-            color: #2c3e50;
-            font-size: 1.5rem;
-        }
-        .form-grupo { margin-bottom:1.2rem; }
-        .form-grupo label {
-            display:block;
-            margin-bottom:0.5rem;
-            font-weight:600;
-            color: #495057;
-            font-size: 0.9rem;
-        }
-        .form-grupo input {
-            width:100%;
-            padding:0.8rem 1rem;
-            border:2px solid #e8ecf1;
-            border-radius:10px;
-            transition: all 0.3s ease;
-            font-size: 0.95rem;
-        }
-        .form-grupo input:focus {
-            border-color:#27ae60;
-            outline:none;
-            box-shadow: 0 0 0 3px rgba(39, 174, 96, 0.1);
-        }
-        .btn-confirmar {
-            width:100%;
-            padding:0.85rem;
-            border-radius:12px;
-            background: linear-gradient(135deg, #27ae60 0%, #229954 100%);
-            color:#fff;
-            border:none;
-            cursor:pointer;
-            margin-top:0.8rem;
-            font-weight: 600;
-            font-size: 1rem;
-            box-shadow: 0 4px 12px rgba(39, 174, 96, 0.25);
-            transition: all 0.3s ease;
-        }
-        .btn-confirmar:hover {
-            background: linear-gradient(135deg, #229954 0%, #1e8449 100%);
-            transform: translateY(-2px);
-            box-shadow: 0 6px 16px rgba(39, 174, 96, 0.35);
-        }
-        #cancelar-reserva {
-            width:100%;
-            padding:0.85rem;
-            border-radius:12px;
-            background: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%);
-            color:#fff;
-            border:none;
-            cursor:pointer;
-            margin-top:0.8rem;
-            font-weight: 600;
-            font-size: 1rem;
-            box-shadow: 0 4px 12px rgba(231, 76, 60, 0.25);
-            transition: all 0.3s ease;
-        }
-        #cancelar-reserva:hover {
-            background: linear-gradient(135deg, #c0392b 0%, #a93226 100%);
-            transform: translateY(-2px);
-            box-shadow: 0 6px 16px rgba(231, 76, 60, 0.35);
-        }
-
-        #mensaje-reserva {
-            display:none;
-            position:fixed;
-            top:20px;
-            right:20px;
-            background: linear-gradient(135deg, #4CAF50 0%, #45a049 100%);
-            color:white;
-            padding:16px 28px;
-            border-radius:12px;
-            box-shadow:0 6px 20px rgba(0,0,0,0.2);
+            background:var(--white);
+            padding:36px 32px;
             z-index:1000;
-            font-weight: 600;
-            animation: slideInBounce 0.5s ease;
+            border:1px solid var(--line);
+            box-shadow:0 30px 70px -20px rgba(15,74,46,.4);
+        }
+        #formulario-reserva::before{
+            content:'';
+            position:absolute;
+            top:-10px;right:-10px;
+            width:50px;height:50px;
+            border-top:1.5px solid var(--green-3);
+            border-right:1.5px solid var(--green-3);
+            pointer-events:none;
+        }
+        @keyframes fadeInScale{
+            from{opacity:0;transform:translate(-50%,-50%) scale(.92)}
+            to{opacity:1;transform:translate(-50%,-50%) scale(1)}
+        }
+        #formulario-reserva h2{
+            font-family:var(--serif);
+            font-size:1.6rem;
+            line-height:1.1;
+            letter-spacing:-.02em;
+            margin-bottom:24px;
+            color:var(--ink);
+            text-align:left;
+        }
+        .form-grupo{margin-bottom:16px}
+        .form-grupo label{
+            display:block;
+            font-family:var(--mono);
+            font-size:.62rem;
+            font-weight:500;
+            letter-spacing:.14em;
+            text-transform:uppercase;
+            color:var(--green);
+            margin-bottom:8px;
+        }
+        .form-grupo input{
+            width:100%;
+            padding:14px 18px;
+            font-size:.92rem;
+            color:var(--ink);
+            background:var(--white);
+            border:1px solid var(--line);
+            transition:border-color .3s var(--ease),box-shadow .3s var(--ease);
+        }
+        .form-grupo input:focus{
+            border-color:var(--green-3);
+            box-shadow:0 0 0 4px rgba(52,160,108,.12);
+        }
+        .form-grupo input::placeholder{color:var(--muted);opacity:.65}
+
+        .btn-confirmar{
+            display:inline-flex;
+            align-items:center;
+            justify-content:center;
+            gap:10px;
+            font-family:var(--mono);
+            font-size:.7rem;
+            font-weight:500;
+            letter-spacing:.14em;
+            text-transform:uppercase;
+            padding:16px 24px;
+            background:var(--green);
+            color:var(--white);
+            border:1px solid var(--green);
+            position:relative;
+            overflow:hidden;
+            transition:all .35s var(--ease);
+            width:100%;
+            margin-top:8px;
+        }
+        .btn-confirmar::before{
+            content:'';
+            position:absolute;inset:0;
+            background:var(--green-3);
+            transform:translateY(100%);
+            transition:transform .4s var(--ease);
+            z-index:0;
+        }
+        .btn-confirmar:hover::before{transform:translateY(0)}
+        .btn-confirmar span,
+        .btn-confirmar i{position:relative;z-index:1}
+
+        #cancelar-reserva{
+            display:inline-flex;
+            align-items:center;
+            justify-content:center;
+            gap:8px;
+            font-family:var(--mono);
+            font-size:.7rem;
+            font-weight:500;
+            letter-spacing:.14em;
+            text-transform:uppercase;
+            padding:16px 24px;
+            background:var(--white);
+            color:var(--muted);
+            border:1px solid var(--line-2);
+            transition:all .3s var(--ease);
+            width:100%;
+            margin-top:10px;
+        }
+        #cancelar-reserva:hover{
+            background:var(--red-soft);
+            color:var(--red);
+            border-color:var(--red);
         }
 
-        @keyframes slideInBounce {
-            0% {
-                transform: translateX(400px);
-                opacity: 0;
-            }
-            60% {
-                transform: translateX(-20px);
-            }
-            100% {
-                transform: translateX(0);
-                opacity: 1;
-            }
+        /* Backdrop del modal */
+        .reserva-backdrop{
+            position:fixed;
+            inset:0;
+            background:rgba(13,43,29,.55);
+            backdrop-filter:blur(6px);
+            -webkit-backdrop-filter:blur(6px);
+            opacity:0;
+            visibility:hidden;
+            transition:opacity .35s var(--ease), visibility .35s var(--ease);
+            z-index:999;
+        }
+        .reserva-backdrop.show{
+            opacity:1;
+            visibility:visible;
         }
 
-        .pagination {
+        /* ============================================================
+           PAGINACIÓN
+        ============================================================ */
+        .pagination{
+            display:flex;
+            justify-content:center;
+            align-items:center;
+            gap:6px;
+            margin:50px 0 20px;
+            flex-wrap:wrap;
+        }
+        .pagination button{
+            min-width:44px;
+            height:44px;
+            padding:0 14px;
+            font-family:var(--mono);
+            font-size:.72rem;
+            font-weight:500;
+            letter-spacing:.06em;
+            color:var(--ink-soft);
+            background:var(--white);
+            border:1px solid var(--line);
+            transition:all .3s var(--ease);
+            display:inline-flex;
+            align-items:center;
+            justify-content:center;
+        }
+        .pagination button:hover:not(.disabled):not(:disabled){
+            background:var(--green-tint);
+            border-color:var(--green-3);
+            color:var(--green-deep);
+            transform:translateY(-2px);
+        }
+        .pagination button.disabled,
+        .pagination button:disabled{
+            background:var(--green);
+            border-color:var(--green);
+            color:var(--white);
+            cursor:not-allowed;
+            opacity:.85;
+        }
+
+        .page-jumper{
             display:flex;
             justify-content:center;
             align-items:center;
             gap:12px;
-            margin:40px 0;
             flex-wrap:wrap;
+            margin-bottom:40px;
+            font-family:var(--mono);
+            font-size:.68rem;
+            letter-spacing:.14em;
+            text-transform:uppercase;
+            color:var(--muted);
         }
-
-        .pagination button {
-            padding:10px 18px;
-            border:none;
-            border-radius:10px;
-            background: linear-gradient(135deg, #27ae60 0%, #229954 100%);
-            color:#fff;
-            font-weight:600;
-            cursor:pointer;
-            transition:all 0.3s ease;
-            box-shadow: 0 2px 8px rgba(39, 174, 96, 0.2);
-            min-width: 45px;
-        }
-
-        .pagination button:hover {
-            background: linear-gradient(135deg, #229954 0%, #1e8449 100%);
-            transform:translateY(-3px);
-            box-shadow: 0 4px 12px rgba(39, 174, 96, 0.3);
-        }
-
-        .pagination button.disabled {
-            background: linear-gradient(135deg, #bdc3c7 0%, #95a5a6 100%);
-            cursor:not-allowed;
-            box-shadow: none;
-        }
-
-        .page-jumper {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            gap: 12px;
-            margin: 20px 0;
-            flex-wrap: wrap;
-        }
-
-        .page-jumper span {
-            font-weight: 600;
-            color: #495057;
-        }
-
-        .page-jumper input {
-            width: 70px;
-            padding: 10px 14px;
-            border: 2px solid #e8ecf1;
-            border-radius: 10px;
-            text-align: center;
-            font-weight: 600;
-            transition: all 0.3s ease;
-        }
-
-        .page-jumper input:focus {
-            outline: none;
-            border-color: #27ae60;
-            box-shadow: 0 0 0 3px rgba(39, 174, 96, 0.1);
-        }
-
-        .page-jumper button {
-            padding: 10px 20px;
-            border: none;
-            border-radius: 10px;
-            background: linear-gradient(135deg, #2c3e50 0%, #1a252f 100%);
-            color: #fff;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            box-shadow: 0 2px 8px rgba(44, 62, 80, 0.2);
-        }
-
-        .page-jumper button:hover {
-            background: linear-gradient(135deg, #1a252f 0%, #0d1419 100%);
-            transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(44, 62, 80, 0.3);
-        }
-
-        .page-error-modal {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.7);
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            z-index: 2000;
-            opacity: 0;
-            visibility: hidden;
-            transition: all 0.3s ease;
-        }
-
-        .page-error-modal.active {
-            opacity: 1;
-            visibility: visible;
-        }
-
-        .page-error-content {
-            background: white;
-            padding: 35px;
-            border-radius: 24px;
-            box-shadow: 0 15px 50px rgba(0, 0, 0, 0.3);
-            text-align: center;
-            max-width: 420px;
-            width: 90%;
-            transform: scale(0.8);
-            transition: transform 0.3s ease;
-        }
-
-        .page-error-modal.active .page-error-content {
-            transform: scale(1);
-        }
-
-        .page-error-icon {
-            font-size: 3.5rem;
-            margin-bottom: 20px;
-        }
-
-        .page-error-title {
-            font-size: 1.6rem;
-            font-weight: 700;
-            color: #2c3e50;
-            margin-bottom: 12px;
-        }
-
-        .page-error-message {
-            font-size: 1.05rem;
-            color: #6c757d;
-            margin-bottom: 25px;
-            line-height: 1.6;
-        }
-
-        .page-error-close {
-            padding: 12px 32px;
-            background: linear-gradient(135deg, #27ae60 0%, #229954 100%);
-            color: white;
-            border: none;
-            border-radius: 12px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            font-size: 1rem;
-            box-shadow: 0 4px 12px rgba(39, 174, 96, 0.25);
-        }
-
-        .page-error-close:hover {
-            background: linear-gradient(135deg, #229954 0%, #1e8449 100%);
-            transform: translateY(-2px);
-            box-shadow: 0 6px 16px rgba(39, 174, 96, 0.35);
-        }
-
-        #loader {
-            display: none;
-            position: fixed;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            z-index: 9999;
-            text-align: center;
-        }
-
-        .spinner {
-            border: 6px solid #f3f3f3;
-            border-top: 6px solid #27ae60;
-            border-radius: 50%;
-            width: 60px;
-            height: 60px;
-            animation: spin 1s linear infinite;
-            margin: 0 auto 20px;
-        }
-
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-        }
-
-        #loader p {
-            color: #2c3e50;
-            font-weight: 600;
-            font-size: 1.1rem;
-        }
-
-        footer {
-            background: linear-gradient(135deg, #2c3e50 0%, #1a252f 100%);
-            color:#fff;
+        .page-jumper input{
+            width:70px;
+            padding:10px 14px;
+            font-family:var(--mono);
+            font-size:.82rem;
+            color:var(--ink);
+            background:var(--white);
+            border:1px solid var(--line);
             text-align:center;
-            padding:2rem;
-            margin-top:3rem;
-            font-size:0.9rem;
+            transition:border-color .3s var(--ease),box-shadow .3s var(--ease);
+        }
+        .page-jumper input:focus{
+            border-color:var(--green-3);
+            box-shadow:0 0 0 4px rgba(52,160,108,.12);
+        }
+        .page-jumper button{
+            padding:10px 20px;
+            font-family:var(--mono);
+            font-size:.68rem;
+            font-weight:500;
+            letter-spacing:.14em;
+            text-transform:uppercase;
+            color:var(--white);
+            background:var(--green);
+            border:1px solid var(--green);
+            transition:all .3s var(--ease);
+        }
+        .page-jumper button:hover{
+            background:var(--green-deep);
+            border-color:var(--green-deep);
+            transform:translateY(-2px);
         }
 
-        @media (max-width: 1024px) {
-            nav {
-                padding: 1rem 3%;
-            }
-            .logo h1 {
-                font-size: 1.7rem;
-            }
-            main.reserva-section {
-                padding: 1.5rem 3%;
-            }
-            .lista-libros {
-                grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
-                gap: 1.2rem;
-            }
+        /* ============================================================
+           MENSAJE FLOTANTE
+        ============================================================ */
+        #mensaje-reserva{
+            display:none;
+            position:fixed;
+            top:20px;right:20px;
+            padding:14px 22px;
+            background:var(--green);
+            color:var(--white);
+            font-family:var(--mono);
+            font-size:.72rem;
+            letter-spacing:.08em;
+            z-index:9999;
+            border-left:3px solid var(--green-4);
+            box-shadow:0 12px 30px -12px rgba(15,74,46,.5);
+            animation:slideIn .4s var(--ease);
+        }
+        @keyframes slideIn{
+            from{transform:translateX(100%);opacity:0}
+            to{transform:translateX(0);opacity:1}
         }
 
-        @media (max-width: 768px) {
-            header {
-                padding: 0;
-            }
-            nav {
-                padding: 15px;
-                position: relative;
-                flex-wrap: nowrap;
-            }
-            .menu-toggle {
-                display: block;
-                order: 2;
-            }
-            .logo {
-                order: 1;
-                flex: 1;
-            }
-            .logo h1 {
-                font-size: 1.5rem;
-            }
-            .nav-links {
-                position: fixed;
-                top: 0;
-                right: -100%;
-                width: 70%;
-                height: 100vh;
-                background: #fff;
-                flex-direction: column;
-                justify-content: flex-start;
-                padding-top: 80px;
-                transition: right 0.3s ease;
-                box-shadow: -5px 0 15px rgba(0,0,0,0.1);
-                z-index: 999;
-                gap: 0;
-                margin: 0;
-            }
-            .nav-links.active {
-                right: 0;
-            }
-            .nav-links li {
-                width: 100%;
-                text-align: center;
-                margin: 0;
-            }
-            .nav-links li a {
-                display: block;
-                width: 100%;
-                padding: 15px;
-                border-radius: 0;
-                margin: 0;
-            }
-            .filtros-buscador {
+        /* ============================================================
+           MODAL ERROR
+        ============================================================ */
+        .page-error-modal{
+            position:fixed;inset:0;
+            background:rgba(13,43,29,.7);
+            backdrop-filter:blur(8px);
+            -webkit-backdrop-filter:blur(8px);
+            display:flex;justify-content:center;align-items:center;
+            z-index:2000;
+            opacity:0;visibility:hidden;
+            transition:all .35s var(--ease);
+            padding:20px;
+        }
+        .page-error-modal.active{opacity:1;visibility:visible}
+
+        .page-error-content{
+            background:var(--white);
+            padding:38px 34px;
+            max-width:420px;width:100%;
+            text-align:center;
+            border:1px solid var(--line);
+            transform:scale(.92) translateY(10px);
+            transition:transform .4s var(--ease);
+            position:relative;
+        }
+        .page-error-modal.active .page-error-content{
+            transform:scale(1) translateY(0);
+        }
+        .page-error-content::before{
+            content:'';
+            position:absolute;top:-10px;right:-10px;
+            width:50px;height:50px;
+            border-top:1.5px solid var(--red);
+            border-right:1.5px solid var(--red);
+            pointer-events:none;
+        }
+        .page-error-icon{
+            width:64px;height:64px;
+            border:1px solid var(--red);
+            color:var(--red);
+            display:grid;place-items:center;
+            font-size:1.5rem;
+            margin:0 auto 20px;
+            font-family:var(--serif);
+            font-style:italic;
+        }
+        .page-error-title{
+            font-family:var(--serif);
+            font-size:1.5rem;
+            line-height:1.1;
+            letter-spacing:-.02em;
+            margin-bottom:10px;
+            color:var(--ink);
+        }
+        .page-error-message{
+            font-size:.88rem;
+            color:var(--muted);
+            margin-bottom:26px;
+            line-height:1.6;
+        }
+        .page-error-close{
+            font-family:var(--mono);
+            font-size:.68rem;
+            font-weight:500;
+            letter-spacing:.14em;
+            text-transform:uppercase;
+            padding:12px 24px;
+            color:var(--white);
+            background:var(--green);
+            border:1px solid var(--green);
+            transition:all .3s var(--ease);
+        }
+        .page-error-close:hover{
+            background:var(--green-deep);
+            border-color:var(--green-deep);
+            transform:translateY(-2px);
+        }
+
+        /* ============================================================
+           LOADER
+        ============================================================ */
+        #loader{
+            display:none;
+            position:fixed;
+            inset:0;
+            z-index:9998;
+            background:rgba(247,250,248,.85);
+            backdrop-filter:blur(6px);
+            -webkit-backdrop-filter:blur(6px);
+            place-items:center;
+        }
+        #loader.show{display:grid}
+        .spinner{
+            width:52px;height:52px;
+            border:3px solid var(--line);
+            border-top-color:var(--green);
+            border-radius:50%;
+            animation:spin 1s linear infinite;
+            margin:0 auto 20px;
+        }
+        @keyframes spin{to{transform:rotate(360deg)}}
+        #loader p{
+            font-family:var(--mono);
+            font-size:.7rem;
+            letter-spacing:.16em;
+            text-transform:uppercase;
+            color:var(--green-deep);
+            text-align:center;
+        }
+
+        /* ============================================================
+           FOOTER
+        ============================================================ */
+        footer{background:var(--green-deep);color:var(--white);padding:60px 0 0}
+        .foot-top{
+            display:grid;grid-template-columns:2fr 1fr 1fr 1fr;
+            gap:50px;padding-bottom:50px;
+            border-bottom:1px solid rgba(255,255,255,.15);
+        }
+        .foot-brand .brand{color:var(--white);margin-bottom:22px}
+        .foot-brand .brand small{color:var(--green-4)}
+        .foot-brand p{
+            color:rgba(255,255,255,.7);font-size:.9rem;
+            max-width:34ch;line-height:1.65;margin-bottom:24px;
+        }
+        .foot-social{display:flex;gap:8px}
+        .foot-social a{
+            width:40px;height:40px;
+            border:1px solid rgba(255,255,255,.25);
+            display:grid;place-items:center;
+            color:var(--white);font-size:.8rem;
+            transition:all .3s var(--ease);
+        }
+        .foot-social a:hover{
+            background:var(--green-3);border-color:var(--green-3);
+            transform:translateY(-4px);
+        }
+        .foot-col h5{
+            font-family:var(--mono);font-size:.66rem;font-weight:500;
+            letter-spacing:.16em;text-transform:uppercase;
+            color:var(--green-4);margin-bottom:22px;
+        }
+        .foot-col ul{list-style:none;display:flex;flex-direction:column;gap:12px}
+        .foot-col a{
+            color:rgba(255,255,255,.85);font-size:.9rem;
+            transition:all .3s var(--ease);
+            display:inline-flex;align-items:center;gap:0;
+        }
+        .foot-col a::before{
+            content:'→';width:0;overflow:hidden;
+            transition:all .3s var(--ease);color:var(--green-4);
+        }
+        .foot-col a:hover{color:var(--white)}
+        .foot-col a:hover::before{width:18px}
+        .foot-bot{
+            padding:26px 0;display:flex;
+            justify-content:space-between;align-items:center;
+            gap:20px;flex-wrap:wrap;
+            font-family:var(--mono);font-size:.68rem;
+            letter-spacing:.08em;color:rgba(255,255,255,.6);
+            text-transform:uppercase;
+        }
+        .foot-bot i{color:var(--green-4);margin:0 4px}
+
+        /* ============================================================
+           RESPONSIVE
+        ============================================================ */
+        @media(max-width:1100px){
+            .lista-libros{grid-template-columns:repeat(2,1fr)}
+        }
+        @media(max-width:1024px){
+            .nav-inner{grid-template-columns:auto auto;gap:20px}
+            .nav-toggle{display:grid;grid-column:3;grid-row:1}
+            .nav-links{
+                position:fixed;top:0;right:0;
+                width:min(340px,88vw);height:100vh;
+                background:var(--white);
                 flex-direction:column;
-                padding: 1.2rem;
+                justify-content:flex-start;
+                align-items:stretch;
+                gap:0;padding:90px 30px 30px;
+                transform:translateX(100%);
+                transition:transform .5s var(--ease);
+                box-shadow:-30px 0 80px -30px rgba(13,43,29,.2);
+                border-left:1px solid var(--line);
+                overflow-y:auto;
+                z-index:200;
             }
-            .filtros-buscador select,
-            .filtros-buscador input {
-                width: 100%;
+            .nav-links.active{transform:translateX(0)}
+            .nav-links a{
+                font-family:var(--serif);
+                font-size:1.15rem;
+                padding:16px 0;
+                border-bottom:1px solid var(--line);
+                color:var(--ink) !important;
             }
-            .lista-libros {
-                grid-template-columns:1fr;
-                gap: 1rem;
-            }
-            .libro-item {
-                padding: 1rem;
-                padding-top: 2.8rem;
-                min-height: 280px;
-            }
-            .libro-item h3 {
-                font-size: 1.05rem;
-            }
-            .libro-item p {
-                font-size: 0.85rem;
-            }
-            .stock-badge {
-                font-size: 0.65rem;
-                padding: 6px 12px;
-                max-width: 60%;
-            }
-            .pagination {
-                gap: 8px;
-                margin: 30px 0;
-            }
-            .pagination button {
-                padding: 8px 14px;
-                font-size: 0.9rem;
-            }
-            .page-jumper {
-                flex-direction: column;
-                gap: 10px;
-            }
-            .page-jumper input {
-                width: 80px;
-            }
+            .nav-links a::after{display:none}
+            .foot-top{grid-template-columns:1fr 1fr;gap:36px}
+            .filtros-buscador{grid-template-columns:1fr}
         }
-
-        @media (max-width: 480px) {
-            nav {
-                padding: 10px;
-            }
-            .logo h1 {
-                font-size: 1.3rem;
-            }
-            main.reserva-section {
-                padding: 1rem 10px;
-            }
-            .libro-item {
-                padding: 0.9rem;
-                padding-top: 2.6rem;
-                min-height: 260px;
-            }
-            .btn-seleccionar {
-                padding: 0.65rem;
-                font-size: 0.9rem;
-            }
-            #formulario-reserva {
-                width: 95%;
-                padding: 1.5rem;
-            }
-            .form-grupo input {
-                padding: 0.7rem 0.9rem;
-            }
-            .stock-badge {
-                font-size: 0.6rem;
-                padding: 5px 10px;
-            }
+        @media(max-width:768px){
+            .page-hero{padding:120px 0 30px}
+            .page-hero::before{font-size:7rem;top:40%}
+            .page-hero .wrap{flex-direction:column;align-items:flex-start;gap:16px}
+            .reserva-section{padding:40px 0 70px}
+            .lista-libros{grid-template-columns:1fr;gap:14px}
+            .libro-item{padding:22px 18px 18px;min-height:220px}
+            .libro-item h3{padding-right:80px}
+            .foot-top{grid-template-columns:1fr;gap:32px;padding-bottom:40px}
+            .foot-bot{flex-direction:column;text-align:center}
+            .page-jumper{flex-direction:column;gap:8px}
+            #formulario-reserva{padding:28px 22px}
+        }
+        @media(max-width:480px){
+            .brand{font-size:.72rem}
+            .pagination button{min-width:40px;height:40px;padding:0 10px}
+        }
+        @media(prefers-reduced-motion:reduce){
+            *{animation-duration:.01ms!important;transition-duration:.01ms!important}
+            html{scroll-behavior:auto}
         }
     </style>
 </head>
 <body>
 
+<!-- ========== LOADER ========== -->
 <div id="loader">
-    <div class="spinner"></div>
-    <p>Cargando libros...</p>
+    <div>
+        <div class="spinner"></div>
+        <p>Cargando libros...</p>
+    </div>
 </div>
 
-<header>
-    <nav>
-        <div class="logo"><h1>Lectio <span>Biblioteca</span></h1></div>
+<!-- ========== NAV ========== -->
+<header class="nav" id="nav">
+    <div class="wrap nav-inner">
 
-        <button class="menu-toggle" aria-label="Abrir menú de navegación">
+        <a href="/api/logiado" class="brand">
+            <span class="sq"></span>
+            LECTIO <small>/ BIBLIOTECA</small>
+        </a>
+
+        <nav class="nav-links" id="navLinks">
+            <a href="/api/logiado">Inicio</a>
+            <a href="/api/libroVirtualesLog">Libros virtuales</a>
+            <a href="/api/reservaLibro" class="active">Reserva de libros</a>
+        </nav>
+
+        <button class="nav-toggle menu-toggle" id="navToggle" aria-label="Menú">
             <i class="fas fa-bars"></i>
         </button>
 
         <div class="nav-overlay"></div>
-
-        <ul class="nav-links">
-            <li><a href="/api/logiado">Inicio</a></li>
-            <li><a href="/api/libroVirtualesLog">Libros virtuales</a></li>
-            <li><a href="/api/reservaLibro" class="active">Reserva de libros</a></li>
-        </ul>
-    </nav>
+    </div>
 </header>
 
-<main class="reserva-section">
-    <div class="filtros-buscador">
-        <select id="categoria" name="categoria">
-            <option value="" disabled selected>Selecciona una categoría</option>
-            <option th:each="cat : ${categorias}" th:value="${cat}" th:text="${cat}"></option>
-        </select>
-        <input type="text" id="busqueda" placeholder="Buscar libro por título o autor">
+<!-- ========== HERO ========== -->
+<section class="page-hero">
+    <div class="wrap">
+        <h1>Reserva de <em>libros</em> físicos.</h1>
+        <span class="hero-meta">
+            <span class="dot"></span>
+            Catálogo activo
+        </span>
     </div>
+</section>
 
-    <div class="lista-libros" id="lista-libros"></div>
+<!-- ========== CONTENIDO ========== -->
+<main class="reserva-section">
+    <div class="wrap">
 
-    <div class="pagination" id="pagination"></div>
+        <!-- Filtros -->
+        <div class="filtros-buscador">
+            <select id="categoria" name="categoria">
+                <option value="" disabled selected>Selecciona una categoría</option>
+                <option th:each="cat : ${categorias}" th:value="${cat}" th:text="${cat}"></option>
+            </select>
+            <input type="text" id="busqueda" placeholder="Buscar libro por título o autor">
+        </div>
 
-    <div class="page-jumper" id="pageJumper" style="display: none;">
-        <span>Ir a la página:</span>
-        <input type="number" id="pageInput" min="1" value="1">
-        <button id="goToPageBtn">Ir</button>
+        <!-- Lista de libros -->
+        <div class="lista-libros" id="lista-libros"></div>
+
+        <!-- Paginación -->
+        <div class="pagination" id="pagination"></div>
+
+        <!-- Page jumper -->
+        <div class="page-jumper" id="pageJumper" style="display: none;">
+            <span>Ir a la página</span>
+            <input type="number" id="pageInput" min="1" value="1">
+            <button id="goToPageBtn">Ir</button>
+        </div>
+
     </div>
 </main>
 
-<!-- ✅ FORMULARIO CORREGIDO - Sin campo idUsuario -->
+<!-- ========== BACKDROP + MODAL FORMULARIO (original) ========== -->
+<div class="reserva-backdrop" id="reservaBackdrop"></div>
+
 <div id="formulario-reserva">
-    <h2>Reservar Libro</h2>
+    <h2>Reservar libro</h2>
     <form id="reserva-form" method="post">
         <input type="hidden" id="libro-id" name="libroId">
         <input type="hidden" id="libro-titulo" name="libro">
@@ -796,22 +952,28 @@
             <label for="nombreCompleto">Nombre Completo</label>
             <input type="text" id="nombreCompleto" name="nombreCompleto" placeholder="Nombre completo" required>
         </div>
+
         <div class="form-grupo">
             <label for="correo">Correo Electrónico</label>
             <input type="email" id="correo" name="correo" placeholder="Correo electrónico" required>
         </div>
+
         <div class="form-grupo">
             <label for="fecha">Fecha de Reserva</label>
             <input type="date" id="fecha" name="fecha" required>
         </div>
-        <button type="submit" class="btn-confirmar">Confirmar Reserva</button>
+
+        <button type="submit" class="btn-confirmar">
+            <span>Confirmar Reserva</span> <i class="fas fa-arrow-right"></i>
+        </button>
         <button type="button" id="cancelar-reserva">Cancelar</button>
     </form>
 </div>
 
+<!-- ========== MODAL ERROR ========== -->
 <div class="page-error-modal" id="pageErrorModal">
     <div class="page-error-content">
-        <div class="page-error-icon">⚠️</div>
+        <div class="page-error-icon">!</div>
         <h2 class="page-error-title">Página no encontrada</h2>
         <p class="page-error-message" id="pageErrorMessage">
             El número de página que ingresaste no existe.
@@ -822,14 +984,129 @@
 
 <div id="mensaje-reserva"></div>
 
+<!-- ========== FOOTER ========== -->
 <footer>
-    <p>&copy; 2024 BookLab Biblioteca. Todos los derechos reservados.</p>
+    <div class="wrap">
+        <div class="foot-top">
+            <div class="foot-brand">
+                <a href="/api/logiado" class="brand">
+                    <span class="sq"></span>
+                    LECTIO <small>/ BIBLIOTECA</small>
+                </a>
+                <p>Tu biblioteca virtual de confianza. Miles de libros y recursos digitales al alcance de un clic.</p>
+                <div class="foot-social">
+                    <a href="#" aria-label="Facebook"><i class="fab fa-facebook-f"></i></a>
+                    <a href="#" aria-label="Twitter"><i class="fab fa-twitter"></i></a>
+                    <a href="#" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
+                    <a href="#" aria-label="YouTube"><i class="fab fa-youtube"></i></a>
+                </div>
+            </div>
+
+            <div class="foot-col">
+                <h5>Explorar</h5>
+                <ul>
+                    <li><a href="/api/logiado">Inicio</a></li>
+                    <li><a href="/api/libroVirtualesLog">Libros Virtuales</a></li>
+                    <li><a href="/api/reservaLibro">Reserva de Libros</a></li>
+                </ul>
+            </div>
+
+            <div class="foot-col">
+                <h5>Recursos</h5>
+                <ul>
+                    <li><a href="/api/libroVirtualesLog">Catálogo Virtual</a></li>
+                    <li><a href="/api/reservaLibro">Reservas</a></li>
+                    <li><a href="/api/optimizador">Optimizador</a></li>
+                </ul>
+            </div>
+
+            <div class="foot-col">
+                <h5>Contacto</h5>
+                <ul>
+                    <li><a href="mailto:servicios@booklab.gov.co">servicios@booklab.gov.co</a></li>
+                    <li><a href="tel:+576013424100">(+57 601) 3424100</a></li>
+                    <li><a href="#">San Pedro Martin Cra 64 A</a></li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="foot-bot">
+            <span>© 2025 Lectio Biblioteca · Todos los derechos reservados</span>
+            <span>Hecho con <i class="fas fa-heart"></i> para lectores</span>
+        </div>
+    </div>
 </footer>
 
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script>
+    /* ============================================================
+       NAV SCROLL
+    ============================================================ */
+    (function(){
+        const nav = document.getElementById('nav');
+        function onScroll(){
+            nav.classList.toggle('scrolled', window.scrollY > 30);
+        }
+        window.addEventListener('scroll', onScroll, { passive:true });
+        onScroll();
+    })();
+
     $(document).ready(function(){
 
+        /* ============================================================
+           LOADER — display:grid, toggle con clase .show
+        ============================================================ */
+        const $loader = $('#loader');
+        $loader.fadeIn  = function(){ $loader.addClass('show'); return this; };
+        $loader.fadeOut = function(){ $loader.removeClass('show'); return this; };
+
+        /* ============================================================
+           MODAL FORM — fadeIn/fadeOut con backdrop (funciona igual)
+        ============================================================ */
+        const $formPanel = $('#formulario-reserva');
+        const $backdrop  = $('#reservaBackdrop');
+
+        // Sobrescribimos fadeIn/fadeOut SOLO para #formulario-reserva
+        // Usamos el método .fadeIn() y .fadeOut() sobre el objeto cacheado $formPanel
+        const originalFadeIn  = $.fn.fadeIn;
+        const originalFadeOut = $.fn.fadeOut;
+
+        $formPanel.fadeIn = function(){
+            $backdrop.addClass('show');
+            $formPanel[0].style.display = 'block';
+            setTimeout(() => {
+                $formPanel[0].style.animation = 'fadeInScale 0.3s ease';
+            }, 10);
+            return $formPanel;
+        };
+        $formPanel.fadeOut = function(){
+            $formPanel[0].style.display = 'none';
+            $backdrop.removeClass('show');
+            return $formPanel;
+        };
+
+        // Cerrar con backdrop
+        $backdrop.on('click', function(){
+            $formPanel.fadeOut();
+            $('#reserva-form')[0].reset();
+        });
+
+        // Cerrar con Escape
+        $(document).on('keydown', function(e){
+            if (e.key === 'Escape') {
+                if ($formPanel[0].style.display === 'block') {
+                    $formPanel.fadeOut();
+                    $('#reserva-form')[0].reset();
+                }
+                if ($('#pageErrorModal').hasClass('active')) {
+                    $('#pageErrorModal').removeClass('active');
+                }
+            }
+        });
+
+        /* ============================================================
+           ESTADO Y CARGA DE LIBROS
+        ============================================================ */
         let todosLosLibros = [];
         const itemsPerPage = 8;
         let currentPage = 1;
@@ -840,7 +1117,9 @@
         const hoy = new Date().toISOString().split('T')[0];
         $('#fecha').attr('min', hoy);
 
-        // ===== MENÚ MÓVIL =====
+        /* ============================================================
+           MENÚ MÓVIL
+        ============================================================ */
         const menuToggle = $('.menu-toggle');
         const navLinks = $('.nav-links');
         const navOverlay = $('.nav-overlay');
@@ -869,7 +1148,7 @@
             });
 
             $('.nav-links a').on('click', function() {
-                if (window.innerWidth <= 768) {
+                if (window.innerWidth <= 1024) {
                     navLinks.removeClass('active');
                     navOverlay.removeClass('active');
                     $('body').css('overflow', '');
@@ -880,11 +1159,14 @@
             });
         }
 
+        /* ============================================================
+           CARGA DE LIBROS
+        ============================================================ */
         function loadBooks(categoria) {
             currentCategoria = categoria || null;
 
             if (!isInitialLoad) {
-                $('#loader').fadeIn();
+                $loader.fadeIn();
             }
 
             const url = categoria ? '/api/cargarLibrosPorCategoria' : '/api/cargarTodosLosLibros';
@@ -901,14 +1183,14 @@
                     mostrarLibrosPaginados();
                     renderPagination();
 
-                    $('#loader').fadeOut();
+                    $loader.fadeOut();
 
                     if (isInitialLoad) {
                         isInitialLoad = false;
                     }
                 },
                 error: function(){
-                    $('#loader').fadeOut();
+                    $loader.fadeOut();
 
                     if (!isInitialLoad) {
                         mostrarMensaje('Error al cargar los libros', 'error');
@@ -953,7 +1235,7 @@
             $lista.empty();
 
             if (filteredBooks.length === 0) {
-                $lista.html('<p style="text-align: center; padding: 2rem; color: #7f8c8d;">No se encontraron libros</p>');
+                $lista.html('<p style="text-align: center; padding: 3rem 1rem; color: #6b8377; font-family: \'Instrument Serif\', serif; font-size: 1.4rem; grid-column: 1/-1;">No se encontraron libros</p>');
                 return;
             }
 
@@ -978,7 +1260,7 @@
                 }
 
                 const reservarBtn = stock > 0
-                    ? `<button class="btn-seleccionar btn-reservar" data-id="${id}" data-titulo="${tituloEsc}" data-categoria="${categoriaEsc}">Reservar</button>`
+                    ? `<button class="btn-seleccionar btn-reservar" data-id="${id}" data-titulo="${tituloEsc}" data-categoria="${categoriaEsc}"><span>Reservar</span> <i class="fas fa-arrow-right"></i></button>`
                     : `<button class="btn-seleccionar" disabled>Sin stock</button>`;
 
                 const itemHtml = `
@@ -989,8 +1271,8 @@
                         </div>
                         <div class="libro-contenido">
                             <h3>${tituloEsc}</h3>
-                            ${autorEsc ? `<p><strong>Autor:</strong> ${autorEsc}</p>` : ''}
-                            ${categoriaEsc ? `<p><strong>Categoría:</strong> ${categoriaEsc}</p>` : ''}
+                            ${autorEsc ? `<p><strong>Autor</strong> ${autorEsc}</p>` : ''}
+                            ${categoriaEsc ? `<p><strong>Categoría</strong> ${categoriaEsc}</p>` : ''}
                         </div>
                         ${reservarBtn}
                     </div>
@@ -998,6 +1280,7 @@
                 $lista.append(itemHtml);
             });
 
+            /* Click en Reservar → abrir modal (como el original) */
             $('.btn-reservar').off('click').on('click', function(){
                 const id = $(this).data('id');
                 const titulo = $(this).data('titulo');
@@ -1006,10 +1289,13 @@
                 $('#libro-id').val(id);
                 $('#libro-titulo').val(titulo);
                 $('#categoria-seleccionada').val(categoria);
-                $('#formulario-reserva').fadeIn();
+                $formPanel.fadeIn();
             });
         }
 
+        /* ============================================================
+           PAGINACIÓN
+        ============================================================ */
         function renderPagination() {
             const $pagination = $('#pagination');
             $pagination.empty();
@@ -1107,18 +1393,17 @@
             }
         });
 
-        $(document).on('keydown', function(e) {
-            if (e.key === 'Escape' && $('#pageErrorModal').hasClass('active')) {
-                $('#pageErrorModal').removeClass('active');
-            }
-        });
-
+        /* ============================================================
+           CANCELAR RESERVA
+        ============================================================ */
         $('#cancelar-reserva').click(function(){
-            $('#formulario-reserva').fadeOut();
+            $formPanel.fadeOut();
             $('#reserva-form')[0].reset();
         });
 
-        // ✅ AJAX CORREGIDO - Ya no envía idUsuario
+        /* ============================================================
+           ENVIAR RESERVA (mismos endpoints, misma lógica)
+        ============================================================ */
         $('#reserva-form').submit(function(e){
             e.preventDefault();
             const libroId = $('#libro-id').val();
@@ -1149,7 +1434,7 @@
                     }
                 }).done(function(){
                     mostrarMensaje('Reserva realizada con éxito', 'exito');
-                    $('#formulario-reserva').fadeOut();
+                    $formPanel.fadeOut();
                     $('#reserva-form')[0].reset();
                     loadBooks(currentCategoria);
                 }).fail(function(xhr){
@@ -1164,11 +1449,23 @@
             });
         });
 
+        /* ============================================================
+           MENSAJE FLOTANTE
+        ============================================================ */
         function mostrarMensaje(texto, tipo){
             const $msg = $('#mensaje-reserva');
             $msg.text(texto);
-            if(tipo === 'exito') $msg.css('background', 'linear-gradient(135deg, #4CAF50 0%, #45a049 100%)');
-            else $msg.css('background', 'linear-gradient(135deg, #e74c3c 0%, #c0392b 100%)');
+            if(tipo === 'exito'){
+                $msg.css({
+                    'background': 'var(--green)',
+                    'border-left-color': 'var(--green-4)'
+                });
+            } else {
+                $msg.css({
+                    'background': 'var(--red)',
+                    'border-left-color': '#f7c0c2'
+                });
+            }
             $msg.fadeIn();
 
             setTimeout(()=>{ $msg.fadeOut(); }, 3000);
