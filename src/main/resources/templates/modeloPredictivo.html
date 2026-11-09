@@ -1,23 +1,22 @@
 <!DOCTYPE html>
-<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<html lang="es">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Modelo Predictivo - Lectio Admin</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.4/dist/chart.umd.min.js"></script>
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
 
         body {
             font-family: 'Poppins', sans-serif;
             background-color: #f5f6fa;
             color: #2c3e50;
+            min-height: 100vh;
         }
 
         .navbar {
@@ -25,362 +24,399 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 20px 60px;
+            padding: 18px 60px;
             box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1);
             position: sticky;
             top: 0;
             z-index: 1000;
         }
+        .logo h1 { font-size: 1.5rem; font-weight: 700; color: #2c3e50; }
+        .logo span { color: #27ae60; font-weight: 600; }
 
-        .logo h1 {
-            font-size: 1.5rem;
-            font-weight: 700;
-            color: #2c3e50;
-        }
-
-        .logo span {
-            color: #27ae60;
-            font-weight: 600;
-        }
-
-        .back-btn {
+        .btn {
+            border: none;
             background: #27ae60;
             color: #fff;
-            padding: 10px 25px;
-            border: none;
+            padding: 10px 22px;
             border-radius: 30px;
-            font-weight: 500;
             cursor: pointer;
+            font-weight: 500;
+            font-size: 13px;
+            font-family: 'Poppins', sans-serif;
             transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-            text-decoration: none;
             display: inline-flex;
             align-items: center;
             gap: 8px;
-            font-size: 14px;
+            text-decoration: none;
         }
-
-        .back-btn:hover {
+        .btn:hover {
             background: #219150;
-            transform: translateY(-3px) scale(1.05);
-            box-shadow: 0 8px 20px rgba(39, 174, 96, 0.4);
+            transform: translateY(-2px) scale(1.03);
+            box-shadow: 0 8px 20px rgba(39,174,96,.4);
         }
 
         .container {
             max-width: 1400px;
-            margin: 40px auto;
+            margin: 30px auto;
             padding: 0 40px;
         }
 
-        .page-header {
-            margin-bottom: 30px;
-        }
+        .page-header { margin-bottom: 24px; }
+        .page-title { font-size: 24px; font-weight: 700; color: #2c3e50; margin-bottom: 5px; }
+        .page-subtitle { font-size: 14px; color: #7f8c8d; }
+        .page-subtitle span { color: #27ae60; font-weight: 500; }
 
-        .page-title {
-            font-size: 24px;
-            font-weight: 700;
-            color: #2c3e50;
-            margin-bottom: 5px;
-        }
-
-        .page-subtitle {
-            font-size: 14px;
-            color: #7f8c8d;
-        }
-
-        .prediccion-destacada {
-            background: linear-gradient(135deg, #27ae60 0%, #229954 100%);
-            border-radius: 12px;
-            padding: 35px;
-            text-align: center;
-            color: white;
-            margin-bottom: 30px;
-            box-shadow: 0 8px 20px rgba(39, 174, 96, 0.25);
-            transition: all 0.4s ease;
-            cursor: pointer;
-        }
-
-        .prediccion-destacada:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 12px 30px rgba(39, 174, 96, 0.35);
-        }
-
-        .prediccion-destacada i {
-            font-size: 2.5rem;
-            margin-bottom: 15px;
-            animation: bounce 2s infinite;
-        }
-
-        @keyframes bounce {
-            0%, 100% { transform: translateY(0); }
-            50% { transform: translateY(-10px); }
-        }
-
-        .prediccion-destacada h2 {
-            font-size: 2rem;
-            font-weight: 700;
-            margin: 10px 0;
-        }
-
-        .prediccion-destacada p {
-            font-size: 0.95rem;
-            opacity: 0.95;
-        }
-
-        .info-boxes {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-            gap: 20px;
-            margin-bottom: 30px;
-        }
-
-        .info-box {
-            background: white;
-            padding: 20px;
-            border-radius: 12px;
-            text-align: center;
-            border: 2px solid transparent;
-            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-            box-shadow: 0 4px 8px rgba(0,0,0,0.06);
-            cursor: pointer;
-        }
-
-        .info-box:hover {
-            transform: translateY(-8px) scale(1.03);
-            box-shadow: 0 12px 24px rgba(39, 174, 96, 0.2);
-            border-color: #27ae60;
-        }
-
-        .info-box i {
-            font-size: 2rem;
-            color: #27ae60;
-            margin-bottom: 10px;
-            transition: all 0.3s ease;
-        }
-
-        .info-box:hover i {
-            transform: scale(1.2) rotate(10deg);
-        }
-
-        .info-box h4 {
-            font-size: 1.8rem;
-            color: #2c3e50;
-            font-weight: 700;
-            margin: 6px 0;
-            transition: color 0.3s;
-        }
-
-        .info-box:hover h4 {
-            color: #27ae60;
-        }
-
-        .info-box p {
-            color: #7f8c8d;
-            font-size: 0.85rem;
-        }
-
-        .grid-container {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 20px;
-            margin-bottom: 30px;
+        .error {
+            display: none;
+            padding: 12px 16px;
+            border: 1px solid #e8a9a9;
+            background: #fdecec;
+            color: #c0392b;
+            border-radius: 10px;
+            font-size: 12px;
+            margin-bottom: 18px;
         }
 
         .card {
-            background: white;
+            background: #fff;
             border-radius: 12px;
-            padding: 25px;
+            padding: 22px;
             border: 2px solid transparent;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.06);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.06);
             transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            min-width: 0;
         }
-
         .card:hover {
             transform: translateY(-6px);
-            box-shadow: 0 12px 24px rgba(39, 174, 96, 0.15);
+            box-shadow: 0 12px 24px rgba(39,174,96,0.15);
             border-color: #27ae60;
         }
 
-        .card-header {
+        .card-head {
             display: flex;
-            align-items: center;
-            gap: 10px;
+            align-items: flex-start;
+            justify-content: space-between;
+            gap: 12px;
             margin-bottom: 18px;
             padding-bottom: 14px;
             border-bottom: 2px solid #f0f0f0;
         }
+        .card-title { font-size: 16px; font-weight: 600; color: #2c3e50; }
+        .card-sub { font-size: 11px; color: #7f8c8d; margin-top: 4px; line-height: 1.5; }
 
-        .card-header i {
-            font-size: 1.3rem;
+        .tag {
+            font-size: 10px;
             color: #27ae60;
-            transition: all 0.3s ease;
-        }
-
-        .card:hover .card-header i {
-            transform: scale(1.15) rotate(5deg);
-        }
-
-        .card-header h3 {
-            font-size: 16px;
+            background: #eafaf1;
+            border: 1px solid #b7e4c7;
+            border-radius: 20px;
+            padding: 5px 10px;
+            white-space: nowrap;
             font-weight: 600;
-            color: #2c3e50;
+            letter-spacing: .04em;
         }
 
-        .chart-container {
-            position: relative;
-            height: 320px;
-            margin-top: 15px;
+        .kpis {
+            display: grid;
+            grid-template-columns: repeat(4, minmax(0, 1fr));
+            gap: 20px;
+            margin-bottom: 20px;
         }
-
-        .tabla-estadisticas {
-            width: 100%;
-            border-collapse: separate;
-            border-spacing: 0;
-        }
-
-        .tabla-estadisticas thead {
-            background-color: #27ae60;
-            color: white;
-        }
-
-        .tabla-estadisticas th {
-            padding: 14px;
-            text-align: left;
-            font-weight: 600;
-            font-size: 13px;
-        }
-
-        .tabla-estadisticas th:first-child {
-            border-radius: 8px 0 0 0;
-        }
-
-        .tabla-estadisticas th:last-child {
-            border-radius: 0 8px 0 0;
-        }
-
-        .tabla-estadisticas td {
-            padding: 14px;
-            border-bottom: 1px solid #e0e0e0;
-            color: #2c3e50;
-            font-size: 13px;
-        }
-
-        .tabla-estadisticas tbody tr {
-            transition: all 0.3s ease;
-        }
-
-        .tabla-estadisticas tbody tr:hover {
-            background: rgba(39, 174, 96, 0.08);
-            transform: scale(1.01);
-        }
-
-        .badge-posicion {
-            background: linear-gradient(135deg, #27ae60 0%, #229954 100%);
-            color: white;
-            padding: 5px 11px;
-            border-radius: 16px;
-            font-weight: 600;
-            font-size: 11px;
-            display: inline-block;
-            transition: all 0.3s ease;
-        }
-
-        .tabla-estadisticas tbody tr:hover .badge-posicion {
-            transform: scale(1.15);
-            box-shadow: 0 4px 8px rgba(39, 174, 96, 0.3);
-        }
-
-        .progress-bar-container {
-            width: 100%;
-            background-color: #e5e7eb;
-            border-radius: 8px;
-            overflow: hidden;
-            height: 24px;
-            position: relative;
-            transition: all 0.3s ease;
-        }
-
-        .progress-section:hover .progress-bar-container {
-            transform: scale(1.02);
-            box-shadow: 0 4px 8px rgba(39, 174, 96, 0.2);
-        }
-
-        .progress-bar-fill {
-            height: 100%;
-            background: linear-gradient(90deg, #27ae60 0%, #229954 100%);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: white;
-            font-weight: 600;
-            font-size: 0.7rem;
-            transition: width 1s ease;
-        }
-
-        .progress-section {
-            margin-bottom: 18px;
-            transition: all 0.3s ease;
-            padding: 8px;
-            border-radius: 6px;
-        }
-
-        .progress-section:hover {
-            background: rgba(39, 174, 96, 0.05);
-        }
-
-        .progress-label {
+        .kpi-top {
             display: flex;
             justify-content: space-between;
-            margin-bottom: 8px;
-            font-size: 0.85rem;
+            align-items: center;
+            color: #7f8c8d;
+            font-size: 12px;
+        }
+        .kpi-icon {
+            width: 34px; height: 34px;
+            border-radius: 10px;
+            background: #eafaf1;
+            color: #27ae60;
+            display: grid; place-items: center;
+            font-size: 15px;
+        }
+        .kpi-value {
+            font-size: 26px; font-weight: 700;
+            color: #2c3e50; margin: 14px 0 4px;
+            letter-spacing: -0.02em;
+        }
+        .kpi-foot { color: #7f8c8d; font-size: 11px; }
+
+        .main-grid {
+            display: grid;
+            grid-template-columns: 1.4fr 1fr;
+            gap: 20px;
+            margin-bottom: 20px;
         }
 
-        .progress-label strong {
+        .chart-wrap {
+            height: 280px;
+            position: relative;
+        }
+
+        .category-list { display: grid; gap: 15px; }
+        .category-row {
+            display: grid;
+            grid-template-columns: 110px 1fr 44px;
+            align-items: center;
+            gap: 12px;
+            font-size: 12px;
+        }
+        .category-name { color: #2c3e50; font-weight: 500; }
+        .bar {
+            height: 8px;
+            background: #e5e7eb;
+            border-radius: 20px;
+            overflow: hidden;
+        }
+        .bar > span {
+            display: block;
+            height: 100%;
+            background: linear-gradient(90deg, #27ae60, #2ecc71);
+            border-radius: 20px;
+            transition: width .8s ease;
+        }
+        .category-count {
+            text-align: right;
+            color: #27ae60;
+            font-weight: 600;
+            font-variant-numeric: tabular-nums;
+        }
+
+        .empty {
+            padding: 28px;
+            text-align: center;
+            color: #7f8c8d;
+            font-size: 13px;
+        }
+
+        .metric-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 14px;
+        }
+        .metric {
+            padding: 16px;
+            border-radius: 10px;
+            background: #f5f6fa;
+            border: 1px solid #e5e7eb;
+            transition: all .3s ease;
+        }
+        .metric:hover {
+            background: #eafaf1;
+            border-color: #b7e4c7;
+        }
+        .metric small {
+            color: #7f8c8d;
+            font-size: 10px;
+            font-weight: 500;
+        }
+        .metric small i { color: #27ae60; margin-right: 4px; }
+        .metric b {
+            display: block;
+            font-size: 15px;
+            color: #2c3e50;
+            margin-top: 7px;
+        }
+        .metric b.big {
+            font-size: 22px;
+            font-weight: 700;
+        }
+
+        .forecast-grid {
+            display: grid;
+            grid-template-columns: 1fr 1.2fr;
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+
+        .select {
+            background: #fff;
+            color: #2c3e50;
+            border: 1px solid #e0e0e0;
+            border-radius: 10px;
+            padding: 10px 12px;
+            max-width: 320px;
+            width: 100%;
+            font-size: 13px;
+            font-family: 'Poppins', sans-serif;
+            cursor: pointer;
+            transition: all .3s ease;
+        }
+        .select:hover { border-color: #27ae60; }
+        .select:focus {
+            outline: none;
+            border-color: #27ae60;
+            box-shadow: 0 0 0 3px rgba(39,174,96,.15);
+        }
+
+        /* ---------- Pronóstico por libro (rediseñado) ---------- */
+        .forecast-stats {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin-top: 20px;
+            padding-top: 20px;
+            border-top: 1px dashed #e5e7eb;
+        }
+        .stat-item { display: flex; flex-direction: column; gap: 8px; min-width: 0; }
+        .stat-label {
+            font-size: 10px;
+            font-weight: 600;
+            color: #7f8c8d;
+            text-transform: uppercase;
+            letter-spacing: .08em;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .stat-label i { color: #27ae60; font-size: 11px; }
+        .stat-value {
+            font-size: 28px;
+            font-weight: 700;
+            color: #27ae60;
+            line-height: 1;
+            letter-spacing: -0.02em;
+        }
+        .stat-unit {
+            font-size: 11px;
+            color: #95a5a6;
+            line-height: 1.45;
+        }
+        .forecast-status {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 13px;
+            font-weight: 600;
+            padding: 8px 14px;
+            border-radius: 20px;
+            width: fit-content;
+            max-width: 100%;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        .forecast-status::before {
+            content: '';
+            flex-shrink: 0;
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: currentColor;
+        }
+        .forecast-status.ok { background: #eafaf1; color: #1e8449; }
+        .forecast-status.warn { background: #fff8e6; color: #b8860b; }
+        .forecast-status.danger { background: #fdecec; color: #c0392b; }
+        .forecast-status.na { background: #f0f0f0; color: #7f8c8d; }
+
+        .forecast-empty {
+            height: 240px;
+            display: grid;
+            place-items: center;
+            text-align: center;
+            color: #7f8c8d;
+            font-size: 13px;
+            padding: 20px;
+        }
+
+        .model-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 14px;
+            margin-bottom: 14px;
+        }
+        .model-note {
+            font-size: 12px;
+            color: #1e6b45;
+            background: #eafaf1;
+            padding: 12px 16px;
+            border-left: 3px solid #27ae60;
+            border-radius: 6px;
+            line-height: 1.55;
+        }
+
+        .table-card { padding: 0; overflow: hidden; }
+        .table-head {
+            padding: 22px 22px 16px;
+            display: flex;
+            align-items: flex-start;
+            justify-content: space-between;
+            gap: 15px;
+        }
+        .table-scroll { overflow: auto; max-height: 580px; }
+
+        table {
+            border-collapse: collapse;
+            width: 100%;
+            font-size: 12px;
+            white-space: nowrap;
+        }
+        thead {
+            position: sticky;
+            top: 0;
+            background: #27ae60;
+            z-index: 1;
+        }
+        th {
+            text-align: left;
+            color: #fff;
+            font-weight: 600;
+            padding: 14px 16px;
+            font-size: 11px;
+            letter-spacing: .05em;
+            text-transform: uppercase;
+        }
+        td {
+            padding: 13px 16px;
+            border-bottom: 1px solid #f0f0f0;
             color: #2c3e50;
         }
+        tbody tr { transition: all .3s ease; }
+        tbody tr:hover { background: rgba(39,174,96,.06); }
 
-        .progress-label span {
-            color: #7f8c8d;
+        .risk {
+            display: inline-block;
+            border-radius: 20px;
+            padding: 4px 10px;
+            font-size: 10px;
+            font-weight: 600;
+            letter-spacing: .02em;
         }
+        .risk.high { background: #fdecec; color: #c0392b; }
+        .risk.medium { background: #fff8e6; color: #b8860b; }
+        .risk.low { background: #eafaf1; color: #27ae60; }
+        .risk.na { background: #f0f0f0; color: #7f8c8d; }
 
-        .categoria-icon {
-            margin-right: 6px;
-            color: #27ae60;
-        }
-
-        @media (max-width: 1024px) {
-            .grid-container {
-                grid-template-columns: 1fr;
-            }
-        }
-
-        @media (max-width: 768px) {
-            .navbar {
-                flex-direction: column;
-                gap: 15px;
-                padding: 15px 20px;
-            }
-
-            .container {
-                padding: 0 20px;
-                margin: 30px auto;
-            }
-
-            .page-title {
-                font-size: 20px;
-            }
-
-            .prediccion-destacada h2 {
-                font-size: 1.6rem;
-            }
-        }
+        .muted { color: #7f8c8d; }
 
         footer {
             background: #2c3e50;
             color: #fff;
-            text-align: center;
             padding: 20px;
+            margin-top: 40px;
+            text-align: center;
             font-size: 0.9rem;
-            margin-top: 60px;
+        }
+
+        .loading { opacity: .55; pointer-events: none; }
+
+        @media (max-width: 1050px) {
+            .kpis { grid-template-columns: repeat(2, 1fr); }
+            .main-grid, .forecast-grid { grid-template-columns: 1fr; }
+            .model-grid { grid-template-columns: repeat(2, 1fr); }
+        }
+        @media (max-width: 768px) {
+            .navbar { flex-direction: column; gap: 15px; padding: 15px 20px; }
+            .container { padding: 0 20px; margin: 30px auto; }
+            .kpis { gap: 12px; }
+            .card { padding: 16px; }
+            .kpi-value { font-size: 22px; }
+            .table-head { display: block; }
+            .table-head .select { margin-top: 12px; max-width: none; }
+            .forecast-stats { grid-template-columns: 1fr; gap: 16px; }
         }
     </style>
 </head>
@@ -389,206 +425,592 @@
     <div class="logo">
         <h1>Lectio <span>Admin</span></h1>
     </div>
-    <a href="/api/admin" class="back-btn">
+    <a href="/api/admin" class="btn">
         <i class="fas fa-arrow-left"></i> Volver al Panel
     </a>
 </header>
 
-<div class="container">
+<div class="container" id="app">
     <div class="page-header">
-        <h1 class="page-title">Modelo Predictivo con Weka</h1>
-        <p class="page-subtitle">Análisis inteligente de tendencias de reservas</p>
+        <h1 class="page-title">Modelo Predictivo</h1>
+        <p class="page-subtitle">
+            Análisis inteligente de tendencias de reservas ·
+            <span id="periodLabel">Periodo de análisis · —</span>
+        </p>
     </div>
 
-    <div class="prediccion-destacada">
-        <i class="fas fa-trophy"></i>
-        <h2 th:text="${categoriaMasReservada}">Novelas</h2>
-        <p>Categoría más reservada según el modelo predictivo</p>
-    </div>
+    <div class="error" id="errorBox"></div>
 
-    <div class="info-boxes">
-        <div class="info-box">
-            <i class="fas fa-book-open"></i>
-            <h4 th:text="${#aggregates.sum(estadisticas.values())}">85</h4>
-            <p>Total de Reservas</p>
-        </div>
-        <div class="info-box">
-            <i class="fas fa-layer-group"></i>
-            <h4 th:text="${estadisticas.size()}">5</h4>
-            <p>Categorías Activas</p>
-        </div>
-        <div class="info-box">
-            <i class="fas fa-chart-line"></i>
-            <h4 th:text="${#numbers.formatDecimal((estadisticas.get(categoriaMasReservada) * 100.0 / #aggregates.sum(estadisticas.values())), 1, 1)} + '%'">48.2%</h4>
-            <p>Porcentaje Líder</p>
-        </div>
-    </div>
+    <section class="kpis">
+        <article class="card">
+            <div class="kpi-top">
+                <span>Demanda histórica</span>
+                <span class="kpi-icon"><i class="fas fa-arrow-trend-up"></i></span>
+            </div>
+            <div class="kpi-value" id="kpiDemand">—</div>
+            <div class="kpi-foot" id="kpiPeriod">Reservas en el periodo</div>
+        </article>
+        <article class="card">
+            <div class="kpi-top">
+                <span>Libros analizados</span>
+                <span class="kpi-icon"><i class="fas fa-book"></i></span>
+            </div>
+            <div class="kpi-value" id="kpiBooks">—</div>
+            <div class="kpi-foot" id="kpiInsufficient">Cobertura del catálogo</div>
+        </article>
+        <article class="card">
+            <div class="kpi-top">
+                <span>Error absoluto medio</span>
+                <span class="kpi-icon"><i class="fas fa-bullseye"></i></span>
+            </div>
+            <div class="kpi-value" id="kpiMae">—</div>
+            <div class="kpi-foot">MAE del modelo · menor es mejor</div>
+        </article>
+        <article class="card">
+            <div class="kpi-top">
+                <span>Reposición sugerida</span>
+                <span class="kpi-icon"><i class="fas fa-plus"></i></span>
+            </div>
+            <div class="kpi-value" id="kpiRestock">—</div>
+            <div class="kpi-foot">Libros con recomendación mayor que cero</div>
+        </article>
+    </section>
 
-    <div class="grid-container">
-        <div class="card">
-            <div class="card-header">
-                <i class="fas fa-chart-bar"></i>
-                <h3>Distribución de Reservas</h3>
+    <section class="main-grid">
+        <article class="card">
+            <div class="card-head">
+                <div>
+                    <div class="card-title">Demanda mensual</div>
+                    <div class="card-sub">Reservas registradas por mes</div>
+                </div>
+                <span class="tag">HISTÓRICO</span>
             </div>
-            <div class="chart-container">
-                <canvas id="categoryChart"></canvas>
+            <div class="chart-wrap"><canvas id="monthlyChart"></canvas></div>
+        </article>
+        <article class="card">
+            <div class="card-head">
+                <div>
+                    <div class="card-title">Demanda por categoría</div>
+                    <div class="card-sub">Distribución de solicitudes</div>
+                </div>
+                <span class="tag">CATEGORÍAS</span>
+            </div>
+            <div class="category-list" id="categoryList">
+                <div class="empty">Cargando categorías…</div>
+            </div>
+        </article>
+    </section>
+
+    <article class="card" style="margin-bottom: 20px;">
+        <div class="card-head">
+            <div>
+                <div class="card-title">¿Qué predice el modelo?</div>
+                <div class="card-sub">El MLPRegressor estima cuántas reservas podría recibir cada libro durante los próximos 30 días.</div>
+            </div>
+            <span class="tag">SALIDA DEL MODELO</span>
+        </div>
+        <div class="metric-grid">
+            <div class="metric">
+                <small><i class="fas fa-chart-line"></i> 1 · Pronóstico de demanda</small>
+                <b>Reservas por libro</b>
+                <div class="card-sub" style="margin-top: 6px;">Estimación total a 30 días y desglose semanal.</div>
+            </div>
+            <div class="metric">
+                <small><i class="fas fa-cubes"></i> 2 · Evaluación de inventario</small>
+                <b>Riesgo de stock</b>
+                <div class="card-sub" style="margin-top: 6px;">Compara la demanda estimada con las existencias y unidades reservadas.</div>
+            </div>
+            <div class="metric">
+                <small><i class="fas fa-lightbulb"></i> 3 · Decisión sugerida</small>
+                <b>Unidades por reponer</b>
+                <div class="card-sub" style="margin-top: 6px;">Calcula una sugerencia de reposición con el margen de seguridad configurado.</div>
             </div>
         </div>
+    </article>
 
-        <div class="card">
-            <div class="card-header">
-                <i class="fas fa-table"></i>
-                <h3>Detalle por Categoría</h3>
+    <!-- ============ PRONÓSTICO POR LIBRO (rediseñado) ============ -->
+    <section class="forecast-grid">
+        <article class="card">
+            <div class="card-head">
+                <div>
+                    <div class="card-title">Pronóstico por libro</div>
+                    <div class="card-sub">Estimación de demanda para los próximos 30 días</div>
+                </div>
+                <span class="tag">PREDICCIÓN</span>
             </div>
-            <table class="tabla-estadisticas">
+            <select class="select" id="bookSelect">
+                <option value="">Selecciona un libro</option>
+            </select>
+
+            <div class="forecast-stats">
+                <div class="stat-item">
+                    <div class="stat-label">
+                        <i class="fas fa-book-open"></i> Reservas estimadas
+                    </div>
+                    <div class="stat-value" id="forecastTotal">—</div>
+                    <div class="stat-unit">en los próximos 30 días</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-label">
+                        <i class="fas fa-circle-info"></i> Estado del pronóstico
+                    </div>
+                    <span class="forecast-status na" id="forecastRisk">Sin selección</span>
+                    <div class="stat-unit" id="forecastRiskHint">Selecciona un libro para consultar su pronóstico.</div>
+                </div>
+            </div>
+        </article>
+        <article class="card">
+            <div class="card-head">
+                <div>
+                    <div class="card-title">Evolución del pronóstico</div>
+                    <div class="card-sub">Estimación semanal del libro seleccionado</div>
+                </div>
+                <span class="tag">30 DÍAS</span>
+            </div>
+            <div class="chart-wrap" id="forecastWrap">
+                <div class="forecast-empty" id="forecastEmpty">Selecciona un libro para consultar su estimación.</div>
+                <canvas id="forecastChart" style="display: none;"></canvas>
+            </div>
+        </article>
+    </section>
+
+    <article class="card" style="margin-bottom: 20px;">
+        <div class="card-head">
+            <div>
+                <div class="card-title">Estado y evaluación del modelo</div>
+                <div class="card-sub">Comparación del modelo predictivo con la referencia</div>
+            </div>
+            <span class="tag" id="modelType">MODELO</span>
+        </div>
+        <div class="model-grid">
+            <div class="metric"><small>RMSE · modelo</small><b class="big" id="rmse">—</b></div>
+            <div class="metric"><small>MAE · modelo base</small><b class="big" id="baselineMae">—</b></div>
+            <div class="metric"><small>Muestras de entrenamiento</small><b class="big" id="trainSamples">—</b></div>
+            <div class="metric"><small>Muestras de prueba</small><b class="big" id="testSamples">—</b></div>
+        </div>
+        <div class="model-note" id="modelNote">Esperando información del modelo.</div>
+    </article>
+
+    <article class="card table-card">
+        <div class="table-head">
+            <div>
+                <div class="card-title">Recomendaciones de inventario</div>
+                <div class="card-sub">
+                    Riesgo y unidades sugeridas para reposición · horizonte de 30 días ·
+                    margen de seguridad <span id="safetyMargin">20%</span>
+                </div>
+            </div>
+            <select class="select" id="riskFilter" aria-label="Filtrar por riesgo">
+                <option value="ALL">Todos los riesgos</option>
+                <option value="ALTO">Riesgo alto</option>
+                <option value="MEDIO">Riesgo medio</option>
+                <option value="BAJO">Riesgo bajo</option>
+                <option value="DATOS_INSUFICIENTES">Datos insuficientes</option>
+            </select>
+        </div>
+        <div class="table-scroll">
+            <table>
                 <thead>
                 <tr>
-                    <th>Pos</th>
+                    <th>Libro</th>
                     <th>Categoría</th>
-                    <th>Reservas</th>
-                    <th>%</th>
+                    <th>Demanda estimada</th>
+                    <th>Stock</th>
+                    <th>Reservadas</th>
+                    <th>Riesgo</th>
+                    <th>Reponer</th>
                 </tr>
                 </thead>
-                <tbody>
-                <tr th:each="stat, iterStat : ${estadisticas}">
-                    <td>
-                        <span class="badge-posicion" th:text="${iterStat.count}">1</span>
-                    </td>
-                    <td>
-                        <i class="fas fa-bookmark categoria-icon"></i>
-                        <strong th:text="${stat.key}">Novelas</strong>
-                    </td>
-                    <td th:text="${stat.value} + ' reservas'">41 reservas</td>
-                    <td>
-                        <span th:text="${#numbers.formatDecimal((stat.value * 100.0 / #aggregates.sum(estadisticas.values())), 1, 1)} + '%'">48.2%</span>
-                    </td>
-                </tr>
+                <tbody id="recommendationRows">
+                <tr><td colspan="7" class="empty">Cargando recomendaciones…</td></tr>
                 </tbody>
             </table>
         </div>
-    </div>
-
-    <div class="card">
-        <div class="card-header">
-            <i class="fas fa-tasks"></i>
-            <h3>Comparativa Visual</h3>
-        </div>
-        <div th:each="stat : ${estadisticas}" class="progress-section">
-            <div class="progress-label">
-                <strong th:text="${stat.key}">Novelas</strong>
-                <span th:text="${stat.value} + ' reservas (' + ${#numbers.formatDecimal((stat.value * 100.0 / #aggregates.sum(estadisticas.values())), 1, 1)} + '%)'">41 reservas (48.2%)</span>
-            </div>
-            <div class="progress-bar-container">
-                <div class="progress-bar-fill"
-                     th:style="'width: ' + ${stat.value * 100.0 / #aggregates.sum(estadisticas.values())} + '%'"
-                     th:text="${#numbers.formatDecimal((stat.value * 100.0 / #aggregates.sum(estadisticas.values())), 1, 1)} + '%'">
-                    48.2%
-                </div>
-            </div>
-        </div>
-    </div>
+    </article>
 </div>
 
 <footer>
     <p>&copy; 2025 Lectio Biblioteca. Todos los derechos reservados.</p>
 </footer>
 
-<script th:inline="javascript">
-    /*<![CDATA[*/
-    const estadisticas = /*[[${estadisticas}]]*/ {};
+<script>
+    (() => {
+        // Proxy configurado en Spring Boot (ver LectioProxyController)
+        const API = "/api/lectio";
+        const $ = id => document.getElementById(id);
+        let monthlyChart = null, forecastChart = null,
+            analytics = null, predictions = [], recommendations = [],
+            model = {}, books = new Map();
 
-    const labels = Object.keys(estadisticas);
-    const data = Object.values(estadisticas);
-    const total = data.reduce((a, b) => a + b, 0);
+        const num = v => v === null || v === undefined || v === "" ? null : (Number.isFinite(Number(v)) ? Number(v) : null);
+        const fmt = v => v == null ? "—" : new Intl.NumberFormat("es-CO", {maximumFractionDigits: 2}).format(v);
+        const first = (obj, keys, fallback=null) => {
+            for (const k of keys) if (obj && obj[k] !== undefined && obj[k] !== null) return obj[k];
+            return fallback;
+        };
+        const unwrap = x => x?.data ?? x?.results ?? x?.items ?? x;
+        const listFrom = (x, keys=[]) => {
+            if (Array.isArray(x)) return x;
+            for (const k of keys) if (Array.isArray(x?.[k])) return x[k];
+            const d = unwrap(x); if (Array.isArray(d)) return d;
+            for (const k of keys) if (Array.isArray(d?.[k])) return d[k];
+            return [];
+        };
+        async function get(path) {
+            const r = await fetch(API + path, {headers: {Accept: "application/json"}});
+            if (!r.ok) throw new Error(`${path} respondió HTTP ${r.status}`);
+            return r.json();
+        }
 
-    const colors = [
-        { bg: 'rgba(39, 174, 96, 0.85)', border: 'rgba(39, 174, 96, 1)' },
-        { bg: 'rgba(34, 153, 84, 0.85)', border: 'rgba(34, 153, 84, 1)' },
-        { bg: 'rgba(46, 204, 113, 0.85)', border: 'rgba(46, 204, 113, 1)' },
-        { bg: 'rgba(22, 160, 133, 0.85)', border: 'rgba(22, 160, 133, 1)' },
-        { bg: 'rgba(26, 188, 156, 0.85)', border: 'rgba(26, 188, 156, 1)' }
-    ];
-
-    const ctx = document.getElementById('categoryChart').getContext('2d');
-    new Chart(ctx, {
-        type: 'bar',
-        data: {
-            labels: labels,
-            datasets: [{
-                label: 'Número de Reservas',
-                data: data,
-                backgroundColor: colors.map(c => c.bg),
-                borderColor: colors.map(c => c.border),
-                borderWidth: 2,
-                borderRadius: 8
-            }]
-        },
-        options: {
-            responsive: true,
-            maintainAspectRatio: false,
-            plugins: {
-                legend: {
-                    display: false
+        /* ---------- Traducción de estados del modelo ---------- */
+        function translateStatus(raw) {
+            const s = String(raw || "").toUpperCase().trim();
+            const map = {
+                "PREDICCION_DISPONIBLE": {
+                    label: "Predicción disponible",
+                    hint: "El modelo tiene historial suficiente para estimar la demanda de este libro.",
+                    cls: "ok"
                 },
-                title: {
-                    display: false
+                "DATOS_INSUFICIENTES": {
+                    label: "Datos insuficientes",
+                    hint: "Este libro no tiene historial suficiente para generar un pronóstico confiable.",
+                    cls: "warn"
                 },
-                tooltip: {
-                    backgroundColor: 'rgba(44, 62, 80, 0.95)',
-                    titleColor: '#fff',
-                    bodyColor: '#fff',
-                    padding: 12,
-                    cornerRadius: 8,
-                    callbacks: {
-                        label: function(context) {
-                            const value = context.parsed.y;
-                            const percentage = ((value / total) * 100).toFixed(1);
-                            return value + ' reservas (' + percentage + '%)';
+                "ALTO": {
+                    label: "Riesgo alto",
+                    hint: "Se espera una demanda superior al stock actual. Considera reponer.",
+                    cls: "danger"
+                },
+                "MEDIO": {
+                    label: "Riesgo medio",
+                    hint: "La demanda estimada está cerca del stock disponible.",
+                    cls: "warn"
+                },
+                "BAJO": {
+                    label: "Riesgo bajo",
+                    hint: "El stock actual cubre la demanda estimada.",
+                    cls: "ok"
+                }
+            };
+            return map[s] || {
+                label: raw ? String(raw).replace(/_/g, " ").toLowerCase().replace(/^\w/, c => c.toUpperCase()) : "—",
+                hint: "Estado reportado por el modelo.",
+                cls: "na"
+            };
+        }
+
+        function chartOptions() {
+            return {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {display: false},
+                    tooltip: {
+                        backgroundColor: 'rgba(44, 62, 80, 0.95)',
+                        titleColor: '#fff',
+                        bodyColor: '#fff',
+                        padding: 12,
+                        cornerRadius: 8,
+                        borderColor: '#27ae60',
+                        borderWidth: 1,
+                        titleFont: {family: "'Poppins', sans-serif", size: 12, weight: '600'},
+                        bodyFont: {family: "'Poppins', sans-serif", size: 12}
+                    }
+                },
+                scales: {
+                    x: {
+                        grid: {display: false},
+                        ticks: {
+                            color: '#7f8c8d',
+                            font: {family: "'Poppins', sans-serif", size: 11}
+                        }
+                    },
+                    y: {
+                        beginAtZero: true,
+                        grid: {color: '#e9ecef', drawBorder: false},
+                        ticks: {
+                            color: '#7f8c8d',
+                            font: {family: "'Poppins', sans-serif", size: 11}
                         }
                     }
-                }
-            },
-            scales: {
-                y: {
-                    beginAtZero: true,
-                    ticks: {
-                        stepSize: 5,
-                        font: {
-                            family: "'Poppins', sans-serif",
-                            size: 12
-                        },
-                        color: '#7f8c8d'
-                    },
-                    grid: {
-                        color: '#e9ecef',
-                        drawBorder: false
-                    }
                 },
-                x: {
-                    ticks: {
-                        font: {
-                            family: "'Poppins', sans-serif",
-                            weight: '600',
-                            size: 12
-                        },
-                        color: '#2c3e50'
-                    },
-                    grid: {
-                        display: false
+                animation: {duration: 1200, easing: 'easeOutQuart'}
+            };
+        }
+        function drawMonthly(items) {
+            const labels = items.map(x => x.month ?? x.period ?? x.label ?? "—");
+            const values = items.map(x => num(first(x, ["demand","total_demand","reservations","count"], 0)) ?? 0);
+            if (monthlyChart) monthlyChart.destroy();
+            const canvas = $("monthlyChart");
+            const ctx = canvas.getContext('2d');
+            const gradient = ctx.createLinearGradient(0, 0, 0, canvas.height || 280);
+            gradient.addColorStop(0, 'rgba(46, 204, 113, 0.95)');
+            gradient.addColorStop(1, 'rgba(39, 174, 96, 0.75)');
+            monthlyChart = new Chart(canvas, {
+                type: "bar",
+                data: {
+                    labels,
+                    datasets: [{
+                        data: values,
+                        backgroundColor: gradient,
+                        borderColor: '#27ae60',
+                        borderWidth: 1,
+                        borderRadius: 8,
+                        maxBarThickness: 40
+                    }]
+                },
+                options: chartOptions()
+            });
+        }
+        function drawCategories(items) {
+            const root = $("categoryList");
+            root.innerHTML = "";
+            const max = Math.max(1, ...items.map(x => num(first(x, ["demand","total_demand","count"], 0)) || 0));
+            items.forEach(x => {
+                const name = first(x, ["category","name","label"], "Sin categoría");
+                const value = num(first(x, ["demand","total_demand","count"], 0)) || 0;
+                const row = document.createElement("div");
+                row.className = "category-row";
+                row.innerHTML = `
+                    <span class="category-name"></span>
+                    <div class="bar"><span style="width:${Math.max(0, Math.min(100, value / max * 100))}%"></span></div>
+                    <span class="category-count">${fmt(value)}</span>`;
+                row.querySelector(".category-name").textContent = name;
+                root.appendChild(row);
+            });
+            if (!items.length) root.innerHTML = '<div class="empty">No hay datos de categorías.</div>';
+        }
+        function getBookId(x) {
+            return String(first(x, ["book_id","libro_id","id_book","libro_fisico_id","id"], ""));
+        }
+        function titleFrom(value) {
+            if (typeof value === "string" || typeof value === "number") {
+                const text = String(value).trim();
+                return text || null;
+            }
+            if (value && typeof value === "object") {
+                const nested = first(value, ["titulo","title","book_title","book_name","nombre_libro","name","libro"], null);
+                if (nested !== value) return titleFrom(nested);
+            }
+            return null;
+        }
+        function getTitle(x) {
+            if (!x || typeof x !== "object") return null;
+            const direct = titleFrom(first(x, ["titulo","title","libro","book_title","book_name","nombre_libro","name"], null));
+            if (direct) return direct;
+            for (const key of ["book","libro_fisico","physical_book","book_info","libro_info"]) {
+                const nested = titleFrom(x[key]);
+                if (nested) return nested;
+            }
+            return null;
+        }
+        function normalizePrediction(x) {
+            return {
+                id: getBookId(x),
+                title: getTitle(x),
+                demand: num(first(x, ["forecast_demand_30_days","predicted_demand","demand_predicted","forecast","prediction","predicted_value","demand_30d","estimated_demand","total_demand"], null)),
+                risk: first(x, ["risk_level","status","risk","riesgo","activity_level"], null),
+                raw: x
+            };
+        }
+        function normalizeRecommendation(x) {
+            return {
+                id: getBookId(x),
+                title: getTitle(x),
+                category: first(x, ["category","categoria"], "—"),
+                demand: num(first(x, ["forecast_demand_30_days","predicted_demand","estimated_demand","demand_30d","forecast","predicted_value","demand"], null)),
+                stock: num(first(x, ["available_stock","stock_available","stock","available"], null)),
+                reserved: num(first(x, ["reserved","reserved_stock","reservadas","reserved_units"], null)),
+                risk: String(first(x, ["risk_level","risk","riesgo","status"], "—")).toUpperCase(),
+                reorder: num(first(x, ["recommended_replenishment","recommended_restock","restock_quantity","reorder_quantity","units_to_restock","replenishment","reorder","suggested_quantity"], 0)) || 0,
+                raw: x
+            };
+        }
+        function mergeNames() {
+            const sources = [...predictions, ...recommendations];
+            sources.forEach(x => {
+                const id = x.id;
+                if (id && x.title) books.set(id, x.title);
+            });
+        }
+        function fillSelect() {
+            const s = $("bookSelect");
+            const old = s.value;
+            s.innerHTML = '<option value="">Selecciona un libro</option>';
+            const ids = new Set([...predictions, ...recommendations].map(x => x.id).filter(Boolean));
+            [...ids].forEach(id => {
+                const option = document.createElement("option");
+                option.value = id;
+                option.textContent = books.get(id) || [...predictions, ...recommendations].find(x => x.id === id)?.title || "Título no disponible en la API";
+                s.appendChild(option);
+            });
+            if ([...s.options].some(o => o.value === old)) s.value = old;
+        }
+        function riskClass(r) {
+            if (r.includes("ALTO")) return "high";
+            if (r.includes("MEDIO")) return "medium";
+            if (r.includes("BAJO")) return "low";
+            return "na";
+        }
+        function renderRecommendations() {
+            const filter = $("riskFilter").value;
+            const body = $("recommendationRows");
+            body.innerHTML = "";
+            const rows = recommendations.filter(x => filter === "ALL" || x.risk === filter);
+            rows.forEach(x => {
+                const tr = document.createElement("tr");
+                const title = books.get(x.id) || x.title || "Título no disponible en la API";
+                const cells = [title, x.category, fmt(x.demand), fmt(x.stock), fmt(x.reserved), x.risk, fmt(x.reorder)];
+                cells.forEach((v, i) => {
+                    const td = document.createElement("td");
+                    if (i === 0) {
+                        td.textContent = v;
+                        if (v === "Título no disponible en la API") td.className = "muted";
+                    } else if (i === 5) {
+                        const span = document.createElement("span");
+                        span.className = `risk ${riskClass(x.risk)}`;
+                        span.textContent = v;
+                        td.appendChild(span);
+                    } else {
+                        td.textContent = v ?? "—";
                     }
-                }
-            },
-            animation: {
-                duration: 1500,
-                easing: 'easeOutQuart'
-            },
-            interaction: {
-                intersect: false,
-                mode: 'index'
+                    tr.appendChild(td);
+                });
+                body.appendChild(tr);
+            });
+            if (!rows.length) {
+                body.innerHTML = '<tr><td colspan="7" class="empty">La API no devolvió recomendaciones para este filtro. Prueba “Todos los riesgos” o verifica /recommendations.</td></tr>';
             }
         }
-    });
-    /*]]>*/
+        function setForecastStatus(status) {
+            const badge = $("forecastRisk");
+            badge.textContent = status.label;
+            badge.className = `forecast-status ${status.cls}`;
+            $("forecastRiskHint").textContent = status.hint;
+        }
+        function selectBook() {
+            const id = $("bookSelect").value;
+            if (!id) {
+                $("forecastEmpty").style.display = "grid";
+                $("forecastChart").style.display = "none";
+                $("forecastTotal").textContent = "—";
+                setForecastStatus({
+                    label: "Sin selección",
+                    hint: "Selecciona un libro para consultar su pronóstico.",
+                    cls: "na"
+                });
+                if (forecastChart) { forecastChart.destroy(); forecastChart = null; }
+                return;
+            }
+            const p = predictions.find(x => x.id === id) || recommendations.find(x => x.id === id);
+            const raw = p?.raw || {};
+            const series = first(raw, ["weekly_forecast","weekly_predictions","forecast_by_week","weekly_demand","forecast"], []);
+            const arr = Array.isArray(series) ? series : [];
+            const labels = arr.map((x, i) => typeof x === "object" ? first(x, ["week","period","date","label"], `Semana ${i+1}`) : `Semana ${i+1}`);
+            const vals = arr.map(x => typeof x === "object" ? num(first(x, ["predicted_demand","demand","prediction","value","forecast"], 0)) || 0 : num(x) || 0);
+            const total = num(first(raw, ["forecast_demand_30_days","predicted_demand","demand_30d","estimated_demand","forecast_total","total_demand"], p?.demand));
+            $("forecastTotal").textContent = fmt(total);
+
+            const rawStatus = first(raw, ["risk_level","status","risk","riesgo"], p?.risk);
+            setForecastStatus(translateStatus(rawStatus));
+
+            if (forecastChart) { forecastChart.destroy(); forecastChart = null; }
+            if (arr.length) {
+                $("forecastEmpty").style.display = "none";
+                $("forecastChart").style.display = "block";
+                forecastChart = new Chart($("forecastChart"), {
+                    type: "line",
+                    data: {
+                        labels,
+                        datasets: [{
+                            data: vals,
+                            borderColor: "#27ae60",
+                            backgroundColor: "rgba(39,174,96,0.12)",
+                            fill: true,
+                            tension: .35,
+                            pointRadius: 5,
+                            pointBackgroundColor: "#27ae60",
+                            pointBorderColor: "#fff",
+                            pointBorderWidth: 2,
+                            borderWidth: 3
+                        }]
+                    },
+                    options: chartOptions()
+                });
+            } else {
+                $("forecastChart").style.display = "none";
+                $("forecastEmpty").style.display = "grid";
+                $("forecastEmpty").textContent = String(first(raw, ["status"], "")).toUpperCase() === "DATOS_INSUFICIENTES"
+                    ? "Este libro no tiene historial suficiente para generar un pronóstico confiable."
+                    : "La API no entregó una serie semanal para este libro. Demanda estimada: " + fmt(total) + ".";
+            }
+        }
+        function renderAnalytics(a) {
+            analytics = a?.analytics ?? a;
+            const x = analytics || {};
+            $("kpiDemand").textContent = fmt(num(x.total_demand));
+            $("kpiBooks").textContent = fmt(num(x.books_analyzed));
+            $("kpiInsufficient").textContent = `${fmt(num(x.insufficient_activity_books))} con historial insuficiente`;
+            $("kpiPeriod").textContent = `${x.period_start || "—"} a ${x.period_end || "—"}`;
+            $("periodLabel").textContent = `Periodo de análisis · ${x.period_start || "—"} → ${x.period_end || "—"}`;
+            drawMonthly(x.monthly_demand || []);
+            drawCategories(x.demand_by_category || []);
+        }
+        function renderModel(m, metrics) {
+            model = m?.model ?? m ?? {};
+            const statusMetrics = model.metrics ?? m?.metrics ?? metrics?.metrics ?? metrics ?? {};
+            const mlp = statusMetrics.mlp_regressor ?? {};
+            const baseline = statusMetrics.baseline_rolling_4_mean ?? {};
+            const mae = num(first(mlp, ["mae"], first(statusMetrics, ["mae","test_mae","mean_absolute_error"], null)));
+            const rmse = num(first(mlp, ["rmse"], first(statusMetrics, ["rmse","test_rmse","root_mean_squared_error"], null)));
+            const baselineMae = num(first(baseline, ["mae"], first(statusMetrics, ["baseline_mae","mae_baseline","baseline_error"], null)));
+            $("kpiMae").textContent = fmt(mae);
+            $("rmse").textContent = fmt(rmse);
+            $("baselineMae").textContent = fmt(baselineMae);
+            $("trainSamples").textContent = fmt(num(first(statusMetrics, ["train_samples","n_train","training_size"], null)));
+            $("testSamples").textContent = fmt(num(first(statusMetrics, ["test_samples","testing_samples","n_test","test_size"], null)));
+            $("modelType").textContent = String(first(model, ["model_type","model_name","algorithm"], first(m, ["model_type"], "MODELO"))).toUpperCase();
+            const trained = model.trained ?? m?.trained;
+            $("modelNote").textContent = trained === false
+                ? "El modelo todavía no está entrenado."
+                : first(statusMetrics, ["conclusion","evaluation_message","comparison_message","status_message"], "Evaluación cronológica del modelo frente a una referencia de demanda.");
+        }
+        async function refresh() {
+            $("app").classList.add("loading");
+            $("errorBox").style.display = "none";
+            try {
+                const paths = ["/health","/model/status","/predictions?limit=200","/recommendations?limit=200","/metrics","/analytics"];
+                const results = await Promise.allSettled(paths.map(get));
+                const byPath = {};
+                paths.forEach((p, i) => {
+                    if (results[i].status === "fulfilled") byPath[p] = results[i].value;
+                });
+                const failures = paths.filter((p, i) => results[i].status === "rejected");
+                if (!byPath["/health"]) throw new Error("No fue posible conectar con el servicio LECTIO.");
+                if (byPath["/analytics"]) renderAnalytics(byPath["/analytics"]);
+                if (byPath["/model/status"] || byPath["/metrics"]) renderModel(byPath["/model/status"] || {}, byPath["/metrics"] || {});
+                predictions = listFrom(byPath["/predictions?limit=200"], ["books","predictions","items","results"]).map(normalizePrediction);
+                recommendations = listFrom(byPath["/recommendations?limit=200"], ["recommendations","items","results"]).map(normalizeRecommendation);
+                mergeNames();
+                fillSelect();
+                renderRecommendations();
+                selectBook();
+                $("kpiRestock").textContent = fmt(recommendations.filter(x => x.reorder > 0).length);
+                if (failures.length) {
+                    $("errorBox").style.display = "block";
+                    $("errorBox").textContent = "Algunos módulos no pudieron actualizarse: " + failures.join(", ") + ". Los demás datos sí se cargaron.";
+                }
+            } catch (e) {
+                $("errorBox").style.display = "block";
+                $("errorBox").textContent = e.message + " Comprueba que la API esté disponible y vuelve a actualizar.";
+            } finally {
+                $("app").classList.remove("loading");
+            }
+        }
+        $("bookSelect").addEventListener("change", selectBook);
+        $("riskFilter").addEventListener("change", renderRecommendations);
+        refresh();
+    })();
 </script>
 </body>
 </html>

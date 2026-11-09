@@ -1,7 +1,11 @@
 package com.bibli.bia.Model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
-import java.util.*;
+
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Table(name = "libros_fisicos", indexes = {
@@ -27,14 +31,21 @@ public class LibroFisicoModel {
     @Column(nullable = false, length = 50)
     private String categoria;
 
+    /** Ejemplares disponibles ahora (baja al reservar, sube al cancelar). */
     @Column(nullable = false)
     private int stock = 0;
 
+    /** Ejemplares reservados actualmente. */
     @Column(nullable = false)
     private int reservado = 0;
 
+    /** Cuándo se registró el libro (sirve como antigüedad del libro en el modelo). */
+    @Column(name = "fecha_creacion", nullable = false, updatable = false)
+    private LocalDateTime fechaCreacion;
 
-    @OneToMany(mappedBy = "libro", fetch = FetchType.LAZY)
+    // CORREGIDO: antes era mappedBy = "libro" (un String). Ahora apunta a la relación real.
+    @JsonIgnore
+    @OneToMany(mappedBy = "libroFisico", fetch = FetchType.LAZY)
     private List<ReservaModel> reservas = new ArrayList<>();
 
     public LibroFisicoModel() {}
@@ -44,10 +55,38 @@ public class LibroFisicoModel {
         this.autor = autor;
         this.descripcion = descripcion;
         this.categoria = categoria;
-        this.stock = stock;
-        this.reservado = reservado;
+        this.stock = Math.max(0, stock);
+        this.reservado = Math.max(0, reservado);
     }
 
+    @PrePersist
+    void antesDeGuardar() {
+        if (fechaCreacion == null) fechaCreacion = LocalDateTime.now();
+        normalizar();
+    }
+
+    @PreUpdate
+    void antesDeActualizar() {
+        normalizar();
+    }
+
+    /** Quita espacios sobrantes para que los títulos y categorías crucen bien. */
+    private void normalizar() {
+        titulo = limpiar(titulo);
+        autor = limpiar(autor);
+        categoria = limpiar(categoria);
+    }
+
+    private static String limpiar(String s) {
+        return s == null ? null : s.trim().replaceAll("\\s+", " ");
+    }
+
+
+    public void setFechaCreacion(LocalDateTime fechaCreacion) {
+        this.fechaCreacion = fechaCreacion;
+    }
+    /** Inventario total real (disponibles + reservados). */
+    public int getTotalEjemplares() { return stock + reservado; }
 
     public String getId() { return id; }
     public void setId(String id) { this.id = id; }
@@ -65,10 +104,12 @@ public class LibroFisicoModel {
     public void setCategoria(String categoria) { this.categoria = categoria; }
 
     public int getStock() { return stock; }
-    public void setStock(int stock) { this.stock = stock; }
+    public void setStock(int stock) { this.stock = Math.max(0, stock); }
 
     public int getReservado() { return reservado; }
-    public void setReservado(int reservado) { this.reservado = reservado; }
+    public void setReservado(int reservado) { this.reservado = Math.max(0, reservado); }
+
+    public LocalDateTime getFechaCreacion() { return fechaCreacion; }
 
     public List<ReservaModel> getReservas() { return reservas; }
     public void setReservas(List<ReservaModel> reservas) { this.reservas = reservas; }

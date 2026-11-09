@@ -766,35 +766,32 @@
                 return;
             }
 
+            const formData = $('#reserva-form').serialize();
             $.ajax({
-                url: '/api/reservar/' + encodeURIComponent(libroId),
-                type: 'POST'
-            }).done(function() {
-                const formData = $('#reserva-form').serialize();
-                $.ajax({
-                    url: '/api/guardarReservaUsuario',
-                    type: 'POST',
-                    data: formData,
-                    success: function(response) {
-                        $('#reserva-form')[0].reset();
-                        $('#libro-display').val('');
-                        cerrarModal();
-                        mostrarMensaje('Reserva realizada con exito!', 'exito');
-                        const categoria = $('#categoria').val();
-                        if (categoria) {
-                            cargarLibros(categoria);
-                        }
-                    },
-                    error: function(xhr) {
-                        let msg = 'Error al guardar la reserva';
-                        if (xhr.responseJSON && xhr.responseJSON.error) {
-                            msg = xhr.responseJSON.error;
-                        }
-                        mostrarMensaje(msg, 'error');
+                url: '/api/guardarReservaUsuario',
+                type: 'POST',
+                data: formData,
+                success: function(response) {
+                    if (response && response.success === false) {
+                        mostrarMensaje(response.error || 'No se pudo reservar', 'error');
+                        return;
                     }
-                });
-            }).fail(function() {
-                mostrarMensaje('No se pudo reservar: sin stock o error', 'error');
+                    $('#reserva-form')[0].reset();
+                    $('#libro-display').val('');
+                    cerrarModal();
+                    mostrarMensaje('Reserva realizada con exito!', 'exito');
+                    const categoria = $('#categoria').val();
+                    if (categoria) {
+                        cargarLibros(categoria);
+                    }
+                },
+                error: function(xhr) {
+                    let msg = 'Error al guardar la reserva';
+                    if (xhr.responseJSON && xhr.responseJSON.error) {
+                        msg = xhr.responseJSON.error;
+                    }
+                    mostrarMensaje(msg, 'error');
+                }
             });
         }
 

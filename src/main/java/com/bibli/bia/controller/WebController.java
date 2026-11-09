@@ -7,6 +7,7 @@ import com.bibli.bia.repository.RespuestaDashboardRepository;
 import com.bibli.bia.repository.UsuarioRepository;
 import com.bibli.bia.service.*;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -352,6 +353,12 @@ public class WebController {
         return libros;
     }
 
+    @GetMapping("/cargarTodosLosLibros")
+    @ResponseBody
+    public List<LibroFisicoModel> cargarTodosLosLibros() {
+        return libroFisicoService.obtenerTodosLosLibrosFisicos();
+    }
+
     // ========== GESTIÓN DE RESERVAS ==========
 
     @GetMapping("/reservaAdmin")
@@ -369,9 +376,10 @@ public class WebController {
     @ResponseBody
     public ResponseEntity<?> guardarReservaUsuario(@RequestParam String nombreCompleto,
                                                    @RequestParam String correo,
-                                                   @RequestParam String categoria,
-                                                   @RequestParam String libro,
+                                                   @RequestParam(required = false) String categoria,
+                                                   @RequestParam(required = false) String libro,
                                                    @RequestParam String fecha,
+                                                   @RequestParam(required = false) String libroId,
                                                    Authentication authentication) {
         try {
             Usuario usuario = null;
@@ -380,36 +388,62 @@ public class WebController {
             }
 
             if (usuario == null) {
-                return ResponseEntity.status(401).body(Map.of(
+                return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(Map.of(
                         "success", false,
                         "error", "Debes iniciar sesión para realizar una reserva"
                 ));
             }
 
+            if (libroId == null || libroId.isBlank()) {
+                return ResponseEntity.badRequest().body(Map.of(
+                        "success", false,
+                        "error", "Debes seleccionar un libro físico"
+                ));
+            }
+
+            LibroFisicoModel libroFisico = libroFisicoService.obtenerLibroFisicoPorId(libroId).orElse(null);
+            if (libroFisico == null) {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body(Map.of(
+                        "success", false,
+                        "error", "El libro físico no existe"
+                ));
+            }
+
+            LocalDate fechaReserva = LocalDate.parse(fecha);
             ReservaModel reserva = new ReservaModel(
-                    usuario, nombreCompleto, correo, categoria, libro, LocalDate.parse(fecha)
+                    usuario, nombreCompleto, correo, libroFisico, fechaReserva
             );
             reservaService.crearReserva(reserva);
 
             DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
-            String fechaFormateada = LocalDate.parse(fecha).format(formatter);
+            String fechaFormateada = fechaReserva.format(formatter);
 
             emailService.enviarConfirmacionReservaHTML(
                     correo,
                     nombreCompleto,
-                    libro,
+                    reserva.getLibro(),
                     fechaFormateada,
-                    categoria
+                    reserva.getCategoria()
             );
 
             return ResponseEntity.ok().body(Map.of(
                     "success", true,
                     "mensaje", "Reserva realizada con éxito."
             ));
+        } catch (IllegalStateException e) {
+            return ResponseEntity.status(HttpStatus.CONFLICT).body(Map.of(
+                    "success", false,
+                    "error", e.getMessage()
+            ));
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.badRequest().body(Map.of(
+                    "success", false,
+                    "error", e.getMessage()
+            ));
         } catch (Exception e) {
             System.err.println("❌ Error al guardar reserva: " + e.getMessage());
             e.printStackTrace();
-            return ResponseEntity.status(500).body(Map.of(
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(Map.of(
                     "success", false,
                     "error", "Error al realizar la reserva. Inténtalo nuevamente."
             ));
@@ -420,7 +454,7 @@ public class WebController {
 
     @GetMapping("/devolucion")
     public String libroDevolucion(Model model) {
-        List<ReservaModel> reservas = reservaService.obtenerTodasReservas();
+        List<ReservaModel> reservas = reservaService.obtenerReservasActivas();
         model.addAttribute("reservas", reservas);
         return "devolucion";
     }
@@ -433,14 +467,19 @@ public class WebController {
             @RequestParam String fechaDevolucion,
             RedirectAttributes redirectAttributes) {
 
-        ReservaModel reserva = reservaService.obtenerReservaPorId(reservaId);
+        LocalDate fechaDev;
+        ReservaModel reserva;
 
-        if (reserva == null) {
+        try {
+            fechaDev = LocalDate.parse(fechaDevolucion);
+            reserva = reservaService.devolverReserva(reservaId, fechaDev);
+        } catch (IllegalStateException e) {
+            redirectAttributes.addFlashAttribute("error", e.getMessage());
+            return "redirect:/api/devolucion";
+        } catch (IllegalArgumentException e) {
             redirectAttributes.addFlashAttribute("error", "Reserva no encontrada");
             return "redirect:/api/devolucion";
         }
-
-        LocalDate fechaDev = LocalDate.parse(fechaDevolucion);
 
         if (diasRetraso != null && diasRetraso > 0 && valorMulta != null) {
             MultaModel multa = new MultaModel(
@@ -460,8 +499,6 @@ public class WebController {
             redirectAttributes.addFlashAttribute("mensaje",
                     "Devolución registrada sin multa");
         }
-
-        reservaService.eliminarReserva(reservaId);
 
         return "redirect:/api/devolucion";
     }
@@ -649,37 +686,12 @@ public class WebController {
         return "librosPorCategoria";
     }
 
-    @PostMapping("/reservar/{id}")
-    public String reservarLibroFisico(@PathVariable String id, Model model) {
-        try {
-            boolean reservado = libroFisicoService.reservarLibroFisico(id);
-
-            if (reservado) {
-                model.addAttribute("mensajeExito", "Reserva exitosa! El stock se ha actualizado correctamente.");
-            } else {
-                model.addAttribute("mensajeError", "No hay stock disponible o el libro no existe.");
-            }
-
-        } catch (Exception e) {
-            System.err.println("Error al reservar libro físico: " + e.getMessage());
-            model.addAttribute("mensajeError", "Ocurrió un error al procesar la reserva.");
-        }
-
-        model.addAttribute("librosFisicos", libroFisicoService.obtenerTodosLosLibrosFisicos());
-        return "reservaLibro";
-    }
-
     @PostMapping("/cancelar-reserva/{id}")
     public String cancelarReservaLibroFisico(@PathVariable String id, Model model) {
         try {
-            boolean cancelado = libroFisicoService.cancelarReservaLibroFisico(id);
-
-            if (cancelado) {
-                model.addAttribute("mensaje", "Reserva cancelada. El stock se ha restablecido.");
-            } else {
-                model.addAttribute("mensaje", "No hay reservas para cancelar o el libro no existe.");
-            }
-        } catch (Exception e) {
+            reservaService.cancelarReserva(id);
+            model.addAttribute("mensaje", "Reserva cancelada. El stock se ha restablecido.");
+        } catch (IllegalStateException | IllegalArgumentException e) {
             model.addAttribute("mensaje", "Error al cancelar la reserva: " + e.getMessage());
         }
 

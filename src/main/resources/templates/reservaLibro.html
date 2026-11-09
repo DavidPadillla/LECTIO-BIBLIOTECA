@@ -1419,32 +1419,32 @@
             }
 
             $.ajax({
-                url: '/api/reservar/' + encodeURIComponent(libroId),
-                type: 'POST'
-            }).done(function(responseHtml){
-                $.ajax({
-                    url: '/api/guardarReservaUsuario',
-                    type: 'POST',
-                    data: {
-                        nombreCompleto: nombreCompleto,
-                        correo: correo,
-                        categoria: categoria,
-                        libro: titulo,
-                        fecha: fecha
-                    }
-                }).done(function(){
-                    mostrarMensaje('Reserva realizada con éxito', 'exito');
-                    $formPanel.fadeOut();
-                    $('#reserva-form')[0].reset();
+                url: '/api/guardarReservaUsuario',
+                type: 'POST',
+                data: {
+                    libroId: libroId,
+                    nombreCompleto: nombreCompleto,
+                    correo: correo,
+                    categoria: categoria,
+                    libro: titulo,
+                    fecha: fecha
+                }
+            }).done(function(response){
+                if (response && response.success === false) {
+                    mostrarMensaje(response.error || 'No se pudo reservar', 'error');
                     loadBooks(currentCategoria);
-                }).fail(function(xhr){
-                    let msg = 'Error al guardar la reserva';
-                    if(xhr.responseText) msg = xhr.responseText;
-                    mostrarMensaje(msg, 'error');
-                    loadBooks(currentCategoria);
-                });
+                    return;
+                }
+                mostrarMensaje('Reserva realizada con éxito', 'exito');
+                $formPanel.fadeOut();
+                $('#reserva-form')[0].reset();
+                loadBooks(currentCategoria);
             }).fail(function(xhr){
-                mostrarMensaje('No se pudo reservar: sin stock o error', 'error');
+                let msg = 'No se pudo reservar: sin stock o error';
+                if (xhr.responseJSON && xhr.responseJSON.error) {
+                    msg = xhr.responseJSON.error;
+                }
+                mostrarMensaje(msg, 'error');
                 loadBooks(currentCategoria);
             });
         });
