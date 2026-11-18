@@ -1,0 +1,88 @@
+
+/* Shared visual language for the screens that predate the editorial redesign. */
+body.lectio-theme {
+    --primary: #1a6b45;
+    --primary-hover: #0f4a2e;
+    --bg-body: #f7faf8;
+    --text-main: #0d2b1d;
+    --text-muted: #536c5e;
+    --border: #d4e5d9;
+    font-family: 'Inter', sans-serif;
+    background: #f7faf8;
+    color: #0d2b1d;
+}
+.lectio-theme :is(button, input, select, textarea) { font-family: inherit; }
+.lectio-theme :is(h1, h2, .page-title, .progreso-title) {
+    font-family: 'Instrument Serif', Georgia, serif;
+    font-weight: 400;
+    letter-spacing: -.02em;
+    text-shadow: none;
+}
+.lectio-theme .navbar { border-bottom: 1px solid #d4e5d9; box-shadow: none; }
+.lectio-theme .section-header { box-shadow: none; border-radius: 4px; }
+.lectio-theme .section-header::after { display: none; }
+.lectio-theme :is(.card-icon, .section-icon) {
+    background: #e3efe7; color: #1a6b45; border-radius: 6px; box-shadow: none;
+}
+.lectio-theme .admin-card:hover .card-icon { transform: none; box-shadow: none; }
+.lectio-theme :is(.hero-section, .hero-opt, .hero-res) { background: #0f4a2e; }
+.lectio-theme :is(.hero-section, .hero-opt, .hero-res)::before { display: none; }
+.lectio-theme :is(.hero-opt, .hero-res) h2 span { color: #bcd8c6; }
+.lectio-theme .hero-badge { background: transparent; color: #e3efe7; border-color: #7fc9a0; }
+.lectio-theme :is(.card, .admin-card, .stat-card, .table-container, .form-container,
+    .contenido, .libro, .pensador, .progreso-section, .section) {
+    border: 1px solid #d4e5d9;
+    border-radius: 6px;
+    box-shadow: none;
+    backdrop-filter: none;
+}
+.lectio-theme :is(.admin-card, .stat-card, .contenido, .libro, .pensador):hover {
+    transform: none;
+    box-shadow: none;
+    border-color: #1a6b45;
+}
+.lectio-theme :is(.admin-card, .stat-card) { opacity: 1; }
+.lectio-theme :is(.back-btn, .logout-btn, .btn-submit, button.btn) {
+    background: #1a6b45;
+    color: white;
+    border-radius: 4px;
+    box-shadow: none;
+}
+.lectio-theme :is(.back-btn, .logout-btn, .btn-submit, button.btn):hover {
+    background: #0f4a2e;
+    transform: none;
+    box-shadow: none;
+}
+.lectio-theme button.btn-secondary { color: #1a6b45; background: #e3efe7; }
+.lectio-theme .burbuja { display: none; }
+.lectio-reading header { background: #0f4a2e; box-shadow: none; }
+.lectio-reading header h1 { color: white; margin: 0; }
+.lectio-reading aside { background: #0f4a2e; border-radius: 0; }
+.lectio-reading :is(.contenido, .progreso-section) { background: #fff; }
+.lectio-reading :is(.stat-card, .table-header) { background: #1a6b45; }
+.lectio-reading .contenido { padding: clamp(24px, 5vw, 56px); }
+.lectio-reading button.btn .icon { fill: currentColor; }
+.lectio-reading .contenido h1 { font-size: clamp(2.2rem, 6vw, 3.6rem); color: #0d2b1d; }
+.lectio-reading .libro img, .lectio-reading .pensador img { border-radius: 3px; box-shadow: none; }
+.lectio-theme .chat-bubble { background: #1a6b45; box-shadow: none; }
+.lectio-theme .chat-header { background: #0f4a2e; }
+.lectio-theme .model-details { margin-bottom: 24px; }
+.lectio-theme .model-details summary { padding: 16px 0; cursor: pointer; color: #1a6b45; }
+.lectio-challenge :is(.background-magic, .estrella, .planeta) { display: none; }
+.lectio-challenge :is(header, .sidebar) { background: #0f4a2e; box-shadow: none; }
+.lectio-challenge header h1 { color: white; }
+.lectio-challenge .sidebar { border: 0; border-radius: 0; }
+.lectio-challenge .sidebar h2 { color: white; text-shadow: none; }
+.lectio-challenge :is(.center, .center p) { color: #2d4a3a; }
+.lectio-challenge .center h1 { color: #0d2b1d; font-size: clamp(2.2rem, 6vw, 3.5rem); }
+.lectio-challenge .portada { border: 1px solid #d4e5d9; box-shadow: 0 6px 16px #0d2b1d18; }
+.lectio-challenge .capitulo-nodo { background: #1a6b45; border-color: #bcd8c6; box-shadow: none; }
+.lectio-challenge .capitulo-nodo.locked { background: #536c5e; }
+.lectio-challenge .capitulo-nodo.leido { background: #0f4a2e; box-shadow: none; transform: none; }
+.lectio-challenge .flecha { color: #536c5e; }
+@media (max-width: 600px) {
+    .lectio-theme .navbar { padding: 16px 20px; gap: 12px; flex-wrap: wrap; }
+    .lectio-theme .container { padding: 0 16px; }
+    .lectio-theme .page-header { gap: 16px; flex-wrap: wrap; }
+    .lectio-theme .table-container { overflow-x: auto; }
+}

@@ -5,6 +5,8 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.core.ParameterizedTypeReference;
+import org.springframework.http.codec.ServerSentEvent;
 import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.reactive.function.client.WebClientResponseException;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
@@ -53,7 +55,6 @@ public class ChatbotService {
             throw new IllegalStateException("ERROR: GROQ_API_KEY no está configurada.");
         }
         this.GROQ_KEY = tempKey;
-        System.out.println("✅ API Key cargada");
 
         // URL base correcta: incluye /openai/v1 completo
         this.webClient = WebClient.builder()
@@ -85,7 +86,6 @@ public class ChatbotService {
 
     public void limpiarHistorial(String username) {
         historialPorUsuario.remove(username);
-        System.out.println("🧹 Historial limpiado para: " + username);
     }
 
     private String procesarConsultaLocal(String pregunta, String username) {
@@ -129,8 +129,6 @@ public class ChatbotService {
 
         executor.submit(() -> {
             try {
-                System.out.println("📩 Pregunta: " + pregunta);
-                System.out.println("👤 Usuario: " + username);
 
                 agregarAlHistorial(username, "user", pregunta);
 
@@ -170,8 +168,6 @@ public class ChatbotService {
                         .map(DocumentChunk::getContent)
                         .collect(Collectors.joining("\n\n"));
 
-                System.out.println("📚 Contexto encontrado:");
-                System.out.println(contexto);
 
                 List<Map<String, String>> historial = getHistorial(username);
 
@@ -210,18 +206,19 @@ public class ChatbotService {
                             String username) {
 
         StringBuilder respuestaCompleta = new StringBuilder();
+        java.util.concurrent.atomic.AtomicBoolean terminado = new java.util.concurrent.atomic.AtomicBoolean();
 
-        System.out.println("🤖 Llamando a Groq con modelo: " + MODEL);
 
         webClient.post()
                 .uri("/chat/completions")
                 .bodyValue(body)
                 .retrieve()
-                .bodyToFlux(String.class)
+                .bodyToFlux(new ParameterizedTypeReference<ServerSentEvent<String>>() {})
                 .timeout(Duration.ofSeconds(30))
                 .retryWhen(
                         Retry.fixedDelay(1, Duration.ofSeconds(2))
                                 .filter(e -> {
+                                    if (respuestaCompleta.length() > 0 || terminado.get()) return false;
                                     if (e instanceof WebClientResponseException.Unauthorized) {
                                         System.err.println("❌ API Key inválida (401). No se reintenta.");
                                         return false;
@@ -231,8 +228,20 @@ public class ChatbotService {
                                 })
                 )
                 .subscribe(
-                        line -> procesarLinea(line, respuestaCompleta, emitter),
+                        event -> {
+                            String line = event.data();
+                            if (line == null || terminado.get()) return;
+                            if ("[DONE]".equals(line.trim())) {
+                                if (terminado.compareAndSet(false, true)) {
+                                    try {
+                                        emitter.send(SseEmitter.event().data("[DONE]"));
+                                        emitter.complete();
+                                    } catch (Exception error) { emitter.completeWithError(error); }
+                                }
+                            } else procesarLinea(line, respuestaCompleta, emitter);
+                        },
                         error -> {
+                            if (!terminado.compareAndSet(false, true)) return;
                             System.err.println("❌ Error stream final: " + error.getMessage());
                             try {
                                 emitter.send(SseEmitter.event().data("[ERROR]"));
@@ -242,10 +251,15 @@ public class ChatbotService {
                             }
                         },
                         () -> {
+                            if (terminado.compareAndSet(false, true)) {
+                                try {
+                                    emitter.send(SseEmitter.event().data(respuestaCompleta.length() > 0 ? "[DONE]" : "[ERROR]"));
+                                    emitter.complete();
+                                } catch (Exception error) { emitter.completeWithError(error); }
+                            }
                             if (respuestaCompleta.length() > 0) {
                                 agregarAlHistorial(username, "assistant", respuestaCompleta.toString());
                             }
-                            System.out.println("\n✅ Stream completado");
                         }
                 );
     }
@@ -272,7 +286,6 @@ public class ChatbotService {
             if (!delta.isMissingNode() && !delta.isNull()) {
                 String chunk = delta.asText();
                 if (!chunk.isEmpty()) {
-                    System.out.print(chunk);
                     respuestaCompleta.append(chunk);
                     String encoded = Base64.getEncoder()
                             .encodeToString(chunk.getBytes(StandardCharsets.UTF_8));

@@ -4,12 +4,12 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-    <meta name="description" content="Lectio - Biblioteca virtual con IA RAG" />
+    <meta name="description" content="Lectio - Biblioteca virtual: libros, reservas y desafíos de lectura" />
     <title>Lectio — Biblioteca Virtual</title>
 
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+    
+    
+    <link data-consent-font="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
     <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
 
@@ -1137,8 +1137,19 @@
             html{scroll-behavior:auto}
         }
     </style>
-</head>
-<body>
+    <link rel="stylesheet" href="/estilos/lectio-ui.css">
+    <script src="/js/lectio-ui.js" defer></script>
+    <link rel="stylesheet" href="/estilos/lectio-responsive.css">
+<link rel="stylesheet" href="/estilos/lectio-experience.css">
+<link rel="stylesheet" href="/estilos/lectio-motion.css">
+<script src="/js/lectio-experience.js" defer></script>
+<link rel="stylesheet" href="/estilos/lectio-polish.css">
+<link rel="icon" type="image/svg+xml" href="/img/lectio-logo.svg">
+<link rel="stylesheet" href="/estilos/lectio-menu.css">
+<script src="/js/lectio-menu.js" defer></script>
+<script src="/js/lectio-chat-format.js" defer></script><link rel="stylesheet" href="/estilos/lectio-privacy.css">
+<script src="/js/lectio-privacy.js" defer></script><script src="/js/lectio-chat.js" defer></script></head>
+<body class="lectio-page" data-page="logiado">
 
 <div id="mensaje-flotante" class="mensaje-exito" aria-live="polite"></div>
 <button class="scroll-to-top" aria-label="Volver al inicio"><i class="fas fa-chevron-up"></i></button>
@@ -1161,7 +1172,7 @@
     <i class="fas fa-comment-dots"></i>
     <div class="chat-badge">1</div>
 </div>
-<div class="chat-tooltip">💬 ¡Pregúntame algo! (IA RAG)</div>
+<div class="chat-tooltip">Lio te acompaña</div>
 
 <div class="chat-window" id="chatWindow">
     <div class="chat-header">
@@ -1171,8 +1182,8 @@
                 <div class="chat-status-dot"></div>
             </div>
             <div class="chat-header-text">
-                <h3>Asistente Lectio</h3>
-                <span>RAG + Groq</span>
+                <h3>Lio · tu búho lector</h3>
+                <span>Asistente de biblioteca</span>
             </div>
         </div>
         <div class="chat-actions">
@@ -1196,9 +1207,9 @@
         <div class="chat-message">
             <div class="chat-avatar"><i class="fas fa-robot"></i></div>
             <div class="chat-bubble-msg">
-                <div class="rag-badge">🤖 RAG + GROQ</div>
+                <div class="rag-badge">Lectio</div>
                 <div class="md-content">
-                    <p>✨ ¡Hola! Soy el asistente inteligente de <strong>Lectio</strong>.</p>
+                    <p>¡Hola! Soy <strong>Lio</strong>, tu búho lector de Lectio.</p>
                     <p>Puedo ayudarte con tus <strong>reservas</strong>, <strong>multas</strong>, <strong>progreso de lectura</strong> y responder preguntas sobre la biblioteca.</p>
                 </div>
                 <span class="chat-time">Ahora</span>
@@ -1215,40 +1226,24 @@
 </div>
 
 <!-- ========== NAVBAR ========== -->
-<header class="nav" id="nav">
-    <div class="wrap nav-inner">
-
-        <a href="#inicio" class="brand">
-            <span class="sq"></span>
-            LECTIO <small>/ BIBLIOTECA</small>
-        </a>
-
-        <nav class="nav-links" id="navLinks">
-            <a href="#inicio" class="active">Inicio</a>
-            <a href="#coleccion">Colección</a>
-            <a href="#autores">Autores</a>
-            <a href="#centro-ayuda">Ayuda</a>
-            <a href="/api/libroVirtualesLog">Libros Virtuales</a>
-            <a href="/api/reservaLibro">Reserva</a>
-            <a href="/api/optimizador">Optimizador</a>
-            <a href="/api/inicio" class="desafio-link">
-                <span id="desafio-icon">
-                    <span class="desafio-icon-trophy">🏆</span>
-                    <span class="desafio-icon-text">Desafío</span>
-                </span>
-            </a>
-        </nav>
-
-        <div class="user-info">
-            <p>Hola, <strong th:text="${username}"></strong></p>
-            <button type="button" class="btn-salir" id="logoutBtn">Cerrar sesión</button>
-            <form action="/api/logout" method="post" id="logoutForm" style="display:none;"></form>
-        </div>
-
-        <button class="nav-toggle" id="navToggle" aria-label="Menú">
-            <i class="fas fa-bars"></i>
-        </button>
+<header class="experience-nav" id="nav">
+  <div class="experience-bar">
+    <a href="#inicio" aria-current="page" class="experience-brand"><img class="lectio-logo" src="/img/lectio-logo.svg" alt="" width="44" height="44">LECTIO <small>/ BIBLIOTECA</small></a>
+    <nav class="experience-links" id="experienceLinks" aria-label="Navegación principal">
+      <a href="/api/logiado">Inicio</a><a href="#coleccion">Colección</a>
+      <a href="#autores">Autores</a><a href="#centro-ayuda">Ayuda</a>
+      <a href="/api/libroVirtualesLog">Libros virtuales</a><a href="/api/reservaLibro">Reserva</a>
+      <a href="/api/optimizador">Optimizador</a>
+      <a href="/api/inicio" class="experience-challenge">✦ Desafío</a>
+    </nav>
+    <div class="experience-account">
+      <p th:if="${username != null}">Hola, <strong th:text="${username}"></strong></p>
+      <button type="button" id="logoutBtn">Cerrar sesión</button><form action="/api/logout" method="post" id="logoutForm" hidden></form>
     </div>
+    <button type="button" class="experience-toggle" id="experienceToggle" aria-controls="experienceLinks" aria-expanded="false" aria-label="Abrir menú">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path class="menu-line-top" d="M4 6H20"/><path class="menu-line-middle" d="M4 12H20"/><path class="menu-line-bottom" d="M4 18H20"/></svg>
+    </button>
+  </div>
 </header>
 
 <!-- ========== HERO ========== -->
@@ -1259,11 +1254,6 @@
          fetchpriority="high">
 
     <div class="wrap hero-inner">
-        <div class="hero-top">
-            <span><span class="dot"></span> En línea · Sesión activa</span>
-            <span>Est. 2010 — Biblioteca Digital</span>
-        </div>
-
         <div class="hero-copy">
             <span class="eyebrow">Bienvenido de vuelta</span>
             <h1 class="hero-title">¡Queremos <em>conocerte</em>!</h1>
@@ -1315,7 +1305,7 @@
                     <p>Explora los temas más importantes de la historia humana.</p>
                     <div class="book-foot">
                         <span class="author">Lectio</span>
-                        <a href="https://www.gutenberg.org/cache/epub/11036/pg11036-images.html" class="book-link" target="_blank" rel="noopener">
+                        <a href="/api/lecturas/conocimiento" class="book-link">
                             Leer <i class="fas fa-arrow-right"></i>
                         </a>
                     </div>
@@ -1338,7 +1328,7 @@
                     <p>Una mirada fascinante a los secretos del cosmos.</p>
                     <div class="book-foot">
                         <span class="author">Lectio</span>
-                        <a href="https://www.gutenberg.org/cache/epub/2591/pg2591-images.html" class="book-link" target="_blank" rel="noopener">
+                        <a href="/api/lecturas/universo" class="book-link">
                             Leer <i class="fas fa-arrow-right"></i>
                         </a>
                     </div>
@@ -1361,7 +1351,7 @@
                     <p>Relatos sobre las civilizaciones que marcaron la historia.</p>
                     <div class="book-foot">
                         <span class="author">Lectio</span>
-                        <a href="https://www.gutenberg.org/cache/epub/1064/pg1064-images.html" class="book-link" target="_blank" rel="noopener">
+                        <a href="/api/lecturas/civilizaciones" class="book-link">
                             Leer <i class="fas fa-arrow-right"></i>
                         </a>
                     </div>
@@ -1477,17 +1467,11 @@
     <div class="wrap">
         <div class="foot-top">
             <div class="foot-brand">
-                <a href="#inicio" class="brand">
-                    <span class="sq"></span>
+                <a href="#inicio" class="brand"><img class="lectio-logo" src="/img/lectio-logo.svg" alt="" width="44" height="44">
+                    
                     LECTIO <small>/ BIBLIOTECA</small>
                 </a>
-                <p>Tu biblioteca virtual de confianza. Miles de libros y recursos digitales al alcance de un clic.</p>
-                <div class="foot-social">
-                    <a href="#" aria-label="Facebook"><i class="fab fa-facebook-f"></i></a>
-                    <a href="#" aria-label="Twitter"><i class="fab fa-twitter"></i></a>
-                    <a href="#" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
-                    <a href="#" aria-label="YouTube"><i class="fab fa-youtube"></i></a>
-                </div>
+                <p>Libros, desafíos de lectura y reservas en un mismo lugar.</p>
             </div>
 
             <div class="foot-col">
@@ -1520,11 +1504,11 @@
         </div>
 
         <div class="foot-bot">
-            <span>© 2025 Lectio Biblioteca · Todos los derechos reservados</span>
+            <span>© 2026 Lectio Biblioteca · Todos los derechos reservados</span>
             <span>Hecho con <i class="fas fa-heart"></i> para lectores</span>
         </div>
     </div>
-</footer>
+<a href="/api/privacidad" class="privacy-footer-link">Privacidad y preferencias</a></footer>
 
 <script>
     // ========== MARKED CONFIG ==========
@@ -1542,7 +1526,7 @@
 
     // ========== NAVEGACIÓN ACTIVA ==========
     const sections = document.querySelectorAll("section");
-    const navLinks = document.querySelectorAll(".nav-links a[href^='#']");
+    const navLinks = document.querySelectorAll(".experience-links a[href^='#']");
     window.addEventListener("scroll", () => {
         let current = "";
         sections.forEach(s => {
@@ -1550,30 +1534,12 @@
                 current = s.getAttribute("id");
         });
         navLinks.forEach(a => {
-            a.classList.remove("active");
-            if (a.getAttribute("href") === "#" + current) a.classList.add("active");
+            a.removeAttribute("aria-current");
+            if (a.getAttribute("href") === "#" + current) a.setAttribute("aria-current", "page");
         });
     });
 
     // ========== MENÚ MÓVIL ==========
-    const navToggle = document.getElementById('navToggle');
-    const navLinksContainer = document.getElementById('navLinks');
-    const toggleIcon = navToggle.querySelector('i');
-
-    navToggle.addEventListener('click', () => {
-        navLinksContainer.classList.toggle('active');
-        const isOpen = navLinksContainer.classList.contains('active');
-        toggleIcon.className = isOpen ? 'fas fa-times' : 'fas fa-bars';
-        document.body.style.overflow = isOpen ? 'hidden' : '';
-    });
-    navLinksContainer.querySelectorAll('a').forEach(a => {
-        a.addEventListener('click', () => {
-            navLinksContainer.classList.remove('active');
-            toggleIcon.className = 'fas fa-bars';
-            document.body.style.overflow = '';
-        });
-    });
-
     // ========== SCROLL TO TOP ==========
     const scrollToTopBtn = document.querySelector('.scroll-to-top');
     window.addEventListener('scroll', () => scrollToTopBtn.classList.toggle('visible', pageYOffset > 300));
@@ -1624,266 +1590,9 @@
     logoutModal.addEventListener('click', e => { if (e.target === logoutModal) logoutModal.classList.remove('active'); });
     document.addEventListener('keydown', e => { if (e.key === 'Escape') logoutModal.classList.remove('active'); });
 
-    // ========== CHAT CON RAG ==========
-    const chatBubble  = document.getElementById('chatBubble');
-    const chatWindow  = document.getElementById('chatWindow');
-    const chatClose   = document.getElementById('chatClose');
-    const chatClear   = document.getElementById('chatClear');
-    const chatInput   = document.getElementById('chatInput');
-    const chatSend    = document.getElementById('chatSend');
-    const chatBody    = document.getElementById('chatBody');
-    const chatBadge   = chatBubble?.querySelector('.chat-badge');
-
-    let isWaiting = false;
-    let currentEvtSource = null;
-
-    function getTime() {
-        const n = new Date();
-        return `${n.getHours().toString().padStart(2,'0')}:${n.getMinutes().toString().padStart(2,'0')}`;
-    }
-
-    function escapeHtml(text) {
-        const div = document.createElement('div');
-        div.textContent = text;
-        return div.innerHTML;
-    }
-
-    function renderMarkdown(text) {
-        return (typeof marked !== 'undefined') ? marked.parse(text) : escapeHtml(text);
-    }
-
-    function decodeBase64(str) {
-        try {
-            return decodeURIComponent(
-                atob(str).split('').map(c => '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2)).join('')
-            );
-        } catch (e) {
-            return str;
-        }
-    }
-
-    function addUserMessage(text) {
-        const div = document.createElement('div');
-        div.className = 'chat-message user';
-        div.innerHTML = `
-            <div class="chat-bubble-msg">
-                <div class="md-content">${escapeHtml(text)}</div>
-                <span class="chat-time">${getTime()}</span>
-            </div>
-            <div class="chat-avatar"><i class="fas fa-user"></i></div>
-        `;
-        chatBody.appendChild(div);
-        chatBody.scrollTop = chatBody.scrollHeight;
-    }
-
-    function addBotMessage(text, isError = false) {
-        const div = document.createElement('div');
-        div.className = 'chat-message';
-        div.innerHTML = `
-            <div class="chat-avatar"><i class="fas fa-robot"></i></div>
-            <div class="chat-bubble-msg${isError ? ' chat-error' : ''}">
-                <div class="rag-badge">🤖 RAG + GROQ</div>
-                <div class="md-content">${isError ? escapeHtml(text) : renderMarkdown(text)}</div>
-                <span class="chat-time">${getTime()}</span>
-            </div>
-        `;
-        chatBody.appendChild(div);
-        chatBody.scrollTop = chatBody.scrollHeight;
-        return div;
-    }
-
-    function showTyping() {
-        if (document.getElementById('typingIndicator')) return;
-        const div = document.createElement('div');
-        div.className = 'chat-message';
-        div.id = 'typingIndicator';
-        div.innerHTML = `
-            <div class="chat-avatar"><i class="fas fa-robot"></i></div>
-            <div class="typing-indicator">
-                <span></span><span></span><span></span>
-            </div>
-        `;
-        chatBody.appendChild(div);
-        chatBody.scrollTop = chatBody.scrollHeight;
-    }
-
-    function hideTyping() {
-        const el = document.getElementById('typingIndicator');
-        if (el) el.remove();
-    }
-
-    function setWaiting(val) {
-        isWaiting = val;
-        chatSend.disabled = val;
-        if (val) {
-            chatInput.disabled = true;
-        } else {
-            chatInput.disabled = false;
-            chatInput.focus();
-        }
-    }
-
-    function closeChat() {
-        if (currentEvtSource) {
-            currentEvtSource.close();
-            currentEvtSource = null;
-        }
-        setWaiting(false);
-        chatWindow.classList.remove('active');
-        if (chatBadge) chatBadge.style.display = 'flex';
-    }
-
-    function clearChat() {
-        if (currentEvtSource) {
-            currentEvtSource.close();
-            currentEvtSource = null;
-        }
-        setWaiting(false);
-
-        fetch('/api/chat/limpiar', {
-            method: 'POST',
-            credentials: 'include'
-        })
-            .then(response => response.json())
-            .then(data => {
-                console.log('Historial limpiado:', data);
-            })
-            .catch(error => {
-                console.error('Error limpiando historial:', error);
-            });
-
-        chatBody.innerHTML = '<div class="chat-date-sep">Hoy</div>';
-        addBotMessage('Chat limpiado. ¿En qué te puedo ayudar?');
-    }
-
-    function sendMessageToRAG(message) {
-        if (isWaiting) return;
-        setWaiting(true);
-        showTyping();
-
-        if (currentEvtSource) {
-            currentEvtSource.close();
-            currentEvtSource = null;
-        }
-
-        const url = `/api/chat/rag?pregunta=${encodeURIComponent(message)}`;
-        const evtSource = new EventSource(url);
-        currentEvtSource = evtSource;
-
-        let streamingDiv = null;
-        let streamingContent = null;
-        let fullResponse = '';
-
-        evtSource.onmessage = function (event) {
-            const data = event.data;
-
-            if (data === '[DONE]') {
-                evtSource.close();
-                currentEvtSource = null;
-                if (streamingContent && fullResponse) {
-                    streamingContent.innerHTML = renderMarkdown(fullResponse);
-                    chatBody.scrollTop = chatBody.scrollHeight;
-                }
-                setWaiting(false);
-                return;
-            }
-
-            if (data === '[ERROR]') {
-                evtSource.close();
-                currentEvtSource = null;
-                hideTyping();
-                if (!fullResponse) {
-                    addBotMessage('El asistente RAG tuvo un error. Intenta de nuevo.', true);
-                }
-                setWaiting(false);
-                return;
-            }
-
-            const chunk = decodeBase64(data);
-
-            if (!streamingDiv) {
-                hideTyping();
-                const msgDiv = document.createElement('div');
-                msgDiv.className = 'chat-message';
-                msgDiv.innerHTML = `
-                    <div class="chat-avatar"><i class="fas fa-robot"></i></div>
-                    <div class="chat-bubble-msg">
-                        <div class="rag-badge">🤖 RAG + GROQ</div>
-                        <div class="md-content" id="streamingContent_${Date.now()}"></div>
-                        <span class="chat-time">${getTime()}</span>
-                    </div>
-                `;
-                chatBody.appendChild(msgDiv);
-                streamingDiv = msgDiv;
-                streamingContent = msgDiv.querySelector('.md-content');
-            }
-
-            fullResponse += chunk;
-            if (streamingContent) {
-                streamingContent.textContent = fullResponse;
-                chatBody.scrollTop = chatBody.scrollHeight;
-            }
-        };
-
-        evtSource.onerror = function () {
-            evtSource.close();
-            currentEvtSource = null;
-            hideTyping();
-            if (fullResponse && streamingContent) {
-                streamingContent.innerHTML = renderMarkdown(fullResponse);
-            } else if (!fullResponse) {
-                addBotMessage('⚠️ Error de conexión con RAG. Verifica tu red e intenta de nuevo.', true);
-            }
-            setWaiting(false);
-        };
-    }
-
-    function sendMessage() {
-        const msg = chatInput.value.trim();
-        if (!msg || isWaiting) return;
-        addUserMessage(msg);
-        chatInput.value = '';
-        sendMessageToRAG(msg);
-    }
-
-    chatBubble?.addEventListener('click', () => {
-        chatWindow.classList.add('active');
-        if (chatBadge) chatBadge.style.display = 'none';
-        chatInput.focus();
-    });
-
-    chatClose?.addEventListener('click', closeChat);
-    chatClear?.addEventListener('click', clearChat);
-    chatSend.addEventListener('click', sendMessage);
-    chatInput.addEventListener('keypress', e => { if (e.key === 'Enter') sendMessage(); });
-    chatWindow.addEventListener('click', e => e.stopPropagation());
-
-    document.addEventListener('keydown', (e) => {
-        if (e.key === 'Escape' && chatWindow.classList.contains('active')) {
-            closeChat();
-        }
-    });
-
-    document.querySelectorAll('.suggestion-chip').forEach(chip => {
-        chip.addEventListener('click', () => {
-            const text = chip.getAttribute('data-suggestion');
-            if (text && !isWaiting) {
-                chatInput.value = text;
-                sendMessage();
-            }
-        });
-    });
-
+    // Chat behavior is shared with catalogue and reservations.
     // ========== REVEAL ==========
-    const io = new IntersectionObserver((entries) => {
-        entries.forEach(e => {
-            if (e.isIntersecting){
-                e.target.classList.add('in');
-                io.unobserve(e.target);
-            }
-        });
-    }, { threshold:0.15, rootMargin:'0px 0px -60px 0px' });
-    document.querySelectorAll('.reveal, .stagger').forEach(el => io.observe(el));
+    // Entrance motion is managed by lectio-ui.js.
 </script>
 </body>
 </html>

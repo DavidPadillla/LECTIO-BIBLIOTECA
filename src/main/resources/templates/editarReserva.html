@@ -6,22 +6,24 @@
   <title>Editar Reserva - Administración Lectio</title>
   <link rel="stylesheet" href="/estilos/Admin.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
-</head>
-<body>
+    <link rel="stylesheet" href="/estilos/lectio-ui.css">
+    <script src="/js/lectio-ui.js" defer></script>
+    <link rel="stylesheet" href="/estilos/lectio-theme.css">
+    <link rel="stylesheet" href="/estilos/lectio-legacy.css">
+    <link rel="stylesheet" href="/estilos/lectio-responsive.css">
+<link rel="stylesheet" href="/estilos/lectio-experience.css">
+<link rel="stylesheet" href="/estilos/lectio-motion.css">
+<script src="/js/lectio-experience.js" defer></script>
+<link rel="stylesheet" href="/estilos/lectio-polish.css">
+<link rel="icon" type="image/svg+xml" href="/img/lectio-logo.svg">
+<link rel="stylesheet" href="/estilos/lectio-menu.css">
+<script src="/js/lectio-menu.js" defer></script>
+<link rel="stylesheet" href="/estilos/lectio-admin.css">
+<link rel="stylesheet" href="/estilos/lectio-privacy.css">
+<script src="/js/lectio-privacy.js" defer></script></head>
+<body class="lectio-page lectio-theme lectio-legacy admin-design" data-page="editarReserva">
 
-<header>
-  <nav>
-    <div class="logo">
-      <h1>BookLab - Admin</h1>
-    </div>
-    <ul class="nav-links">
-      <li><a href="/api/admin">Inicio</a></li>
-      <li><a href="/api/reservaAdmin">Reservas</a></li>
-      <li><a href="/api/usuariosAdmin">Usuarios</a></li>
-      <li><a href="/api/noAdminConfig">Configuración</a></li>
-    </ul>
-  </nav>
-</header>
+<header class="experience-nav" id="nav"><div class="experience-bar"><a href="/api/admin" class="experience-brand"><img class="lectio-logo" src="/img/lectio-logo.svg" alt="" width="44" height="44">LECTIO <small>/ ADMIN</small></a><nav class="experience-links" id="experienceLinks" aria-label="Administración"><a href="/api/admin">Panel</a><a href="/api/usuariosAdmin">Usuarios</a><a href="/api/addBook">Libros virtuales</a><a href="/api/addLibroF">Libros físicos</a><a href="/api/reservaAdmin">Reservas</a><a href="/api/dashboard">Análisis</a><details class="admin-more"><summary>Más</summary><div><a href="/api/devolucion">Devoluciones</a><a href="/api/multasAdmin">Multas</a><a href="/api/resenasAdmin">Reseñas</a><a href="/api/modeloPredictivo">Modelo predictivo</a></div></details></nav><div class="experience-account"><form action="/api/logout" method="post"><button type="submit">Cerrar sesión</button></form></div><button type="button" class="experience-toggle" id="experienceToggle" aria-controls="experienceLinks" aria-expanded="false" aria-label="Abrir menú"><svg viewBox="0 0 24 24" aria-hidden="true"><path class="menu-line-top" d="M4 6H20"/><path class="menu-line-middle" d="M4 12H20"/><path class="menu-line-bottom" d="M4 18H20"/></svg></button></div></header>
 
 <section class="section reserva" id="reserva">
   <h2 class="section-title">Editar Reserva</h2>
@@ -52,7 +54,7 @@
 
 <footer>
   <p>&copy; 2024 NexGet Biblioteca. Todos los derechos reservados.</p>
-</footer>
+<a href="/api/privacidad" class="privacy-footer-link">Privacidad y preferencias</a></footer>
 
 </body>
 </html>

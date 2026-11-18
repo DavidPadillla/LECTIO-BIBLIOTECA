@@ -2,9 +2,9 @@
 <html lang="es">
 <head>
   <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Desafío - Harry Potter</title>
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;500;700&display=swap" rel="stylesheet" />
+  <link data-consent-font="https://fonts.googleapis.com/css2?family=Poppins:wght@300;500;700&display=swap" rel="stylesheet" />
   <style>
     * {
       margin: 0;
@@ -410,10 +410,44 @@
       }
     }
   </style>
-</head>
-<body>
+    <link rel="stylesheet" href="/estilos/lectio-ui.css">
+    <script src="/js/lectio-ui.js" defer></script>
+    <link rel="stylesheet" href="/estilos/lectio-theme.css">
+    <link rel="stylesheet" href="/estilos/lectio-responsive.css">
+<link data-consent-font="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/estilos/lectio-experience.css">
+<link rel="stylesheet" href="/estilos/lectio-adventure.css">
+<link rel="stylesheet" href="/estilos/lectio-motion.css">
+<script src="/js/lectio-experience.js" defer></script>
+<link rel="stylesheet" href="/estilos/lectio-polish.css">
+<link rel="icon" type="image/svg+xml" href="/img/lectio-logo.svg">
+<link rel="stylesheet" href="/estilos/lectio-menu.css">
+<script src="/js/lectio-menu.js" defer></script>
+<link rel="stylesheet" href="/estilos/lectio-privacy.css">
+<script src="/js/lectio-privacy.js" defer></script></head>
+<body class="adventure lectio-theme lectio-challenge lectio-page" data-page="desafio_harrypotter" data-world="harrypotter">
 
-<header>
+<header class="experience-nav" id="nav">
+  <div class="experience-bar">
+    <a href="/api/logiado" class="experience-brand"><img class="lectio-logo" src="/img/lectio-logo.svg" alt="" width="44" height="44">LECTIO <small>/ BIBLIOTECA</small></a>
+    <nav class="experience-links" id="experienceLinks" aria-label="Navegación principal">
+      <a href="/api/logiado">Inicio</a><a href="/api/logiado#coleccion">Colección</a>
+      <a href="/api/logiado#autores">Autores</a><a href="/api/logiado#centro-ayuda">Ayuda</a>
+      <a href="/api/libroVirtualesLog">Libros virtuales</a><a href="/api/reservaLibro">Reserva</a>
+      <a href="/api/optimizador">Optimizador</a>
+      <a href="/api/inicio" class="experience-challenge" aria-current="page">✦ Desafío</a>
+    </nav>
+    <div class="experience-account">
+      <p th:if="${username != null}">Hola, <strong th:text="${username}"></strong></p>
+      <form action="/api/logout" method="post"><button type="submit">Cerrar sesión</button></form>
+    </div>
+    <button type="button" class="experience-toggle" id="experienceToggle" aria-controls="experienceLinks" aria-expanded="false" aria-label="Abrir menú">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path class="menu-line-top" d="M4 6H20"/><path class="menu-line-middle" d="M4 12H20"/><path class="menu-line-bottom" d="M4 18H20"/></svg>
+    </button>
+  </div>
+</header>
+
+<header class="challenge-old-header">
   <h1>Harry Potter y la piedra filosofal</h1>
   <button aria-label="Abrir menú" aria-expanded="false" aria-controls="sidebar" class="menu-toggle" id="menu-toggle" type="button">
     <span></span>
@@ -426,15 +460,16 @@
 
 <div class="layout">
   <main class="center" role="main">
+<nav class="journey-shortcuts" aria-label="Tu aventura"><a href="/api/inicio">← Desafíos</a><a href="/api/libros">Libros y progreso</a><a href="/api/historia_pensamiento">Pensadores</a></nav>
     <div class="portada" aria-label="Portada del libro Harry Potter y la piedra filosofal"></div>
     <h1>Harry Potter y la piedra filosofal</h1>
     <p>Un viaje mágico que te invita a descubrir el valor de la amistad, el coraje y la magia que vive en cada uno de nosotros.</p>
     <div class="capitulos" id="capitulosList"></div>
   </main>
 
-  <aside id="sidebar" class="sidebar hide" role="navigation" aria-label="Menú principal">
+  <aside id="sidebar" class="experience-old-sidebar sidebar hide" role="navigation" aria-label="Menú principal">
     <div>
-      <h2>LECTIO</h2>
+      <h2><img class="lectio-logo" src="/img/lectio-logo.svg" alt="" width="44" height="44">LECTIO</h2>
       <ul>
         <li onclick="location.href='/api/inicio'" tabindex="0" role="link" aria-label="Inicio">🏠 Inicio</li>
         <li onclick="location.href='/api/libros'" tabindex="0" role="link" aria-label="Biblioteca">📚 Biblioteca</li>
@@ -442,12 +477,13 @@
         <li onclick="location.href='/api/logiado'" tabindex="0" role="link" aria-label="Volver a Lectio">🏠 Volver a Lectio</li>
       </ul>
     </div>
-    <div class="footer">© 2025 Lectio</div>
+    <div class="footer">© 2026 Lectio</div>
   </aside>
 </div>
 
 <div id="modal" class="modal" onclick="if(event.target===this)closeModal()" role="dialog" aria-modal="true" aria-labelledby="modal-title" aria-describedby="modal-body">
   <div class="modal-content">
+    <button class="chapter-close" type="button" onclick="closeModal()" aria-label="Cerrar lectura">×</button>
     <h3 id="modal-title">Capítulo</h3>
     <div id="modal-body" style="white-space:pre-wrap;color:#333"></div>
     <button id="modal-button" type="button" onclick="handleModalButtonClick()">Completar</button>
@@ -526,80 +562,38 @@ Harry, Ron y Hermione descubrieron que la Piedra Filosofal, capaz de conceder la
   let currentReadingChapterIndex = -1;
   let capitulosLeidos = [];
 
-  async function cargarProgreso() {
-      try {
-          const response = await fetch('/api/progreso/mi-progreso', {
-              method: 'GET',
-              credentials: 'include'
-          });
-
-          if (!response.ok) {
-              desbloquearSiguientes();
-              return;
-          }
-
-          const data = await response.json();
-          console.log("📚 Progreso cargado:", data);
-
-          let capitulosMap = data.capitulosPorLibro;
-
-          if (typeof capitulosMap === 'string') {
-              try {
-                  capitulosMap = JSON.parse(capitulosMap);
-              } catch(e) {
-                  capitulosMap = {};
-              }
-          }
-
-          if (capitulosMap && capitulosMap[LIBRO_ID]) {
-              if (Array.isArray(capitulosMap[LIBRO_ID])) {
-                  capitulosLeidos = capitulosMap[LIBRO_ID];
-              } else if (typeof capitulosMap[LIBRO_ID] === 'object') {
-                  capitulosLeidos = Array.from(capitulosMap[LIBRO_ID]);
-              } else {
-                  capitulosLeidos = [];
-              }
-          } else {
-              capitulosLeidos = [];
-          }
-
-          console.log("📚 Capítulos leídos:", capitulosLeidos);
-          desbloquearSiguientes();
-
-      } catch (error) {
-          console.error("Error cargando progreso:", error);
-          desbloquearSiguientes();
-      }
+  let progresoCargado = false;
+  let guardandoProgreso = false;
+  function aplicarProgreso(data) {
+    let mapa = data.capitulosPorLibro;
+    if (typeof mapa === 'string') mapa = JSON.parse(mapa);
+    const numeros = mapa?.[LIBRO_ID] || [];
+    if (!Array.isArray(numeros)) throw new Error('Progreso no válido');
+    // The API stores chapter numbers (1-based); the UI uses array indices.
+    capitulosLeidos = [...new Set(numeros.map(Number).filter(n => Number.isInteger(n) && n >= 1 && n <= capitulos.length).map(n => n - 1))];
   }
-
+  async function cargarProgreso() {
+    if (guardandoProgreso) return;
+    try {
+      const response = await fetch('/api/progreso/mi-progreso', { credentials: 'include', cache: 'no-store' });
+      if (!response.ok) throw new Error('No se pudo cargar el progreso');
+      aplicarProgreso(await response.json());
+      progresoCargado = true;
+      desbloquearSiguientes();
+    } catch (error) {
+      mostrarMensaje('No pudimos cargar tu progreso. Vuelve a entrar al desafío para reintentarlo.');
+    }
+  }
   async function guardarProgreso(capituloIndex) {
-      try {
-          console.log("💾 Guardando capítulo:", capituloIndex + 1);
-
-          const response = await fetch('/api/progreso/guardar-capitulo', {
-              method: 'POST',
-              headers: { 'Content-Type': 'application/json' },
-              credentials: 'include',
-              body: JSON.stringify({
-                  libroId: LIBRO_ID,
-                  capitulo: capituloIndex + 1,
-                  totalCapitulos: capitulos.length
-              })
-          });
-
-          if (response.ok) {
-              const data = await response.json();
-              console.log("✅ Progreso guardado:", data);
-
-              if (capitulosLeidos.length === capitulos.length) {
-                  mostrarMensaje('🎉 ¡Felicitaciones! Has completado Harry Potter. +100 puntos ⚡');
-              }
-          } else {
-              console.error("❌ Error guardando progreso:", response.status);
-          }
-      } catch (error) {
-          console.error('Error guardando progreso:', error);
-      }
+    const response = await fetch('/api/progreso/guardar-capitulo', {
+      method: 'POST', credentials: 'include', keepalive: true,
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ libroId: LIBRO_ID, capitulo: capituloIndex + 1, totalCapitulos: capitulos.length })
+    });
+    if (!response.ok) throw new Error('No se pudo guardar');
+    const data = await response.json();
+    aplicarProgreso(data.progreso);
+    if (!capitulosLeidos.includes(capituloIndex)) throw new Error('Guardado no confirmado');
   }
 
   function renderChapters() {
@@ -624,14 +618,13 @@ Harry, Ron y Hermione descubrieron que la Piedra Filosofal, capaz de conceder la
   }
 
   function desbloquearSiguientes() {
-    const nodos = document.querySelectorAll('.capitulo-nodo');
-    nodos.forEach((n, i) => {
-      if (i === 0 || capitulosLeidos.includes(i)) {
-        n.classList.remove('locked');
-      } else if (i > 0 && capitulosLeidos.includes(i - 1)) {
-        n.classList.remove('locked');
-      }
-      if (capitulosLeidos.includes(i)) n.classList.add('leido');
+    document.querySelectorAll('.capitulo-nodo').forEach((n, i) => {
+      const leido = capitulosLeidos.includes(i);
+      const disponible = progresoCargado && (i === 0 || leido || capitulosLeidos.includes(i - 1));
+      n.classList.toggle('locked', !disponible);
+      n.classList.toggle('leido', leido);
+      n.setAttribute('aria-disabled', String(!disponible));
+      n.setAttribute('aria-label', 'Capítulo ' + (i + 1) + (leido ? ', completado' : disponible ? ', disponible' : ', bloqueado'));
     });
   }
 
@@ -640,7 +633,7 @@ Harry, Ron y Hermione descubrieron que la Piedra Filosofal, capaz de conceder la
     if (nodo.classList.contains('locked')) return;
 
     document.getElementById('modal-title').innerText = `Capítulo ${i + 1}`;
-    document.getElementById('modal-body').innerText = capitulos[i];
+    document.getElementById('modal-body').innerText = capitulos[i].replace(/\*\*/g, '');
     const modalButton = document.getElementById('modal-button');
     if (capitulosLeidos.includes(i)) {
       modalButton.innerText = 'Cerrar';
@@ -654,27 +647,34 @@ Harry, Ron y Hermione descubrieron que la Piedra Filosofal, capaz de conceder la
     currentReadingChapterIndex = i;
   }
 
-  function handleModalButtonClick() {
-    if (document.getElementById('modal-button').innerText === 'Completar') {
+  async function handleModalButtonClick() {
+    if (guardandoProgreso) return;
+    const i = currentReadingChapterIndex;
+    if (i < 0 || capitulosLeidos.includes(i)) { closeModal(); return; }
+    const button = document.getElementById('modal-button');
+    guardandoProgreso = true;
+    button.disabled = true;
+    button.textContent = 'Guardando…';
+    try {
+      await guardarProgreso(i);
+      desbloquearSiguientes();
+      mostrarMensaje(capitulosLeidos.length === capitulos.length ? '¡Libro completado! Tu progreso está guardado. +100 puntos' : mensajesMotivacionales[i % mensajesMotivacionales.length]);
+      guardandoProgreso = false;
       closeModal();
-    } else {
-      document.getElementById('modal').style.display = 'none';
+    } catch (error) {
+      mostrarMensaje('No se pudo guardar la lectura. Comprueba tu conexión y pulsa Completar para reintentarlo.');
+    } finally {
+      guardandoProgreso = false;
+      button.disabled = false;
+      button.textContent = 'Completar';
     }
   }
-
   function closeModal() {
+    if (guardandoProgreso) return;
     document.getElementById('modal').style.display = 'none';
-    const i = currentReadingChapterIndex;
-    if (i >= 0 && !capitulosLeidos.includes(i)) {
-      capitulosLeidos.push(i);
-      guardarProgreso(i);
-      mostrarMensaje(mensajesMotivacionales[i % mensajesMotivacionales.length]);
-      const nodo = document.querySelectorAll('.capitulo-nodo')[i];
-      nodo.classList.add('leido');
-      desbloquearSiguientes();
-    }
     currentReadingChapterIndex = -1;
   }
+  window.addEventListener('pageshow', event => { if (event.persisted) cargarProgreso(); });
 
   function mostrarMensaje(text) {
     const mensaje = document.getElementById('mensaje');

@@ -5,9 +5,9 @@
     <meta name="description" content="Lectio - Accede o crea tu cuenta en la biblioteca virtual" />
     <title>Acceso — Lectio Biblioteca</title>
 
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    
+    
+    <link data-consent-font="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
 
     <style>
@@ -64,73 +64,6 @@
         em{font-style:italic;color:var(--green-2)}
 
         /* ============================================================
-           PAGE LOADER
-        ============================================================ */
-        .page-loader{
-            position:fixed;
-            inset:0;
-            z-index:99999;
-            display:grid;
-            place-items:center;
-            background:var(--off-white);
-            transition:opacity .7s var(--ease), visibility .7s var(--ease);
-        }
-        .page-loader.hide{
-            opacity:0;
-            visibility:hidden;
-        }
-        .page-loader-inner{
-            display:flex;
-            flex-direction:column;
-            align-items:center;
-            gap:22px;
-            animation:loaderIn .5s var(--ease) both;
-        }
-        @keyframes loaderIn{
-            from{opacity:0;transform:translateY(6px)}
-            to{opacity:1;transform:translateY(0)}
-        }
-        .page-loader-brand{
-            display:inline-flex;
-            align-items:center;
-            gap:12px;
-            font-family:var(--mono);
-            font-weight:500;
-            font-size:.9rem;
-            letter-spacing:.2em;
-            text-transform:uppercase;
-            color:var(--green-deep);
-        }
-        .page-loader-brand .sq{
-            width:11px;height:11px;
-            background:var(--green-3);
-            animation:loaderSq 1.6s ease-in-out infinite;
-        }
-        @keyframes loaderSq{
-            0%,100%{transform:rotate(0) scale(1)}
-            50%{transform:rotate(45deg) scale(1.15)}
-        }
-        .page-loader-bar{
-            width:160px;
-            height:2px;
-            background:var(--line);
-            overflow:hidden;
-            position:relative;
-        }
-        .page-loader-bar::after{
-            content:'';
-            position:absolute;
-            inset:0;
-            background:var(--green);
-            transform-origin:left;
-            transform:scaleX(0);
-            animation:loaderBar 1s var(--ease) forwards;
-        }
-        @keyframes loaderBar{
-            to{transform:scaleX(1)}
-        }
-
-        /* ============================================================
            LAYOUT — 2 columnas
         ============================================================ */
         .login-page{
@@ -141,7 +74,7 @@
 
         .brand-panel,
         .form-panel{
-            opacity:0;
+            opacity:1;
         }
         body.ready .brand-panel{
             animation:panelEnterLeft .9s var(--ease) .1s forwards;
@@ -335,18 +268,18 @@
             opacity:0;
             pointer-events:none;
             transform:scale(.94) translateY(12px);
-            filter:blur(10px);
+            visibility:hidden;
             transition:
                 opacity .55s var(--ease),
                 transform .7s var(--ease),
-                filter .55s var(--ease);
-            will-change:transform, opacity, filter;
+                visibility .2s;
+
         }
         .form-slide.active{
             opacity:1;
             pointer-events:auto;
             transform:scale(1) translateY(0);
-            filter:blur(0);
+            visibility:visible;
         }
 
         .form-slide > *{
@@ -361,6 +294,17 @@
         .form-slide.active > *:nth-child(1){transition-delay:.08s}
         .form-slide.active > *:nth-child(2){transition-delay:.16s}
         .form-slide.active > *:nth-child(3){transition-delay:.24s}
+        .form-slide.active .fc-head{animation:loginRise .8s var(--ease) .32s both}
+        .form-slide.active .form > div{animation:loginRise .7s var(--ease) both}
+        .form-slide.active .form > div:nth-child(1){animation-delay:.45s}
+        .form-slide.active .form > div:nth-child(2){animation-delay:.54s}
+        .form-slide.active .form > div:nth-child(3){animation-delay:.63s}
+        .form-slide.active .form > .btn{animation:loginRise .7s var(--ease) .72s both}
+        .form-slide.active .fc-links{animation:loginRise .7s var(--ease) .82s both}
+        @keyframes loginRise{
+            from{opacity:0;transform:translateY(22px)}
+            to{opacity:1;transform:translateY(0)}
+        }
 
         .fc-head{margin-bottom:32px}
         .fc-head h1{
@@ -564,6 +508,13 @@
             width:120px;
             height:120px;
             margin:0 auto 28px;
+            opacity:0;
+            transform:scale(.88);
+            transition:opacity .25s ease, transform .25s var(--ease);
+        }
+        .success-overlay.show .success-check{
+            opacity:1;
+            transform:scale(1);
         }
         .success-check::before{
             content:'';
@@ -595,14 +546,10 @@
             stroke:var(--green);
             stroke-width:3;
             stroke-linecap:round;
-            stroke-dasharray:283;
-            stroke-dashoffset:283;
             transform:rotate(-90deg);
             transform-origin:50px 50px;
-            transition:stroke-dashoffset .9s var(--ease) .15s;
-        }
-        .success-overlay.show .success-circle{
-            stroke-dashoffset:0;
+            stroke-dasharray:283;
+            stroke-dashoffset:283;
         }
         .success-path{
             fill:none;
@@ -610,12 +557,24 @@
             stroke-width:5;
             stroke-linecap:round;
             stroke-linejoin:round;
-            stroke-dasharray:60;
-            stroke-dashoffset:60;
-            transition:stroke-dashoffset .5s var(--ease) 1s;
+            stroke-dasharray:62;
+            stroke-dashoffset:62;
+        }
+        .success-overlay.show .success-circle{
+            animation:drawCircle .8s var(--ease) .15s forwards;
         }
         .success-overlay.show .success-path{
-            stroke-dashoffset:0;
+            animation:drawCheck .45s var(--ease) .85s forwards;
+        }
+        @keyframes drawCircle{to{stroke-dashoffset:0}}
+        @keyframes drawCheck{to{stroke-dashoffset:0}}
+        .success-overlay.show .success-check{
+            animation:successPop .65s var(--ease) forwards;
+        }
+        @keyframes successPop{
+            0%{transform:scale(.75)}
+            65%{transform:scale(1.08)}
+            100%{transform:scale(1)}
         }
 
         .success-title{
@@ -626,7 +585,7 @@
             margin-bottom:12px;
             opacity:0;
             transform:translateY(8px);
-            transition:opacity .5s var(--ease) 1.3s, transform .5s var(--ease) 1.3s;
+            transition:opacity .35s var(--ease) .12s, transform .35s var(--ease) .12s;
         }
         .success-overlay.show .success-title{
             opacity:1;
@@ -642,7 +601,7 @@
             color:var(--muted);
             margin-bottom:22px;
             opacity:0;
-            transition:opacity .5s var(--ease) 1.5s;
+            transition:opacity .35s var(--ease) .22s;
         }
         .success-overlay.show .success-text{opacity:1}
 
@@ -650,7 +609,7 @@
             display:inline-flex;
             gap:6px;
             opacity:0;
-            transition:opacity .5s var(--ease) 1.6s;
+            transition:opacity .35s var(--ease) .3s;
         }
         .success-overlay.show .success-dots{opacity:1}
         .success-dots span{
@@ -691,25 +650,22 @@
         }
         @media(prefers-reduced-motion:reduce){
             *{animation-duration:.01ms!important;transition-duration:.01ms!important}
-            .page-loader{display:none}
             .brand-panel,.form-panel{opacity:1}
         }
     </style>
-</head>
-<body>
-
-<!-- ============================================================
-     PAGE LOADER — transición de entrada
-============================================================ -->
-<div class="page-loader" id="pageLoader" aria-hidden="true">
-    <div class="page-loader-inner">
-        <div class="page-loader-brand">
-            <span class="sq"></span>
-            LECTIO
-        </div>
-        <div class="page-loader-bar"></div>
-    </div>
-</div>
+    <link rel="stylesheet" href="/estilos/lectio-ui.css">
+    <script src="/js/lectio-ui.js" defer></script>
+    <link rel="stylesheet" href="/estilos/lectio-responsive.css">
+<link rel="stylesheet" href="/estilos/lectio-experience.css">
+<link rel="stylesheet" href="/estilos/lectio-motion.css">
+<script src="/js/lectio-experience.js" defer></script>
+<link rel="stylesheet" href="/estilos/lectio-polish.css">
+<link rel="icon" type="image/svg+xml" href="/img/lectio-logo.svg">
+<link rel="stylesheet" href="/estilos/lectio-menu.css">
+<script src="/js/lectio-menu.js" defer></script>
+<link rel="stylesheet" href="/estilos/lectio-privacy.css">
+<script src="/js/lectio-privacy.js" defer></script></head>
+<body class="lectio-page" data-page="login">
 
 <main class="login-page">
 
@@ -719,8 +675,8 @@
             <span></span><span></span><span></span>
         </div>
 
-        <a href="/api/index" class="bp-brand">
-            <span class="sq"></span>
+        <a href="/api/index" class="bp-brand"><img class="lectio-logo" src="/img/lectio-logo.svg" alt="" width="44" height="44">
+            
             LECTIO
         </a>
 
@@ -729,7 +685,7 @@
             <h2 class="bp-quote" data-quote="register">Empieza tu <em>viaje</em> como lector.</h2>
         </div>
 
-        <div class="bp-foot">En línea</div>
+        
     </section>
 
     <!-- PANEL DERECHO -->
@@ -755,7 +711,7 @@
                         <div>
                             <div class="input-wrap" id="loginUsernameWrap">
                                 <i class="fas fa-user"></i>
-                                <input type="text" name="username" id="loginUsername" placeholder="Usuario" required autocomplete="username">
+                                <input type="text" name="username" id="loginUsername" placeholder="Usuario" aria-label="Usuario" required autocomplete="username">
                             </div>
                             <span class="field-error" id="loginUsernameError">Usuario requerido</span>
                         </div>
@@ -763,7 +719,7 @@
                         <div>
                             <div class="input-wrap" id="loginPasswordWrap">
                                 <i class="fas fa-lock"></i>
-                                <input type="password" name="password" id="loginPassword" placeholder="Contraseña" required autocomplete="current-password">
+                                <input type="password" name="password" id="loginPassword" placeholder="Contraseña" aria-label="Contraseña" required autocomplete="current-password">
                                 <button type="button" class="toggle-pass" data-toggle="loginPassword" aria-label="Mostrar contraseña">
                                     <i class="fas fa-eye"></i>
                                 </button>
@@ -784,7 +740,7 @@
                 </div>
 
                 <!-- SLIDE REGISTER -->
-                <div class="form-slide register-slide" data-tab="register" aria-hidden="true">
+                <div class="form-slide register-slide" data-tab="register" aria-hidden="true" inert>
                     <div class="fc-head">
                         <h1>Crea tu <em>cuenta</em>.</h1>
                         <p>Solo toma un momento.</p>
@@ -794,7 +750,7 @@
                         <div>
                             <div class="input-wrap" id="regUsernameWrap">
                                 <i class="fas fa-user"></i>
-                                <input type="text" name="username" id="regUsername" placeholder="Usuario" required autocomplete="username">
+                                <input type="text" name="username" id="regUsername" placeholder="Usuario" aria-label="Usuario" required autocomplete="username">
                             </div>
                             <span class="field-error" id="regUsernameError">Usuario requerido</span>
                         </div>
@@ -802,7 +758,7 @@
                         <div>
                             <div class="input-wrap" id="regPasswordWrap">
                                 <i class="fas fa-lock"></i>
-                                <input type="password" name="password" id="regPassword" placeholder="Contraseña" required autocomplete="new-password">
+                                <input type="password" name="password" id="regPassword" placeholder="Contraseña" aria-label="Contraseña" required autocomplete="new-password">
                                 <button type="button" class="toggle-pass" data-toggle="regPassword" aria-label="Mostrar contraseña">
                                     <i class="fas fa-eye"></i>
                                 </button>
@@ -813,7 +769,7 @@
                         <div>
                             <div class="input-wrap" id="regConfirmWrap">
                                 <i class="fas fa-lock"></i>
-                                <input type="password" id="regConfirm" placeholder="Confirmar contraseña" required autocomplete="new-password">
+                                <input type="password" id="regConfirm" placeholder="Confirmar contraseña" aria-label="Confirmar contraseña" required autocomplete="new-password">
                                 <button type="button" class="toggle-pass" data-toggle="regConfirm" aria-label="Mostrar contraseña">
                                     <i class="fas fa-eye"></i>
                                 </button>
@@ -821,7 +777,8 @@
                             <span class="field-error" id="regConfirmError">Confirma tu contraseña</span>
                         </div>
 
-                        <button type="submit" class="btn btn-solid" id="registerBtn">
+                        <label class="terms-accept"><input type="checkbox" name="aceptaTerminos" value="true" required> <span>He leído y acepto los <a href="/api/terminos" target="_blank" rel="noopener">términos y condiciones</a> de Lectio.</span></label>
+<button type="submit" class="btn btn-solid" id="registerBtn">
                             <span>Crear cuenta</span> <i class="fas fa-arrow-right"></i>
                         </button>
                     </form>
@@ -846,8 +803,8 @@
     <div class="success-card">
         <div class="success-check">
             <svg viewBox="0 0 100 100" aria-hidden="true">
-                <circle class="success-circle" cx="50" cy="50" r="45"></circle>
-                <path class="success-path" d="M30 52 L45 67 L72 38"></path>
+                <circle class="success-circle" pathLength="1" cx="50" cy="50" r="45"></circle>
+                <path class="success-path" pathLength="1" d="M30 52 L45 67 L72 38"></path>
             </svg>
         </div>
         <h2 class="success-title" id="successTitle">¡Cuenta <em>creada</em>!</h2>
@@ -859,25 +816,7 @@
 </div>
 
 <script>
-    /* ============================================================
-       PAGE LOADER
-    ============================================================ */
-    (function(){
-        const loader = document.getElementById('pageLoader');
-        function finishLoad(){
-            setTimeout(() => {
-                document.body.classList.add('ready');
-                loader.classList.add('hide');
-                setTimeout(() => loader.remove(), 800);
-            }, 500);
-        }
-        if (document.readyState === 'complete') {
-            finishLoad();
-        } else {
-            window.addEventListener('load', finishLoad);
-            setTimeout(finishLoad, 1800);
-        }
-    })();
+    document.body.classList.add('ready');
 
     document.addEventListener('DOMContentLoaded', function () {
 
@@ -899,6 +838,7 @@
                 const isActive = s.dataset.tab === tab;
                 s.classList.toggle('active', isActive);
                 s.setAttribute('aria-hidden', isActive ? 'false' : 'true');
+                s.inert = !isActive;
             });
             quotes.forEach(q => {
                 q.classList.toggle('active', q.dataset.quote === tab);
@@ -938,8 +878,8 @@
         const successMsg = urlParams.get('success');
         const logoutMsg  = urlParams.get('logout');
 
-        if (errorMsg)   showAlert(errorMsg, 'error');
-        if (successMsg) showAlert(successMsg, 'success');
+        if (errorMsg)   showAlert(errorMsg === 'true' ? 'Usuario o contraseña incorrectos' : errorMsg, 'error');
+        if (successMsg) showAlert(successMsg === 'true' ? 'Cuenta creada. Ya puedes iniciar sesión.' : successMsg, 'success');
         if (logoutMsg)  showAlert('Sesión cerrada correctamente', 'success');
 
         if (errorMsg || successMsg || logoutMsg) {
@@ -953,19 +893,16 @@
            MOSTRAR OVERLAY DE ÉXITO (reutilizable)
            opts = { title, text, url, delay }
         ============================================================ */
-        function showSuccessOverlay(opts) {
-            successTitle.innerHTML = opts.title || '¡Listo!';
-            successText.textContent = opts.text || 'Redirigiendo';
-            // Reiniciar animaciones SVG (por si se reusa)
-            successOverlay.classList.remove('show');
-            void successOverlay.offsetWidth;
+        function showSuccess(opts) {
+            successTitle.innerHTML = opts.title;
+            successText.textContent = opts.text;
             successOverlay.classList.add('show');
             successOverlay.setAttribute('aria-hidden', 'false');
-
-            setTimeout(() => {
-                window.location.href = opts.url;
-            }, opts.delay || 2800);
+            window.setTimeout(() => {
+                if (opts.url) window.location.assign(opts.url);
+            }, opts.delay || 1100);
         }
+
 
         /* ============================================================
            VALIDACIÓN + ENVÍO — LOGIN
@@ -988,87 +925,20 @@
             });
         });
 
-        loginForm.addEventListener('submit', async (e) => {
-            e.preventDefault();
-
-            /* --- Validación --- */
-            let ok = true;
-            if (loginUsername.value.trim() === '') {
-                loginUsernameError.classList.add('show');
-                loginUsernameWrap.classList.add('has-error');
-                ok = false;
-            }
-            if (loginPassword.value.trim() === '') {
-                loginPasswordError.classList.add('show');
-                loginPasswordWrap.classList.add('has-error');
-                ok = false;
-            }
-            if (!ok) {
-                showAlert('Completa todos los campos', 'error');
+        loginForm.addEventListener('submit', (event) => {
+            if (!loginUsername.value.trim() || !loginPassword.value) {
+                event.preventDefault();
+                showAlert('Completa el usuario y la contraseña', 'error');
                 return;
             }
-
-            /* --- Bloquear botón mientras envía --- */
+            event.preventDefault();
             loginBtn.disabled = true;
-            const originalBtn = loginBtn.innerHTML;
-            loginBtn.innerHTML = '<span>Entrando…</span> <i class="fas fa-circle-notch fa-spin"></i>';
-
-            try {
-                const response = await fetch(loginForm.action, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-                    body: new URLSearchParams(new FormData(loginForm)),
-                    credentials: 'include'
-                });
-
-                if (response.redirected) {
-                    const finalUrl = new URL(response.url);
-                    const errParam = finalUrl.searchParams.get('error');
-
-                    if (errParam) {
-                        /* --- Error desde el backend --- */
-                        showAlert(errParam, 'error');
-                        loginBtn.disabled = false;
-                        loginBtn.innerHTML = originalBtn;
-                    } else {
-                        /* --- ÉXITO → animación de bienvenida + redirigir --- */
-                        showSuccessOverlay({
-                            title: '¡Bienvenido <em>de nuevo</em>!',
-                            text: 'Entrando a tu biblioteca',
-                            url: response.url,
-                            delay: 2600
-                        });
-                    }
-                } else if (response.ok) {
-                    /* --- OK sin redirect: revisamos si hay JSON con error --- */
-                    let result = null;
-                    try { result = await response.json(); } catch(_) {}
-
-                    if (result && result.error) {
-                        showAlert(result.error, 'error');
-                        loginBtn.disabled = false;
-                        loginBtn.innerHTML = originalBtn;
-                    } else {
-                        /* --- Asumimos éxito --- */
-                        showSuccessOverlay({
-                            title: '¡Bienvenido <em>de nuevo</em>!',
-                            text: 'Entrando a tu biblioteca',
-                            url: '/api/inicio',
-                            delay: 2600
-                        });
-                    }
-                } else {
-                    /* --- Status no 2xx: probable credenciales inválidas --- */
-                    showAlert('Usuario o contraseña incorrectos', 'error');
-                    loginBtn.disabled = false;
-                    loginBtn.innerHTML = originalBtn;
-                }
-            } catch (err) {
-                console.error(err);
-                showAlert('Error de conexión con el servidor', 'error');
-                loginBtn.disabled = false;
-                loginBtn.innerHTML = originalBtn;
-            }
+            showSuccess({
+                title: 'Entrando a <em>Lectio</em>.',
+                text: 'Validando tus credenciales',
+                delay: 800
+            });
+            window.setTimeout(() => loginForm.submit(), 800);
         });
 
         /* ============================================================
@@ -1095,93 +965,23 @@
             });
         });
 
-        registerForm.addEventListener('submit', async (e) => {
-            e.preventDefault();
-
-            /* --- Validación --- */
-            let ok = true;
-            if (regUsername.value.trim() === '') {
-                regUsernameError.classList.add('show');
-                regUsernameWrap.classList.add('has-error');
-                ok = false;
+        registerForm.addEventListener('submit', (event) => {
+            if (!registerForm.querySelector('[name="aceptaTerminos"]').checked) {
+                event.preventDefault(); showAlert("Debes aceptar los términos y condiciones para crear tu cuenta.", "error"); return;
             }
-            if (regPassword.value.trim() === '') {
-                regPasswordError.classList.add('show');
-                regPasswordWrap.classList.add('has-error');
-                ok = false;
-            }
-            if (regConfirm.value.trim() === '') {
-                regConfirmError.textContent = 'Confirma tu contraseña';
-                regConfirmError.classList.add('show');
-                regConfirmWrap.classList.add('has-error');
-                ok = false;
-            } else if (regPassword.value !== regConfirm.value) {
-                regConfirmError.textContent = 'Las contraseñas no coinciden';
-                regConfirmError.classList.add('show');
-                regConfirmWrap.classList.add('has-error');
-                ok = false;
-            }
-
-            if (!ok) {
-                showAlert('Corrige los errores del formulario', 'error');
+            if (!regUsername.value.trim() || regPassword.value.length < 6 || regPassword.value !== regConfirm.value) {
+                event.preventDefault();
+                showAlert('Escribe un usuario y una contraseña de al menos 6 caracteres. Las contraseñas deben coincidir.', 'error');
                 return;
             }
-
-            /* --- Bloquear botón --- */
+            event.preventDefault();
             registerBtn.disabled = true;
-            const originalBtn = registerBtn.innerHTML;
-            registerBtn.innerHTML = '<span>Creando cuenta…</span> <i class="fas fa-circle-notch fa-spin"></i>';
-
-            try {
-                const response = await fetch(registerForm.action, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-                    body: new URLSearchParams(new FormData(registerForm)),
-                    credentials: 'include'
-                });
-
-                if (response.redirected) {
-                    const finalUrl = new URL(response.url);
-                    const errParam = finalUrl.searchParams.get('error');
-
-                    if (errParam) {
-                        showAlert(errParam, 'error');
-                        registerBtn.disabled = false;
-                        registerBtn.innerHTML = originalBtn;
-                    } else {
-                        showSuccessOverlay({
-                            title: '¡Cuenta <em>creada</em>!',
-                            text: 'Redirigiendo a inicio de sesión',
-                            url: response.url,
-                            delay: 2800
-                        });
-                    }
-                } else if (response.ok) {
-                    let result = null;
-                    try { result = await response.json(); } catch(_) {}
-                    if (result && result.error) {
-                        showAlert(result.error, 'error');
-                        registerBtn.disabled = false;
-                        registerBtn.innerHTML = originalBtn;
-                    } else {
-                        showSuccessOverlay({
-                            title: '¡Cuenta <em>creada</em>!',
-                            text: 'Redirigiendo a inicio de sesión',
-                            url: '/api/login?success=' + encodeURIComponent('Registro exitoso. Por favor inicia sesión.'),
-                            delay: 2800
-                        });
-                    }
-                } else {
-                    showAlert('No se pudo crear la cuenta. Inténtalo de nuevo.', 'error');
-                    registerBtn.disabled = false;
-                    registerBtn.innerHTML = originalBtn;
-                }
-            } catch (err) {
-                console.error(err);
-                showAlert('Error de conexión con el servidor', 'error');
-                registerBtn.disabled = false;
-                registerBtn.innerHTML = originalBtn;
-            }
+            showSuccess({
+                title: 'Creando tu <em>cuenta</em>.',
+                text: 'Enviando tus datos de registro',
+                delay: 900
+            });
+            window.setTimeout(() => registerForm.submit(), 900);
         });
 
         /* ============================================================
@@ -1189,7 +989,11 @@
         ============================================================ */
         function showAlert(message, type) {
             const icon = type === 'error' ? 'fa-circle-exclamation' : 'fa-circle-check';
-            alertBox.innerHTML = `<div class="alert alert-${type}"><i class="fas ${icon}"></i> ${message}</div>`;
+            const alert = document.createElement('div');
+            alert.className = 'alert alert-' + type;
+            alert.setAttribute('role', 'alert');
+            alert.textContent = message;
+            alertBox.replaceChildren(alert);
             setTimeout(() => { alertBox.innerHTML = ''; }, 5000);
         }
     });

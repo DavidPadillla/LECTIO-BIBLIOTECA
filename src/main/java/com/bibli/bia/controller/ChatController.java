@@ -32,7 +32,8 @@ public class ChatController {
             produces = MediaType.TEXT_EVENT_STREAM_VALUE
     )
     public SseEmitter preguntarRag(
-            @RequestParam String pregunta
+            @RequestParam String pregunta,
+            jakarta.servlet.http.HttpServletResponse response
     ) {
 
         String username = obtenerUsernameActual();
@@ -41,30 +42,25 @@ public class ChatController {
             username = "anonimo";
         }
 
-        System.out.println("==================================");
-        System.out.println("NUEVA PREGUNTA RAG");
-        System.out.println("Usuario: " + username);
-        System.out.println(" Pregunta: " + pregunta);
-        System.out.println("==================================");
 
-        SseEmitter emitter = new SseEmitter(0L);
-
-        emitter.onCompletion(() ->
-                System.out.println(" SSE completado")
-        );
+        response.setHeader("Cache-Control", "no-cache, no-transform");
+        response.setHeader("X-Accel-Buffering", "no");
+        SseEmitter emitter = new SseEmitter(60000L);
+        try {
+            emitter.send(SseEmitter.event().comment("connected"));
+        } catch (java.io.IOException error) {
+            emitter.completeWithError(error);
+            return emitter;
+        }
 
         emitter.onTimeout(() -> {
 
-            System.out.println(" Timeout SSE");
 
             emitter.complete();
         });
 
         emitter.onError((e) -> {
 
-            System.out.println(
-                    "Error SSE: " + e.getMessage()
-            );
 
             emitter.completeWithError(e);
         });
@@ -99,10 +95,6 @@ public class ChatController {
 
         chatbotService.limpiarHistorial(username);
 
-        System.out.println(
-                " Historial limpiado para usuario: "
-                        + username
-        );
 
         return ResponseEntity.ok(
                 Map.of(

@@ -55,7 +55,6 @@ public class RetrievalService {
                 }
             }
 
-            System.out.println(" Documentos cargados: " + chunks.size());
 
         } catch (Exception e) {
             System.err.println(" Error cargando documentos: " + e.getMessage());

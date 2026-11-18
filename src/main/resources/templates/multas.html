@@ -6,7 +6,7 @@
   <title> Lectio - Gestión de Multas</title>
   <link rel="stylesheet" href="/estilos/logiado.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;500;700&display=swap" rel="stylesheet">
+  <link data-consent-font="https://fonts.googleapis.com/css2?family=Poppins:wght@300;500;700&display=swap" rel="stylesheet">
   <style>
     /* Estilos específicos para la página de multas */
     .multas-container {
@@ -201,8 +201,21 @@
         to {opacity: 0;}
     }
   </style>
-</head>
-<body>
+    <link rel="stylesheet" href="/estilos/lectio-ui.css">
+    <script src="/js/lectio-ui.js" defer></script>
+    <link rel="stylesheet" href="/estilos/lectio-theme.css">
+    <link rel="stylesheet" href="/estilos/lectio-legacy.css">
+    <link rel="stylesheet" href="/estilos/lectio-responsive.css">
+<link rel="stylesheet" href="/estilos/lectio-experience.css">
+<link rel="stylesheet" href="/estilos/lectio-motion.css">
+<script src="/js/lectio-experience.js" defer></script>
+<link rel="stylesheet" href="/estilos/lectio-polish.css">
+<link rel="icon" type="image/svg+xml" href="/img/lectio-logo.svg">
+<link rel="stylesheet" href="/estilos/lectio-menu.css">
+<script src="/js/lectio-menu.js" defer></script>
+<link rel="stylesheet" href="/estilos/lectio-privacy.css">
+<script src="/js/lectio-privacy.js" defer></script></head>
+<body class="lectio-page lectio-theme lectio-legacy" data-page="multas">
 
 
 <div id="mensaje-flotante" class="mensaje-exito"></div>
@@ -226,37 +239,39 @@
 
   <input type="text" id="buscador" class="buscador-multas" placeholder="Buscar por nombre de usuario..." />
 
-  <table class="tabla-multas">
-    <thead>
-    <tr>
-      <th>Nombre</th>
-      <th>Libro</th>
-      <th>Fecha Reserva</th>
-      <th>Fecha Devolución</th>
-      <th>Días Retraso</th>
-      <th>Valor Multa</th>
-      <th>Estado</th>
-      <th>Acciones</th>
-    </tr>
-    </thead>
-    <tbody>
-    <tr th:each="multa : ${multas}" th:data-id="${multa.id}">
-      <td th:text="${multa.nombreUsuario}">Nombre</td>
-      <td th:text="${multa.libro}">Libro</td>
-      <td th:text="${multa.fechaReserva}">Fecha Reserva</td>
-      <td th:text="${multa.fechaDevolucion}">Fecha Devolución</td>
-      <td th:text="${multa.diasRetraso}">Días Retraso</td>
-      <td th:text="${'$' + multa.valorMulta}">Valor Multa</td>
-      <td class="estado-pago"
-          th:text="${multa.pagada ? 'Pagada' : 'Pendiente'}"
-          th:classappend="${multa.pagada ? 'pagada' : 'no-pagada'}"></td>
-      <td>
-        <button class="btn-accion btn-pagar" th:disabled="${multa.pagada}">Pagar</button>
-        <button class="btn-accion btn-eliminar">Eliminar</button>
-      </td>
-    </tr>
-    </tbody>
-  </table>
+  <div class="lectio-table-scroll">
+    <table class="tabla-multas">
+      <thead>
+      <tr>
+        <th>Nombre</th>
+        <th>Libro</th>
+        <th>Fecha Reserva</th>
+        <th>Fecha Devolución</th>
+        <th>Días Retraso</th>
+        <th>Valor Multa</th>
+        <th>Estado</th>
+        <th>Acciones</th>
+      </tr>
+      </thead>
+      <tbody>
+      <tr th:each="multa : ${multas}" th:data-id="${multa.id}">
+        <td th:text="${multa.nombreUsuario}">Nombre</td>
+        <td th:text="${multa.libro}">Libro</td>
+        <td th:text="${multa.fechaReserva}">Fecha Reserva</td>
+        <td th:text="${multa.fechaDevolucion}">Fecha Devolución</td>
+        <td th:text="${multa.diasRetraso}">Días Retraso</td>
+        <td th:text="${'$' + multa.valorMulta}">Valor Multa</td>
+        <td class="estado-pago"
+            th:text="${multa.pagada ? 'Pagada' : 'Pendiente'}"
+            th:classappend="${multa.pagada ? 'pagada' : 'no-pagada'}"></td>
+        <td>
+          <button class="btn-accion btn-pagar" th:disabled="${multa.pagada}">Pagar</button>
+          <button class="btn-accion btn-eliminar">Eliminar</button>
+        </td>
+      </tr>
+      </tbody>
+    </table>
+  </div>
 </section>
 
 
@@ -282,7 +297,7 @@
 
 <footer>
   <p>&copy; 2024 BookLab Biblioteca. Todos los derechos reservados.</p>
-</footer>
+<a href="/api/privacidad" class="privacy-footer-link">Privacidad y preferencias</a></footer>
 
 <script>
   // Filtrar la tabla por nombre del usuario que tiene la multa

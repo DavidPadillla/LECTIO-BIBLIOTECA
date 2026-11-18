@@ -121,7 +121,17 @@ public class WebController {
     @PostMapping("/register")
     public String procesarRegistro(@RequestParam String username,
                                    @RequestParam String password,
+                                   @RequestParam(defaultValue = "false") boolean aceptaTerminos,
                                    RedirectAttributes redirectAttributes) {
+        if (!aceptaTerminos) {
+            redirectAttributes.addAttribute("error", "Debes aceptar los términos y condiciones");
+            return "redirect:/api/register";
+        }
+        username = username.trim();
+        if (username.isEmpty()) {
+            redirectAttributes.addAttribute("error", "Escribe un nombre de usuario");
+            return "redirect:/api/register";
+        }
         if (usuarioRepository.findByUsername(username).isPresent()) {
             redirectAttributes.addAttribute("error", "El nombre de usuario ya está en uso");
             return "redirect:/api/register";
@@ -151,14 +161,16 @@ public class WebController {
     }
 
     @GetMapping("/inicio")
-    public String inicio() {
+    public String inicio(Model model) {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        model.addAttribute("username", auth.getName());
         return "inicio";
     }
 
     @GetMapping("/libroVirtualesLog")
     public String listarLibros(Model model) {
+        model.addAttribute("username", SecurityContextHolder.getContext().getAuthentication().getName());
         List<LibroModel> libros = libroService.obtenerTodosLosLibros();
-        System.out.println("📚 TOTAL LIBROS EN BD: " + libros.size());
 
         model.addAttribute("libros", libros);
         model.addAttribute("librosNovela", libroService.obtenerLibrosPorCategoria("Novelas"));
@@ -170,8 +182,15 @@ public class WebController {
         return "libroVirtualesLog";
     }
 
+    @GetMapping("/lector-demo")
+    public String lectorDemo(Model model, Authentication authentication) {
+        model.addAttribute("username", authentication.getName());
+        return "lector-demo";
+    }
+
     @GetMapping("/reservaLibro")
     public String reservaLibroUsuario(@RequestParam(value = "categoria", required = false) String categoria, Model model) {
+        model.addAttribute("username", SecurityContextHolder.getContext().getAuthentication().getName());
         model.addAttribute("categorias", List.of("Novelas", "Ciencia", "Historia", "Arte", "Fantasía", "Filosofía"));
         if (categoria != null) {
             model.addAttribute("librosPorCategoria", libroFisicoService.obtenerLibrosFisicosPorCategoria(categoria));
@@ -270,7 +289,6 @@ public class WebController {
             model.addAttribute("totalResenas", totalResenas);
             model.addAttribute("estadisticasCategorias", estadisticasCategorias);
 
-            System.out.println("✅ Dashboard cargado con éxito");
             return "dashboard";
 
         } catch (Exception e) {
@@ -287,7 +305,6 @@ public class WebController {
     public String usuariosAdmin(Model model) {
         try {
             List<Usuario> usuarios = usuarioService.obtenerTodosLosUsuarios();
-            System.out.println("✅ Total usuarios cargados: " + usuarios.size());
             model.addAttribute("usuarios", usuarios);
         } catch (Exception e) {
             System.err.println("❌ Error al cargar usuarios: " + e.getMessage());
@@ -344,12 +361,7 @@ public class WebController {
     @GetMapping("/cargarLibrosPorCategoria")
     @ResponseBody
     public List<LibroFisicoModel> cargarLibrosPorCategoria(@RequestParam String categoria) {
-        System.out.println(" Buscando libros de categoría: " + categoria);
         List<LibroFisicoModel> libros = libroFisicoService.obtenerLibrosFisicosPorCategoria(categoria);
-        System.out.println(" Encontrados: " + libros.size());
-        for (LibroFisicoModel libro : libros) {
-            System.out.println("   - " + libro.getTitulo() + " (Stock: " + libro.getStock() + ")");
-        }
         return libros;
     }
 
@@ -509,7 +521,6 @@ public class WebController {
     public String multasAdmin(Model model) {
         try {
             List<MultaModel> multas = multaService.obtenerTodasMultas();
-            System.out.println("✅ Total multas cargadas: " + multas.size());
             model.addAttribute("multas", multas);
         } catch (Exception e) {
             System.err.println("❌ Error al cargar multas: " + e.getMessage());
@@ -540,7 +551,6 @@ public class WebController {
     public String resenasAdmin(Model model) {
         try {
             List<ResenaModel> resenas = resenaService.obtenerTodasLasResenas();
-            System.out.println("✅ Total reseñas cargadas: " + resenas.size());
             model.addAttribute("resenas", resenas);
         } catch (Exception e) {
             System.err.println("❌ Error al cargar reseñas: " + e.getMessage());
@@ -610,7 +620,7 @@ public class WebController {
 
     @GetMapping("/mensajeRegistro")
     public String mensajeRegistro() {
-        return "mensajeRegistro";
+        return "MensajeR";
     }
 
     @GetMapping("/mensajeReserva")
@@ -630,7 +640,7 @@ public class WebController {
 
     @GetMapping("/noAdminConfig")
     public String noAdminConfig() {
-        return "noAdminConfig";
+        return "NOadminConfig";
     }
 
     @GetMapping("/access-denied")
@@ -640,12 +650,12 @@ public class WebController {
 
     @GetMapping("/carrito")
     public String carrito() {
-        return "carrito";
+        return "redirect:/api/reservaLibro";
     }
 
     @GetMapping("/pago")
     public String pagoPage() {
-        return "pago";
+        return "Pago";
     }
 
     @GetMapping("/conocerte")
@@ -663,18 +673,28 @@ public class WebController {
         return "historia_pensamiento";
     }
 
+    @GetMapping({"/desafio_jardin", "/desafio_reloj", "/desafio_isla"})
+    public String nuevosDesafios(Model model, jakarta.servlet.http.HttpServletRequest request) {
+        model.addAttribute("username", SecurityContextHolder.getContext().getAuthentication().getName());
+        String path = request.getServletPath();
+        return path.substring(path.lastIndexOf('/') + 1);
+    }
+
     @GetMapping("/desafio_principito")
-    public String desafio_principito() {
+    public String desafio_principito(Model model) {
+        model.addAttribute("username", SecurityContextHolder.getContext().getAuthentication().getName());
         return "desafio_principito";
     }
 
     @GetMapping("/desafio_harrypotter")
-    public String desafio_harrypotter() {
+    public String desafio_harrypotter(Model model) {
+        model.addAttribute("username", SecurityContextHolder.getContext().getAuthentication().getName());
         return "desafio_harrypotter";
     }
 
     @GetMapping("/desafio_1984")
-    public String desafio_1984() {
+    public String desafio_1984(Model model) {
+        model.addAttribute("username", SecurityContextHolder.getContext().getAuthentication().getName());
         return "desafio_1984";
     }
 
@@ -683,13 +703,15 @@ public class WebController {
         List<LibroModel> libros = libroService.obtenerLibrosPorCategoria(categoria);
         model.addAttribute("libros", libros);
         model.addAttribute("categoria", categoria);
-        return "librosPorCategoria";
+        return "libroVirtualesLog";
     }
 
     @PostMapping("/cancelar-reserva/{id}")
-    public String cancelarReservaLibroFisico(@PathVariable String id, Model model) {
+    public String cancelarReservaLibroFisico(@PathVariable String id, Model model, Authentication authentication) {
         try {
-            reservaService.cancelarReserva(id);
+            boolean administrador = authentication != null && authentication.getAuthorities().stream()
+                    .anyMatch(authority -> authority.getAuthority().equals("ROLE_ADMIN"));
+            reservaService.cancelarReserva(id, authentication != null ? authentication.getName() : null, administrador);
             model.addAttribute("mensaje", "Reserva cancelada. El stock se ha restablecido.");
         } catch (IllegalStateException | IllegalArgumentException e) {
             model.addAttribute("mensaje", "Error al cancelar la reserva: " + e.getMessage());

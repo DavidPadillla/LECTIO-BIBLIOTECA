@@ -4,16 +4,19 @@
     <meta charset="UTF-8"/>
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
     <title>Optimizador de Préstamos – Lectio</title>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;500;700&display=swap" rel="stylesheet"/>
+    <link data-consent-font="https://fonts.googleapis.com/css2?family=Poppins:wght@300;500;700&display=swap" rel="stylesheet"/>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css"/>
     <link rel="stylesheet" href="/estilos/logiado.css"/>
+    <link rel="stylesheet" href="/estilos/lectio-ui.css"/>
+    <link rel="stylesheet" href="/estilos/lectio-theme.css"/>
+    <link rel="stylesheet" href="/estilos/lectio-responsive.css"/>
     <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
     <style>
         /* ========== RESPONSIVE NAVBAR ========== */
-        @media (max-width: 768px) {
+        @media (max-width: 1100px) {
             .navbar { flex-direction: column; align-items: flex-start; padding: 15px 20px; position: relative; }
             .nav-links {
-                position: fixed; top: 0; right: -100%; width: 70%; height: 100vh;
+                position: fixed; top: 0; right: -100%; width: min(360px, 86vw); height: 100dvh;
                 background: #fff; flex-direction: column; justify-content: flex-start;
                 padding-top: 80px; transition: right 0.3s ease;
                 box-shadow: -5px 0 15px rgba(0,0,0,0.1); z-index: 999; overflow-y: auto;
@@ -40,18 +43,18 @@
             .overlay.active { display: block; opacity: 1; }
             .user-info { margin-top: 10px; flex-direction: column; align-items: flex-start; width: 100%; padding-left: 20px; font-weight: 500; color: #2c3e50; }
         }
-        @media (min-width: 769px) { .menu-toggle, .overlay { display: none !important; } }
+        @media (min-width: 1101px) { .menu-toggle, .overlay { display: none !important; } }
 
         /* ========== SCROLL TO TOP ========== */
         .scroll-to-top {
             position: fixed; bottom: 30px; right: 30px; width: 50px; height: 50px;
-            background: #27ae60; color: white; border: none; border-radius: 50%;
+            background: #1a6b45; color: white; border: none; border-radius: 50%;
             cursor: pointer; display: flex; align-items: center; justify-content: center;
             font-size: 1.2rem; z-index: 99; opacity: 0; visibility: hidden;
             transition: all 0.3s ease; box-shadow: 0 4px 12px rgba(0,0,0,0.15);
         }
         .scroll-to-top.visible { opacity: 1; visibility: visible; }
-        .scroll-to-top:hover { background: #219150; transform: translateY(-3px); }
+        .scroll-to-top:hover { background: #0f4a2e; transform: translateY(-3px); }
 
         /* ========== LOGOUT MODAL ========== */
         .logout-modal {
@@ -78,6 +81,28 @@
         .logout-confirm:hover { background: #c0392b; transform: translateY(-2px); }
         .logout-cancel { background: #95a5a6; }
         .logout-cancel:hover { background: #7f8c8d; transform: translateY(-2px); }
+        .lectio-page .nav { position:fixed; inset:0 0 auto; z-index:300; background:rgba(255,255,255,.82); backdrop-filter:blur(18px); border-bottom:1px solid #d4e5d9; }
+        .lectio-page .nav .nav-inner { max-width:1240px; margin:auto; padding:18px 28px; display:grid; grid-template-columns:auto 1fr auto; align-items:center; gap:28px; }
+        .lectio-page .nav .brand { display:flex; align-items:center; gap:10px; color:#173b29; font:700 .85rem monospace; letter-spacing:.1em; text-decoration:none; }
+        .lectio-page .nav .brand .sq { width:10px; height:10px; background:#34a06c; display:inline-block; transform:rotate(45deg); }
+        .lectio-page .nav .brand small { color:#34a06c; font-weight:500; }
+        .lectio-page .nav .nav-links { display:flex; justify-content:center; gap:22px; flex-wrap:wrap; }
+        .lectio-page .nav .nav-links a { color:#385846; text-decoration:none; font-size:.86rem; padding:6px 0; transition:color .3s ease, transform .3s ease; }
+        .lectio-page .nav .nav-links a:hover { color:#1a6b45; transform:translateY(-2px); }
+        .lectio-page .nav .user-info { display:flex; align-items:center; gap:12px; color:#2d4a3a; white-space:nowrap; }
+        .lectio-page .nav .user-info p { margin:0; font-size:.85rem; }
+        .lectio-page .nav .user-info form { margin:0; }
+        .lectio-page .nav .btn-salir { padding:8px 12px; color:#1a6b45; background:#fff; border:1px solid #bcd8c6; border-radius:4px; cursor:pointer; }
+        .lectio-page .nav .nav-toggle { display:none; }
+        .lectio-page .hero-opt { padding-top:120px; }
+        @media (max-width:1100px) {
+            .lectio-page .nav .nav-inner { display:flex; justify-content:space-between; }
+            .lectio-page .nav .nav-toggle { display:grid; place-items:center; width:42px; height:42px; border:1px solid #c9ded0; background:#fff; color:#173b29; }
+            .lectio-page .nav .nav-links { position:fixed; inset:0 0 0 auto; width:min(340px,88vw); padding:90px 28px 30px; background:#fff; flex-direction:column; justify-content:flex-start; gap:8px; transform:translateX(100%); transition:transform .35s ease; box-shadow:-18px 0 40px rgba(13,43,29,.16); }
+            .lectio-page .nav .nav-links.open { transform:none; }
+            .lectio-page .nav .user-info { margin-left:auto; }
+        }
+        @media (max-width:560px) { .lectio-page .nav .brand small, .lectio-page .nav .user-info p { display:none; } }
 
         /* ========== DESAFIO LINK ========== */
         .desafio-link {
@@ -210,7 +235,7 @@
         .chat-footer { padding: 12px 16px; background: white; border-top: 1px solid #f1f5f9; display: flex; gap: 8px; align-items: center; }
         .chat-input-wrap { flex: 1; display: flex; align-items: center; background: #f8fafc; border: 1.5px solid #e2e8f0; border-radius: 24px; padding: 0 14px; transition: all 0.3s ease; }
         .chat-input-wrap:focus-within { border-color: #7c3aed; box-shadow: 0 0 0 3px rgba(124,58,237,0.1); background: white; }
-        .chat-footer input { flex: 1; padding: 10px 0; border: none; background: transparent; outline: none; font-size: 0.84rem; color: #334155; font-family: 'Poppins', sans-serif; }
+        .chat-footer input { flex: 1; padding: 10px 0; border: none; background: transparent; outline: none; font-size: 0.84rem; color: #334155; font-family: 'Inter', sans-serif; }
         .chat-footer input::placeholder { color: #94a3b8; }
         .chat-send-btn { background: linear-gradient(135deg, #7c3aed 0%, #a855f7 100%); border: none; width: 42px; height: 42px; border-radius: 50%; color: white; cursor: pointer; transition: all 0.3s ease; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
         .chat-send-btn:hover { transform: scale(1.08); box-shadow: 0 4px 14px rgba(124,58,237,0.45); }
@@ -232,34 +257,47 @@
         .hero-opt { background: linear-gradient(135deg, #1a1a2e 0%, #16213e 60%, #0f3460 100%); padding: 60px 60px 50px; position: relative; overflow: hidden; }
         .hero-opt::before { content: ''; position: absolute; width: 400px; height: 400px; background: radial-gradient(circle, rgba(39,174,96,0.15) 0%, transparent 70%); top: -100px; right: -80px; border-radius: 50%; }
         .hero-inner { position: relative; z-index: 1; max-width: 700px; }
-        .hero-badge { display: inline-flex; align-items: center; gap: 8px; background: rgba(39,174,96,0.15); border: 1px solid rgba(39,174,96,0.3); color: #27ae60; padding: 6px 18px; border-radius: 25px; font-size: 0.8rem; font-weight: 600; letter-spacing: 0.05em; text-transform: uppercase; margin-bottom: 18px; }
+        .hero-badge { display: inline-flex; align-items: center; gap: 8px; background: rgba(39,174,96,0.15); border: 1px solid rgba(39,174,96,0.3); color: #1a6b45; padding: 6px 18px; border-radius: 25px; font-size: 0.8rem; font-weight: 600; letter-spacing: 0.05em; text-transform: uppercase; margin-bottom: 18px; }
         .hero-opt h2 { font-size: 2rem; font-weight: 700; color: #fff; margin-bottom: 10px; line-height: 1.25; }
-        .hero-opt h2 span { color: #27ae60; }
+        .hero-opt h2 span { color: #1a6b45; }
         .hero-opt p { color: rgba(255,255,255,0.65); font-size: 0.95rem; line-height: 1.7; max-width: 520px; }
         .page-content { max-width: 780px; margin: 0 auto; padding: 40px 20px 60px; }
         .card { background: #fff; border-radius: 12px; box-shadow: 0 6px 16px rgba(0,0,0,0.08); margin-bottom: 24px; }
         .card-body { padding: 28px 32px; }
         .card-title { font-size: 0.95rem; font-weight: 700; color: #2c3e50; display: flex; align-items: center; gap: 9px; margin-bottom: 16px; }
-        .card-title i { color: #27ae60; font-size: 1rem; }
-        .formula-box { background: #f0fdf4; border-left: 4px solid #27ae60; border-radius: 8px; padding: 14px 18px; font-family: 'Courier New', monospace; font-size: 0.82rem; color: #1a5c38; line-height: 2.0; }
+        .card-title i { color: #1a6b45; font-size: 1rem; }
+        .formula-box { background: #f0fdf4; border-left: 4px solid #1a6b45; border-radius: 8px; padding: 14px 18px; font-family: 'Courier New', monospace; font-size: 0.82rem; color: #1a5c38; line-height: 2.0; }
         .r-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 14px; }
         .r-item { background: #f8fffe; border: 1px solid #d5f5e3; border-radius: 6px; padding: 8px 12px; font-family: 'Courier New', monospace; font-size: 0.75rem; color: #1a5c38; }
-        .r-num { color: #27ae60; font-weight: 700; margin-right: 4px; }
+        .r-num { color: #1a6b45; font-weight: 700; margin-right: 4px; }
         .section-label { font-size: 0.72rem; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: #7f8c8d; margin-bottom: 20px; }
         .field-group { margin-bottom: 20px; }
         .field-label { display: flex; align-items: center; gap: 7px; font-weight: 600; font-size: 0.9rem; color: #2c3e50; margin-bottom: 7px; }
-        .field-label i { color: #27ae60; font-size: 0.9rem; }
-        .field-input, select.field-input { width: 100%; padding: 11px 14px; border: 2px solid #e5e7eb; border-radius: 8px; font-family: 'Poppins', sans-serif; font-size: 0.95rem; font-weight: 500; color: #2c3e50; background: #fafafa; transition: border-color 0.2s, box-shadow 0.2s; outline: none; appearance: none; }
-        .field-input:focus, select.field-input:focus { border-color: #27ae60; background: #fff; box-shadow: 0 0 0 3px rgba(39,174,96,0.12); }
+        .field-label i { color: #1a6b45; font-size: 0.9rem; }
+        .field-input, select.field-input { width: 100%; padding: 11px 14px; border: 2px solid #e5e7eb; border-radius: 8px; font-family: 'Inter', sans-serif; font-size: 0.95rem; font-weight: 500; color: #2c3e50; background: #fafafa; transition: border-color 0.2s, box-shadow 0.2s; outline: none; appearance: none; }
+        .field-input:focus, select.field-input:focus { border-color: #1a6b45; background: #fff; box-shadow: 0 0 0 3px rgba(39,174,96,0.12); }
         .field-input.is-invalid { border-color: #e74c3c; }
         .field-hint { font-size: 0.78rem; color: #7f8c8d; margin-top: 5px; }
         .invalid-msg { color: #e74c3c; font-size: 0.78rem; margin-top: 4px; display: flex; align-items: center; gap: 5px; }
-        .btn-submit { width: 100%; background: #27ae60; color: #fff; border: none; border-radius: 8px; padding: 13px 28px; font-family: 'Poppins', sans-serif; font-weight: 700; font-size: 1rem; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 10px; transition: background 0.3s, transform 0.2s; box-shadow: 0 6px 15px rgba(39,174,96,0.3); margin-top: 6px; }
-        .btn-submit:hover { background: #219150; transform: translateY(-2px); }
+        .btn-submit { width: 100%; background: #1a6b45; color: #fff; border: none; border-radius: 8px; padding: 13px 28px; font-family: 'Inter', sans-serif; font-weight: 700; font-size: 1rem; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 10px; transition: background 0.3s, transform 0.2s; box-shadow: 0 6px 15px rgba(39,174,96,0.3); margin-top: 6px; }
+        .btn-submit:hover { background: #0f4a2e; transform: translateY(-2px); }
         @media (max-width: 768px) { .hero-opt { padding: 40px 20px 35px; } .hero-opt h2 { font-size: 1.5rem; } .card-body { padding: 20px; } .r-grid { grid-template-columns: 1fr; } }
     </style>
-</head>
-<body>
+    <link rel="stylesheet" href="/estilos/lectio-ui.css">
+    <script src="/js/lectio-ui.js" defer></script>
+    <link rel="stylesheet" href="/estilos/lectio-theme.css">
+    <link rel="stylesheet" href="/estilos/lectio-responsive.css">
+<link data-consent-font="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/estilos/lectio-experience.css">
+<link rel="stylesheet" href="/estilos/lectio-motion.css">
+<script src="/js/lectio-experience.js" defer></script>
+<link rel="stylesheet" href="/estilos/lectio-polish.css">
+<link rel="icon" type="image/svg+xml" href="/img/lectio-logo.svg">
+<link rel="stylesheet" href="/estilos/lectio-menu.css">
+<script src="/js/lectio-menu.js" defer></script>
+<script src="/js/lectio-chat-format.js" defer></script><link rel="stylesheet" href="/estilos/lectio-privacy.css">
+<script src="/js/lectio-privacy.js" defer></script></head>
+<body class="lectio-theme lectio-page" data-page="formulario">
 
 <div id="mensaje-flotante" class="mensaje-exito" aria-live="polite"></div>
 <button class="scroll-to-top" aria-label="Volver al inicio"><i class="fas fa-chevron-up"></i></button>
@@ -292,8 +330,8 @@
                 <div class="chat-status-dot"></div>
             </div>
             <div class="chat-header-text">
-                <h3>Asistente Lectio</h3>
-                <span>🟢 En línea · Con IA</span>
+                <h3>Lio · tu búho lector</h3>
+                <span>Asistente disponible</span>
             </div>
         </div>
         <div class="chat-actions">
@@ -312,7 +350,7 @@
             <div class="chat-avatar"><i class="fas fa-robot"></i></div>
             <div class="chat-bubble-msg">
                 <div class="md-content">
-                    <p>✨ ¡Hola! Soy el asistente de <strong>Lectio</strong>. ¿En qué te ayudo hoy?</p>
+                    <p>¡Hola! Soy <strong>Lio</strong>, tu búho lector de Lectio. ¿En qué te ayudo hoy?</p>
                 </div>
                 <span class="chat-time">Ahora</span>
             </div>
@@ -327,30 +365,24 @@
 </div>
 
 <!-- ========== NAVBAR ========== -->
-<header class="navbar">
-    <div class="logo"><h1>Lectio <span>Biblioteca</span></h1></div>
-    <button class="menu-toggle" aria-label="Abrir menú"><i class="fas fa-bars"></i></button>
-    <div class="overlay"></div>
-    <nav class="nav-links">
-        <a href="/api/logiado">Inicio</a>
-        <a href="#coleccion">Colección</a>
-        <a href="#autores">Autores</a>
-        <a href="#centro-ayuda">Ayuda</a>
-        <a href="/api/libroVirtualesLog">Libros Virtuales</a>
-        <a href="/api/reservaLibro">Reserva</a>
-        <a href="/api/optimizador" class="active">Optimizador</a>
-        <a href="/api/inicio" class="desafio-link">
-            <span id="desafio-icon">
-                <span>🏆</span>
-                <span>Desafío</span>
-            </span>
-        </a>
+<header class="experience-nav" id="nav">
+  <div class="experience-bar">
+    <a href="/api/logiado" class="experience-brand"><img class="lectio-logo" src="/img/lectio-logo.svg" alt="" width="44" height="44">LECTIO <small>/ BIBLIOTECA</small></a>
+    <nav class="experience-links" id="experienceLinks" aria-label="Navegación principal">
+      <a href="/api/logiado">Inicio</a><a href="/api/logiado#coleccion">Colección</a>
+      <a href="/api/logiado#autores">Autores</a><a href="/api/logiado#centro-ayuda">Ayuda</a>
+      <a href="/api/libroVirtualesLog">Libros virtuales</a><a href="/api/reservaLibro">Reserva</a>
+      <a href="/api/optimizador" aria-current="page">Optimizador</a>
+      <a href="/api/inicio" class="experience-challenge">✦ Desafío</a>
     </nav>
-    <div class="user-info">
-        <p>Hola, <strong th:text="${username}"></strong></p>
-        <button type="button" class="btn-salir" id="logoutBtn">Cerrar sesión</button>
-        <form action="/api/logout" method="post" id="logoutForm" style="display:none;"></form>
+    <div class="experience-account">
+      <p th:if="${username != null}">Hola, <strong th:text="${username}"></strong></p>
+      <form action="/api/logout" method="post"><button type="submit">Cerrar sesión</button></form>
     </div>
+    <button type="button" class="experience-toggle" id="experienceToggle" aria-controls="experienceLinks" aria-expanded="false" aria-label="Abrir menú">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path class="menu-line-top" d="M4 6H20"/><path class="menu-line-middle" d="M4 12H20"/><path class="menu-line-bottom" d="M4 18H20"/></svg>
+    </button>
+  </div>
 </header>
 
 <!-- ========== HERO ========== -->
@@ -358,13 +390,15 @@
     <div class="hero-inner">
         <div class="hero-badge"><i class="fas fa-chart-line"></i> Investigación de Operaciones</div>
         <h2>Optimizador de <span>Préstamos</span></h2>
-        <p>Modelo de Programación Lineal Entera Mixta que maximiza el aprovechamiento de tu tiempo de lectura con 9 restricciones activas.</p>
+        <p>Elige cuánto tiempo tienes y qué te interesa leer. Te proponemos un plan con los libros disponibles.</p>
     </div>
 </section>
 
 <!-- ========== CONTENIDO ========== -->
 <div class="page-content">
 
+    <details class="model-details">
+        <summary>Cómo se calcula el plan de lectura</summary>
     <div class="card">
         <div class="card-body">
             <div class="card-title"><i class="fas fa-square-root-alt"></i> Modelo matemático – MILP Extendido</div>
@@ -388,10 +422,12 @@
         </div>
     </div>
 
+    </details>
+
     <div class="card">
         <div class="card-body">
-            <div class="card-title"><i class="fas fa-sliders-h"></i> Parámetros del usuario</div>
-            <p class="section-label">Ingresa los valores para ejecutar el modelo</p>
+            <div class="card-title"><i class="fas fa-sliders-h"></i> Tu tiempo y tus preferencias</div>
+            <p class="section-label">Cuéntanos cómo quieres organizar tu lectura</p>
 
             <form th:action="@{/api/optimizador}" th:object="${solicitud}" method="post">
 
@@ -459,7 +495,7 @@
     </div>
 </div>
 
-<footer><p>&copy; 2025 Lectio Biblioteca. Todos los derechos reservados.</p></footer>
+<footer><p>&copy; 2026 Lectio Biblioteca. Todos los derechos reservados.</p><a href="/api/privacidad" class="privacy-footer-link">Privacidad y preferencias</a></footer>
 
 <script>
     if (typeof marked !== 'undefined') { marked.setOptions({ breaks: true, gfm: true }); }
@@ -482,6 +518,14 @@
             this.classList.remove('active');
             document.body.style.overflow = '';
             menuToggle.querySelector('i').classList.replace('fa-times', 'fa-bars');
+        });
+    }
+    const editorialToggle = document.getElementById('navToggle');
+    const editorialLinks = document.getElementById('navLinks');
+    if (editorialToggle && editorialLinks) {
+        editorialToggle.addEventListener('click', () => {
+            editorialLinks.classList.toggle('open');
+            editorialToggle.setAttribute('aria-expanded', editorialLinks.classList.contains('open'));
         });
     }
 
@@ -512,7 +556,7 @@
 
     function getTime() { const n = new Date(); return `${n.getHours().toString().padStart(2,'0')}:${n.getMinutes().toString().padStart(2,'0')}`; }
     function escapeHtml(text) { const div = document.createElement('div'); div.textContent = text; return div.innerHTML; }
-    function renderMarkdown(text) { return (typeof marked !== 'undefined') ? marked.parse(text) : escapeHtml(text); }
+    function renderMarkdown(text) { return window.lectioMarkdown(text); }
     function decodeBase64(str) { try { return decodeURIComponent(atob(str).split('').map(c => '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2)).join('')); } catch (e) { return str; } }
 
     function addUserMessage(text) {
@@ -546,13 +590,14 @@
     function sendMessageToGroq(message) {
         if (isWaiting) return; setWaiting(true); showTyping();
         if (currentEvtSource) { currentEvtSource.close(); currentEvtSource = null; }
-        const url = `/api/chat/groq?pregunta=${encodeURIComponent(message)}`;
+        const url = `/api/chat/rag?pregunta=${encodeURIComponent(message)}`;
         const evtSource = new EventSource(url); currentEvtSource = evtSource;
         let streamingDiv = null, streamingContent = null, fullResponse = '';
         evtSource.onmessage = function (event) {
             const data = event.data;
-            if (data === '[DONE]') { evtSource.close(); currentEvtSource = null; if (streamingContent && fullResponse) { streamingContent.innerHTML = renderMarkdown(fullResponse); chatBody.scrollTop = chatBody.scrollHeight; } setWaiting(false); return; }
-            if (data === '[ERROR]') { evtSource.close(); currentEvtSource = null; hideTyping(); if (!fullResponse) addBotMessage('⚠️ El asistente tuvo un error. Intenta de nuevo.', true); setWaiting(false); return; }
+            if (data === '[DONE]') {
+                hideTyping(); evtSource.close(); currentEvtSource = null; if (streamingContent && fullResponse) { streamingContent.innerHTML = renderMarkdown(fullResponse); chatBody.scrollTop = chatBody.scrollHeight; } setWaiting(false); return; }
+            if (data === '[ERROR]') { evtSource.close(); currentEvtSource = null; hideTyping(); if (!fullResponse) { addBotMessage('No se pudo completar la respuesta.', true); window.lectioChatRetry(chatBody, () => sendMessageToGroq(message)); } setWaiting(false); return; }
             const chunk = decodeBase64(data);
             if (!streamingDiv) {
                 hideTyping();
@@ -561,9 +606,9 @@
                 chatBody.appendChild(msgDiv); streamingDiv = msgDiv; streamingContent = msgDiv.querySelector('.md-content');
             }
             fullResponse += chunk;
-            if (streamingContent) { streamingContent.textContent = fullResponse; chatBody.scrollTop = chatBody.scrollHeight; }
+            if (streamingContent) { streamingContent.innerHTML = renderMarkdown(fullResponse); chatBody.scrollTop = chatBody.scrollHeight; }
         };
-        evtSource.onerror = function () { evtSource.close(); currentEvtSource = null; hideTyping(); if (fullResponse && streamingContent) { streamingContent.innerHTML = renderMarkdown(fullResponse); } else if (!fullResponse) { addBotMessage('⚠️ Error de conexión.', true); } setWaiting(false); };
+        evtSource.onerror = function () { evtSource.close(); currentEvtSource = null; hideTyping(); if (fullResponse && streamingContent) { streamingContent.innerHTML = renderMarkdown(fullResponse); } else if (!fullResponse) { addBotMessage('No se pudo conectar. Puedes reintentar esta pregunta.', true); window.lectioChatRetry(chatBody, () => sendMessageToGroq(message)); } setWaiting(false); };
     }
     function sendMessage() { const msg = chatInput.value.trim(); if (!msg || isWaiting) return; addUserMessage(msg); chatInput.value = ''; sendMessageToGroq(msg); }
     chatBubble?.addEventListener('click', () => { chatWindow.classList.add('active'); if (chatBadge) chatBadge.style.display = 'none'; chatInput.focus(); });

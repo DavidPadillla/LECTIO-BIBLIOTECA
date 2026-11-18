@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Devolución de Libros - Lectio Admin</title>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link data-consent-font="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         * {
@@ -14,7 +14,7 @@
         }
 
         body {
-            font-family: 'Poppins', sans-serif;
+            font-family: 'Inter', sans-serif;
             background-color: #f5f6fa;
             color: #2c3e50;
         }
@@ -39,12 +39,12 @@
         }
 
         .logo span {
-            color: #27ae60;
+            color: #1a6b45;
             font-weight: 600;
         }
 
         .back-btn {
-            background: #27ae60;
+            background: #1a6b45;
             color: #fff;
             padding: 10px 25px;
             border: none;
@@ -60,7 +60,7 @@
         }
 
         .back-btn:hover {
-            background: #219150;
+            background: #0f4a2e;
             transform: translateY(-3px) scale(1.05);
             box-shadow: 0 8px 20px rgba(39, 174, 96, 0.4);
         }
@@ -130,7 +130,7 @@
         }
 
         .card:hover {
-            border-color: #27ae60;
+            border-color: #1a6b45;
             box-shadow: 0 8px 16px rgba(39, 174, 96, 0.15);
         }
 
@@ -145,7 +145,7 @@
 
         .card-header i {
             font-size: 1.3rem;
-            color: #27ae60;
+            color: #1a6b45;
         }
 
         .card-header h3 {
@@ -164,7 +164,7 @@
             padding: 12px 16px 12px 45px;
             border: 2px solid #e0e0e0;
             border-radius: 8px;
-            font-family: 'Poppins', sans-serif;
+            font-family: 'Inter', sans-serif;
             font-size: 14px;
             transition: all 0.3s ease;
             background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='20' height='20' viewBox='0 0 24 24' fill='none' stroke='%2327ae60' stroke-width='2'%3E%3Ccircle cx='11' cy='11' r='8'/%3E%3Cpath d='m21 21-4.35-4.35'/%3E%3C/svg%3E");
@@ -174,7 +174,7 @@
 
         .search-input:focus {
             outline: none;
-            border-color: #27ae60;
+            border-color: #1a6b45;
             box-shadow: 0 0 0 4px rgba(39, 174, 96, 0.1);
         }
 
@@ -190,7 +190,7 @@
         }
 
         .table thead {
-            background: #27ae60;
+            background: #1a6b45;
             color: white;
         }
 
@@ -224,7 +224,7 @@
         }
 
         .btn-seleccionar {
-            background: linear-gradient(135deg, #27ae60 0%, #229954 100%);
+            background: linear-gradient(135deg, #1a6b45 0%, #229954 100%);
             color: white;
             padding: 8px 16px;
             border: none;
@@ -257,7 +257,7 @@
         }
 
         .form-group label i {
-            color: #27ae60;
+            color: #1a6b45;
             margin-right: 6px;
         }
 
@@ -266,7 +266,7 @@
             padding: 12px 16px;
             border: 2px solid #e0e0e0;
             border-radius: 8px;
-            font-family: 'Poppins', sans-serif;
+            font-family: 'Inter', sans-serif;
             font-size: 14px;
             transition: all 0.3s ease;
         }
@@ -278,7 +278,7 @@
 
         .form-group input:focus:not(:read-only) {
             outline: none;
-            border-color: #27ae60;
+            border-color: #1a6b45;
             box-shadow: 0 0 0 4px rgba(39, 174, 96, 0.1);
         }
 
@@ -323,7 +323,7 @@
         /* Submit Button */
         .btn-submit {
             width: 100%;
-            background: linear-gradient(135deg, #27ae60 0%, #229954 100%);
+            background: linear-gradient(135deg, #1a6b45 0%, #229954 100%);
             color: white;
             padding: 14px 30px;
             border: none;
@@ -421,17 +421,23 @@
             margin-top: 60px;
         }
     </style>
-</head>
-<body>
+    <link rel="stylesheet" href="/estilos/lectio-ui.css">
+    <script src="/js/lectio-ui.js" defer></script>
+    <link rel="stylesheet" href="/estilos/lectio-theme.css">
+    <link rel="stylesheet" href="/estilos/lectio-responsive.css">
+<link rel="stylesheet" href="/estilos/lectio-experience.css">
+<link rel="stylesheet" href="/estilos/lectio-motion.css">
+<script src="/js/lectio-experience.js" defer></script>
+<link rel="stylesheet" href="/estilos/lectio-polish.css">
+<link rel="icon" type="image/svg+xml" href="/img/lectio-logo.svg">
+<link rel="stylesheet" href="/estilos/lectio-menu.css">
+<script src="/js/lectio-menu.js" defer></script>
+<link rel="stylesheet" href="/estilos/lectio-admin.css">
+<link rel="stylesheet" href="/estilos/lectio-privacy.css">
+<script src="/js/lectio-privacy.js" defer></script></head>
+<body class="lectio-theme lectio-page admin-design" data-page="devolucion">
 <!-- Header -->
-<header class="navbar">
-    <div class="logo">
-        <h1>Lectio <span>Admin</span></h1>
-    </div>
-    <a href="/api/admin" class="back-btn">
-        <i class="fas fa-arrow-left"></i> Volver al Panel
-    </a>
-</header>
+<header class="experience-nav" id="nav"><div class="experience-bar"><a href="/api/admin" class="experience-brand"><img class="lectio-logo" src="/img/lectio-logo.svg" alt="" width="44" height="44">LECTIO <small>/ ADMIN</small></a><nav class="experience-links" id="experienceLinks" aria-label="Administración"><a href="/api/admin">Panel</a><a href="/api/usuariosAdmin">Usuarios</a><a href="/api/addBook">Libros virtuales</a><a href="/api/addLibroF">Libros físicos</a><a href="/api/reservaAdmin">Reservas</a><a href="/api/dashboard">Análisis</a><details class="admin-more"><summary>Más</summary><div><a href="/api/devolucion">Devoluciones</a><a href="/api/multasAdmin">Multas</a><a href="/api/resenasAdmin">Reseñas</a><a href="/api/modeloPredictivo">Modelo predictivo</a></div></details></nav><div class="experience-account"><form action="/api/logout" method="post"><button type="submit">Cerrar sesión</button></form></div><button type="button" class="experience-toggle" id="experienceToggle" aria-controls="experienceLinks" aria-expanded="false" aria-label="Abrir menú"><svg viewBox="0 0 24 24" aria-hidden="true"><path class="menu-line-top" d="M4 6H20"/><path class="menu-line-middle" d="M4 12H20"/><path class="menu-line-bottom" d="M4 18H20"/></svg></button></div></header>
 
 <!-- Container -->
 <div class="container">
@@ -557,8 +563,8 @@
 
 <!-- Footer -->
 <footer>
-    <p>&copy; 2025 Lectio Biblioteca. Todos los derechos reservados.</p>
-</footer>
+    <p>&copy; 2026 Lectio Biblioteca. Todos los derechos reservados.</p>
+<a href="/api/privacidad" class="privacy-footer-link">Privacidad y preferencias</a></footer>
 
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script>

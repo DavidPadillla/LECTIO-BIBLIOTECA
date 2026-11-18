@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Lectio Admin</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link data-consent-font="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <style>
         * {
             margin: 0;
@@ -14,7 +14,7 @@
         }
 
         body {
-            font-family: 'Poppins', sans-serif;
+            font-family: 'Inter', sans-serif;
             background-color: #f5f6fa;
             color: #2c3e50;
         }
@@ -38,12 +38,12 @@
         }
 
         .logo span {
-            color: #27ae60;
+            color: #1a6b45;
             font-weight: 600;
         }
 
         .logout-btn {
-            background: #27ae60;
+            background: #1a6b45;
             color: #fff;
             padding: 10px 25px;
             border: none;
@@ -57,13 +57,13 @@
         }
 
         .logout-btn:hover {
-            background: #219150;
+            background: #0f4a2e;
             transform: translateY(-2px);
             box-shadow: 0 5px 15px rgba(39, 174, 96, 0.3);
         }
 
         .hero-section {
-            background: linear-gradient(135deg, #27ae60 0%, #229954 100%);
+            background: linear-gradient(135deg, #1a6b45 0%, #229954 100%);
             padding: 80px 60px 100px;
             color: white;
             text-align: center;
@@ -111,7 +111,7 @@
 
         .section-header {
             background: #fff;
-            border-left: 5px solid #27ae60;
+            border-left: 5px solid #1a6b45;
             border-radius: 10px;
             padding: 20px 25px;
             margin: 40px 0 25px;
@@ -158,7 +158,7 @@
         .section-icon {
             width: 45px;
             height: 45px;
-            background: linear-gradient(135deg, #27ae60 0%, #229954 100%);
+            background: linear-gradient(135deg, #1a6b45 0%, #229954 100%);
             border-radius: 10px;
             display: flex;
             align-items: center;
@@ -215,7 +215,7 @@
             left: 0;
             right: 0;
             height: 4px;
-            background: linear-gradient(90deg, #27ae60, #2ecc71);
+            background: linear-gradient(90deg, #1a6b45, #2ecc71);
             transform: scaleX(0);
             transition: transform 0.3s ease;
         }
@@ -227,13 +227,13 @@
         .admin-card:hover {
             transform: translateY(-12px) scale(1.02);
             box-shadow: 0 20px 40px rgba(39, 174, 96, 0.25);
-            border-color: #27ae60;
+            border-color: #1a6b45;
         }
 
         .card-icon {
             width: 70px;
             height: 70px;
-            background: linear-gradient(135deg, #27ae60, #2ecc71);
+            background: linear-gradient(135deg, #1a6b45, #2ecc71);
             border-radius: 50%;
             display: flex;
             align-items: center;
@@ -259,7 +259,7 @@
         }
 
         .admin-card:hover h3 {
-            color: #27ae60;
+            color: #1a6b45;
         }
 
         .admin-card p {
@@ -348,24 +348,28 @@
         .admin-card:nth-child(8) { animation-delay: 0.45s; }
         .admin-card:nth-child(9) { animation-delay: 0.5s; }
     </style>
-</head>
-<body>
-<header class="navbar">
-    <div class="logo">
-        <h1>Lectio <span>Admin</span></h1>
-    </div>
-    <form action="/api/logout" method="post" style="margin: 0;">
-        <button type="submit" class="logout-btn">
-            <i class="fas fa-sign-out-alt"></i> Cerrar Sesión
-        </button>
-    </form>
-</header>
+    <link rel="stylesheet" href="/estilos/lectio-ui.css">
+    <script src="/js/lectio-ui.js" defer></script>
+    <link rel="stylesheet" href="/estilos/lectio-theme.css">
+    <link rel="stylesheet" href="/estilos/lectio-responsive.css">
+<link rel="stylesheet" href="/estilos/lectio-experience.css">
+<link rel="stylesheet" href="/estilos/lectio-motion.css">
+<script src="/js/lectio-experience.js" defer></script>
+<link rel="stylesheet" href="/estilos/lectio-polish.css">
+<link rel="icon" type="image/svg+xml" href="/img/lectio-logo.svg">
+<link rel="stylesheet" href="/estilos/lectio-menu.css">
+<script src="/js/lectio-menu.js" defer></script>
+<link rel="stylesheet" href="/estilos/lectio-admin.css">
+<link rel="stylesheet" href="/estilos/lectio-privacy.css">
+<script src="/js/lectio-privacy.js" defer></script></head>
+<body class="lectio-theme lectio-page admin-design" data-page="admin">
+<header class="experience-nav" id="nav"><div class="experience-bar"><a href="/api/admin" class="experience-brand"><img class="lectio-logo" src="/img/lectio-logo.svg" alt="" width="44" height="44">LECTIO <small>/ ADMIN</small></a><nav class="experience-links" id="experienceLinks" aria-label="Administración"><a href="/api/admin" aria-current="page">Panel</a><a href="/api/usuariosAdmin">Usuarios</a><a href="/api/addBook">Libros virtuales</a><a href="/api/addLibroF">Libros físicos</a><a href="/api/reservaAdmin">Reservas</a><a href="/api/dashboard">Análisis</a><details class="admin-more"><summary>Más</summary><div><a href="/api/devolucion">Devoluciones</a><a href="/api/multasAdmin">Multas</a><a href="/api/resenasAdmin">Reseñas</a><a href="/api/modeloPredictivo">Modelo predictivo</a></div></details></nav><div class="experience-account"><form action="/api/logout" method="post"><button type="submit">Cerrar sesión</button></form></div><button type="button" class="experience-toggle" id="experienceToggle" aria-controls="experienceLinks" aria-expanded="false" aria-label="Abrir menú"><svg viewBox="0 0 24 24" aria-hidden="true"><path class="menu-line-top" d="M4 6H20"/><path class="menu-line-middle" d="M4 12H20"/><path class="menu-line-bottom" d="M4 18H20"/></svg></button></div></header>
 
 <section class="hero-section">
     <div class="hero-content">
-        <h1>Panel de Administración</h1>
-        <p>Gestiona todos los aspectos de Lectio de manera organizada y eficiente</p>
-    </div>
+        <span class="admin-eyebrow">Tu espacio de gestión</span><h1>Cuidar la biblioteca.<br><em>Acompañar a sus lectores.</em></h1>
+        <p>Catálogo, préstamos y comunidad. Todo lo que necesitas para el día a día de Lectio.</p>
+    </div><div class="admin-welcome-art" aria-hidden="true"><img src="/img/lio-explorador.svg" alt="" width="260" height="224"></div>
 </section>
 
 <div class="container">
@@ -396,7 +400,7 @@
                 <i class="fas fa-chart-line"></i>
             </div>
             <h3>Modelo Predictivo</h3>
-            <p>Analiza tendencias de reservas con inteligencia artificial (Weka)</p>
+            <p>Analiza tendencias de reservas con inteligencia artificial</p>
         </a>
     </div>
 
@@ -515,7 +519,7 @@
 </div>
 
 <footer>
-    <p>&copy; 2025 Lectio Biblioteca. Todos los derechos reservados.</p>
-</footer>
+    <p>&copy; 2026 Lectio Biblioteca. Todos los derechos reservados.</p>
+<a href="/api/privacidad" class="privacy-footer-link">Privacidad y preferencias</a></footer>
 </body>
 </html>

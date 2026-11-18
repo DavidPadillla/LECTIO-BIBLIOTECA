@@ -1,15 +1,16 @@
 <!DOCTYPE html>
 <html lang="es" xmlns:th="http://www.thymeleaf.org">
 <head>
+<link rel="stylesheet" href="/estilos/lectio-chat.css">
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="description" content="Lectio - Reserva de libros físicos" />
     <title>Reserva de Libros — Lectio Biblioteca</title>
 
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+    
+    
+    <link data-consent-font="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
 
     <style>
@@ -864,8 +865,20 @@
             html{scroll-behavior:auto}
         }
     </style>
-</head>
-<body>
+    <link rel="stylesheet" href="/estilos/lectio-ui.css">
+    <script src="/js/lectio-ui.js" defer></script>
+    <link rel="stylesheet" href="/estilos/lectio-responsive.css">
+<link rel="stylesheet" href="/estilos/lectio-experience.css">
+<link rel="stylesheet" href="/estilos/lectio-motion.css">
+<script src="/js/lectio-experience.js" defer></script>
+<link rel="stylesheet" href="/estilos/lectio-polish.css">
+<link rel="icon" type="image/svg+xml" href="/img/lectio-logo.svg">
+<link rel="stylesheet" href="/estilos/lectio-library.css">
+<link rel="stylesheet" href="/estilos/lectio-menu.css">
+<script src="/js/lectio-menu.js" defer></script>
+<link rel="stylesheet" href="/estilos/lectio-privacy.css">
+<script src="/js/lectio-privacy.js" defer></script><script src="/js/lectio-chat-format.js" defer></script><script src="/js/lectio-chat.js" defer></script></head>
+<body class="lectio-page" data-page="reservaLibro">
 
 <!-- ========== LOADER ========== -->
 <div id="loader">
@@ -876,36 +889,30 @@
 </div>
 
 <!-- ========== NAV ========== -->
-<header class="nav" id="nav">
-    <div class="wrap nav-inner">
-
-        <a href="/api/logiado" class="brand">
-            <span class="sq"></span>
-            LECTIO <small>/ BIBLIOTECA</small>
-        </a>
-
-        <nav class="nav-links" id="navLinks">
-            <a href="/api/logiado">Inicio</a>
-            <a href="/api/libroVirtualesLog">Libros virtuales</a>
-            <a href="/api/reservaLibro" class="active">Reserva de libros</a>
-        </nav>
-
-        <button class="nav-toggle menu-toggle" id="navToggle" aria-label="Menú">
-            <i class="fas fa-bars"></i>
-        </button>
-
-        <div class="nav-overlay"></div>
+<header class="experience-nav" id="nav">
+  <div class="experience-bar">
+    <a href="/api/logiado" class="experience-brand"><img class="lectio-logo" src="/img/lectio-logo.svg" alt="" width="44" height="44">LECTIO <small>/ BIBLIOTECA</small></a>
+    <nav class="experience-links" id="experienceLinks" aria-label="Navegación principal">
+      <a href="/api/logiado">Inicio</a><a href="/api/logiado#coleccion">Colección</a>
+      <a href="/api/logiado#autores">Autores</a><a href="/api/logiado#centro-ayuda">Ayuda</a>
+      <a href="/api/libroVirtualesLog">Libros virtuales</a><a href="/api/reservaLibro" aria-current="page">Reserva</a>
+      <a href="/api/optimizador">Optimizador</a>
+      <a href="/api/inicio" class="experience-challenge">✦ Desafío</a>
+    </nav>
+    <div class="experience-account">
+      <p th:if="${username != null}">Hola, <strong th:text="${username}"></strong></p>
+      <form action="/api/logout" method="post"><button type="submit">Cerrar sesión</button></form>
     </div>
+    <button type="button" class="experience-toggle" id="experienceToggle" aria-controls="experienceLinks" aria-expanded="false" aria-label="Abrir menú">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path class="menu-line-top" d="M4 6H20"/><path class="menu-line-middle" d="M4 12H20"/><path class="menu-line-bottom" d="M4 18H20"/></svg>
+    </button>
+  </div>
 </header>
 
 <!-- ========== HERO ========== -->
 <section class="page-hero">
     <div class="wrap">
         <h1>Reserva de <em>libros</em> físicos.</h1>
-        <span class="hero-meta">
-            <span class="dot"></span>
-            Catálogo activo
-        </span>
     </div>
 </section>
 
@@ -989,17 +996,11 @@
     <div class="wrap">
         <div class="foot-top">
             <div class="foot-brand">
-                <a href="/api/logiado" class="brand">
-                    <span class="sq"></span>
+                <a href="/api/logiado" class="brand"><img class="lectio-logo" src="/img/lectio-logo.svg" alt="" width="44" height="44">
+                    
                     LECTIO <small>/ BIBLIOTECA</small>
                 </a>
-                <p>Tu biblioteca virtual de confianza. Miles de libros y recursos digitales al alcance de un clic.</p>
-                <div class="foot-social">
-                    <a href="#" aria-label="Facebook"><i class="fab fa-facebook-f"></i></a>
-                    <a href="#" aria-label="Twitter"><i class="fab fa-twitter"></i></a>
-                    <a href="#" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
-                    <a href="#" aria-label="YouTube"><i class="fab fa-youtube"></i></a>
-                </div>
+                <p>Libros, desafíos de lectura y reservas en un mismo lugar.</p>
             </div>
 
             <div class="foot-col">
@@ -1031,11 +1032,11 @@
         </div>
 
         <div class="foot-bot">
-            <span>© 2025 Lectio Biblioteca · Todos los derechos reservados</span>
+            <span>© 2026 Lectio Biblioteca · Todos los derechos reservados</span>
             <span>Hecho con <i class="fas fa-heart"></i> para lectores</span>
         </div>
     </div>
-</footer>
+<a href="/api/privacidad" class="privacy-footer-link">Privacidad y preferencias</a></footer>
 
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script>
@@ -1239,7 +1240,7 @@
                 return;
             }
 
-            librosPagina.forEach(libro => {
+            librosPagina.forEach((libro, coverIndex) => {
                 const stock = (typeof libro.stock === 'number') ? libro.stock : 0;
                 const tituloEsc = escapeHtml(libro.titulo || '');
                 const autorEsc = escapeHtml(libro.autor || '');
@@ -1265,6 +1266,8 @@
 
                 const itemHtml = `
                     <div class="libro-item" data-id="${id}">
+<div class="catalog-cover cover-tone-${coverIndex % 4}" aria-hidden="true"><div class="catalog-book"><img src="/img/lectio-logo.svg" alt="" width="42" height="42"><span class="cover-title">${tituloEsc}</span><span class="cover-rule"></span><span class="cover-author">${autorEsc}</span></div></div>
+<div class="reservation-card-body">
                         <div class="stock-badge ${stockClass}">
                             <span class="dot"></span>
                             ${stockText}
@@ -1275,6 +1278,7 @@
                             ${categoriaEsc ? `<p><strong>Categoría</strong> ${categoriaEsc}</p>` : ''}
                         </div>
                         ${reservarBtn}
+                        </div>
                     </div>
                 `;
                 $lista.append(itemHtml);
@@ -1483,6 +1487,64 @@
 
     });
 </script>
+
+<div class="chat-bubble" id="chatBubble">
+    <i class="fas fa-comment-dots"></i>
+    <div class="chat-badge">1</div>
+</div>
+<div class="chat-tooltip">Lio te acompaña</div>
+
+<div class="chat-window" id="chatWindow">
+    <div class="chat-header">
+        <div class="chat-header-info">
+            <div class="chat-header-avatar">
+                <i class="fas fa-robot"></i>
+                <div class="chat-status-dot"></div>
+            </div>
+            <div class="chat-header-text">
+                <h3>Lio · tu búho lector</h3>
+                <span>Asistente de biblioteca</span>
+            </div>
+        </div>
+        <div class="chat-actions">
+            <button class="chat-action-btn" id="chatClear" title="Limpiar chat"><i class="fas fa-trash-alt"></i></button>
+            <button class="chat-action-btn" id="chatClose" title="Cerrar"><i class="fas fa-times"></i></button>
+        </div>
+    </div>
+
+    <div class="chat-suggestions" id="chatSuggestions">
+        <span class="suggestion-chip" data-suggestion="¿Qué libros tengo reservados?">Reservas</span>
+        <span class="suggestion-chip" data-suggestion="¿Tengo multas pendientes?">Multas</span>
+        <span class="suggestion-chip" data-suggestion="¿Cuántos libros he leído?">Progreso</span>
+        <span class="suggestion-chip" data-suggestion="¿Qué libros físicos hay disponibles?">Disponibles</span>
+        <span class="suggestion-chip" data-suggestion="¿Qué es Lectio?">Sobre Lectio</span>
+        <span class="suggestion-chip" data-suggestion="Explícame las políticas de préstamo">Políticas</span>
+        <span class="suggestion-chip" data-suggestion="¿Cómo funciona la biblioteca virtual?">Biblioteca IA</span>
+    </div>
+
+    <div class="chat-body" id="chatBody">
+        <div class="chat-date-sep">Hoy</div>
+        <div class="chat-message">
+            <div class="chat-avatar"><i class="fas fa-robot"></i></div>
+            <div class="chat-bubble-msg">
+                <div class="rag-badge">Lectio</div>
+                <div class="md-content">
+                    <p>¡Hola! Soy <strong>Lio</strong>, tu búho lector de Lectio.</p>
+                    <p>Puedo ayudarte con tus <strong>reservas</strong>, <strong>multas</strong>, <strong>progreso de lectura</strong> y responder preguntas sobre la biblioteca.</p>
+                </div>
+                <span class="chat-time">Ahora</span>
+            </div>
+        </div>
+    </div>
+
+    <div class="chat-footer">
+        <div class="chat-input-wrap">
+            <input type="text" id="chatInput" placeholder="Escribe tu mensaje..." autocomplete="off">
+        </div>
+        <button class="chat-send-btn" id="chatSend"><i class="fas fa-paper-plane"></i></button>
+    </div>
+</div>
+
+
 </body>
 </html>
-

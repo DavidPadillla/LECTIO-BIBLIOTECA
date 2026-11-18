@@ -6,6 +6,7 @@ import com.bibli.bia.Model.ReservaModel.EstadoReserva;
 import com.bibli.bia.repository.ReservaRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
@@ -70,9 +71,14 @@ public class ReservaService {
     }
 
     @Transactional
-    public ReservaModel cancelarReserva(String id) {
+    public ReservaModel cancelarReserva(String id, String username, boolean administrador) {
         ReservaModel reserva = reservaRepository.findByIdForUpdate(id)
                 .orElseThrow(() -> new IllegalArgumentException("Reserva no encontrada"));
+
+        if (username == null || (!administrador && (reserva.getUsuario() == null
+                || !username.equals(reserva.getUsuario().getUsername())))) {
+            throw new AccessDeniedException("No puedes cancelar esta reserva");
+        }
 
         if (reserva.getEstado() != EstadoReserva.ACTIVA) {
             throw new IllegalStateException("Solo se pueden cancelar reservas activas");

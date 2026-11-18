@@ -1,0 +1,40 @@
+/* Motion must never own the final layout or keep essential content hidden. */
+body.lectio-page { --ease: cubic-bezier(.22,1,.36,1); }
+.lectio-page :is(.reveal, .stagger > *, .stagger.in > *) { opacity: 1; transform: none; }
+.lectio-page :is(.book, .book-card, .libro-item, .help-card, .libro, .stat-card, .admin-card, .portada, .capitulo-nodo) { animation-fill-mode: backwards; }
+.lectio-page :is(.btn, .btn-submit, .back-btn, .book-link, .read-btn, .journey-shortcuts a) {
+    transition: translate .25s var(--ease), box-shadow .25s var(--ease), background-color .25s ease;
+}
+@media(hover: hover) {
+    .lectio-page :is(.btn, .btn-submit, .back-btn, .book-link, .read-btn, .journey-shortcuts a):hover { translate: 0 -3px; }
+    .lectio-page :is(.book, .book-card, .admin-card, .pensador, .libro):hover { translate: 0 -5px; }
+}
+.lectio-page :is(.btn, .btn-submit, .back-btn):active { translate: 0 1px; }
+.lectio-page :is(.book, .book-card, .admin-card, .pensador, .libro) { transition: translate .3s var(--ease), box-shadow .3s ease; }
+.lectio-page :is(input, select, textarea):focus { transition: border-color .2s, box-shadow .2s; }
+.lectio-page .nav:not(.experience-nav) { animation: shell-arrive .65s ease backwards; }
+.lectio-page .brand .sq { transition: rotate .4s var(--ease); }
+.lectio-page .brand:hover .sq { rotate: 90deg; }
+.lectio-page .login-page .form-slide { transition: opacity .3s ease, transform .4s var(--ease), visibility .3s; }
+.lectio-page .login-page .form-slide:not(.active) { visibility: hidden; pointer-events: none; }
+.lectio-page .login-page .form-slide.active { visibility: visible; }
+.lectio-page .login-page .bp-quote[data-quote]:not(.active) { visibility: hidden; }
+.lectio-page .login-page .bp-quote.active { visibility: visible; }
+.lectio-page[data-page='register'] .form-card { animation: access-arrive .7s var(--ease) backwards; }
+.lectio-page[data-page='register'] .bp-quote { animation: access-arrive .8s var(--ease) .1s backwards; }
+@keyframes access-arrive { from { opacity: 0; translate: 0 18px; } to { opacity: 1; translate: 0 0; } }
+.lectio-page .success-path { stroke-dasharray: 1; stroke-dashoffset: 1; opacity: 0; }
+.lectio-page .success-circle { stroke-dasharray: 1; stroke-dashoffset: 1; opacity: 0; }
+.lectio-page .success-overlay.show .success-circle { animation: completed-check .6s var(--ease) both; }
+.lectio-page .success-overlay.show .success-path { animation: completed-check .5s var(--ease) .3s both; }
+@keyframes completed-check {
+    0% { opacity: 0; stroke-dashoffset: 1; }
+    8% { opacity: 1; stroke-dashoffset: 1; }
+    100% { opacity: 1; stroke-dashoffset: 0; }
+}
+@media(prefers-reduced-motion: reduce) {
+    .lectio-page *, .lectio-page *::before, .lectio-page *::after {
+        animation: none !important; transition: none !important; scroll-behavior: auto !important;
+    }
+    .lectio-page .success-overlay.show :is(.success-path, .success-circle) { opacity: 1; stroke-dashoffset: 0; }
+}

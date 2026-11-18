@@ -1,0 +1,31 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 440 380">
+ <style>
+ .wing-left{transform-origin:173px 178px;animation:flap-left 1.4s ease-in-out infinite alternate}.wing-right{transform-origin:273px 178px;animation:flap-right 1.4s ease-in-out infinite alternate}
+ .owl{animation:float 3s ease-in-out infinite}.spark{animation:glow 2s ease-in-out infinite alternate}
+ @keyframes flap-left{to{transform:rotate(16deg)}}@keyframes flap-right{to{transform:rotate(-16deg)}}@keyframes float{50%{transform:translateY(-9px)}}@keyframes glow{to{opacity:.35}}
+ @media(prefers-reduced-motion:reduce){*{animation:none!important}}
+ </style>
+ <circle cx="220" cy="185" r="151" fill="#e9f1ee"/>
+ <circle cx="328" cy="72" r="34" fill="#f4d5a6"/>
+ <path d="M55 273Q5 162 100 101T365 171Q407 276 306 322" fill="none" stroke="#b6cfcf" stroke-width="2" stroke-dasharray="5 9"/>
+ <g class="spark" fill="#de8b3f"><path d="m70 110 5 14 14 5-14 5-5 14-5-14-14-5 14-5zM351 241l4 10 11 4-11 4-4 11-4-11-11-4 11-4z"/><circle cx="110" cy="51" r="4"/><circle cx="376" cy="166" r="4"/></g>
+ <g transform="translate(64 277) rotate(-12)"><rect width="43" height="54" rx="5" fill="#de8b3f"/><path d="M7 3v48m7-37h22m-22 7h18" fill="none" stroke="#fff0d7" stroke-width="3"/></g>
+ <g transform="translate(331 119) rotate(16)"><rect width="35" height="46" rx="4" fill="#205469"/><path d="M7 3v40m6-27h16m-16 6h12" fill="none" stroke="#e4f0ef" stroke-width="2"/></g>
+ <g class="owl">
+  <path class="wing-left" d="M180 166Q120 114 66 160q17 5 24 18-5 15 14 18-7 16 14 20 38 9 64-20" fill="#205469"/>
+  <path class="wing-right" d="M263 166q60-52 114-6-17 5-24 18 5 15-14 18 7 16-14 20-38 9-64-20" fill="#205469"/>
+  <path d="m159 144-12-49 47 23m62 0 40-23-11 50" fill="#6ca4af" stroke="#205469" stroke-width="3"/>
+  <path d="M151 158c0-70 143-70 143 0v49c0 76-143 76-143 0z" fill="#6ca4af"/>
+  <ellipse cx="222" cy="211" rx="48" ry="48" fill="#b8d3d4"/>
+  <circle cx="191" cy="159" r="33" fill="#fff8e9"/><circle cx="254" cy="159" r="33" fill="#fff8e9"/>
+  <circle cx="198" cy="163" r="12" fill="#205469"/><circle cx="247" cy="163" r="12" fill="#205469"/>
+  <circle cx="202" cy="159" r="4" fill="white"/><circle cx="251" cy="159" r="4" fill="white"/>
+  <path d="M211 181h23l-12 17z" fill="#de8b3f"/>
+  <path d="M171 150q18-18 37-1m30 0q18-18 37 1" fill="none" stroke="#205469" stroke-width="3" stroke-linecap="round"/>
+  <path d="m162 239 39-11 44 13 39-11v66l-39 11-44-13-39 11z" fill="#fff4da" stroke="#d9b77d" stroke-width="2"/>
+  <path d="M201 229v65m44-53v66" stroke="#ead5ae" stroke-width="2"/>
+  <path d="M175 280q20-40 43-13t48-17" fill="none" stroke="#de8b3f" stroke-width="3" stroke-dasharray="4 5"/>
+  <path d="m262 248 8 8m0-8-8 8" stroke="#205469" stroke-width="3"/>
+  <path d="m178 235-3 13m12-15-2 12m76-9 3 12m6-15 3 12" stroke="#de8b3f" stroke-width="5" stroke-linecap="round"/>
+ </g>
+</svg>

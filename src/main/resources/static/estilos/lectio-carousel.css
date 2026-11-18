@@ -1,0 +1,29 @@
+body.adventure .journey-carousel { display: grid; grid-template-columns: none; grid-auto-flow: column; grid-auto-columns: calc((100% - 44px) / 3); gap: 22px; overflow-x: auto; overflow-y: hidden; padding: 8px 0 20px; scroll-snap-type: x mandatory; scroll-padding-inline: 0; scrollbar-width: none; overscroll-behavior-x: contain; }
+.journey-carousel::-webkit-scrollbar { display: none; }
+body.adventure .journey-carousel.is-gliding { scroll-snap-type: none; scroll-behavior: auto; }
+body.adventure .journey-carousel > .journey-world { scroll-snap-align: start; margin: 0; min-width: 0; width: auto; text-decoration: none; }
+body.adventure .journey-carousel .world-cover { height: 190px; padding: 14px; }
+body.adventure .journey-carousel .world-cover img { height: 152px; width: 104px; padding: 0; object-fit: cover; border-radius: 5px; }
+body.adventure .journey-carousel .journey-world h3 { margin: 4px 0; font: 700 1.05rem/1.4 system-ui, sans-serif; }
+body.adventure .journey-carousel .journey-world p { font: 400 .9rem/1.65 system-ui, sans-serif; }
+body.adventure .journey-carousel > :nth-child(4) { --tile: #e8f1dc; --tile-edge: #cfdfb9; }
+body.adventure .journey-carousel > :nth-child(5) { --tile: #eeebe4; --tile-edge: #d6d2c8; }
+body.adventure .journey-carousel > :nth-child(6) { --tile: #e2f1ed; --tile-edge: #c1dfd6; }
+.journey-carousel-controls { display: flex; align-items: center; justify-content: center; flex-wrap: wrap; gap: 12px; margin: 10px 0 28px; }
+.journey-carousel-controls button { min-width: 44px; min-height: 44px; padding: 10px 16px; border-radius: 14px; border: 1px solid #ccddcf; background: #fff; color: #1a6b45; font: 600 .85rem system-ui, sans-serif; cursor: pointer; }
+.journey-carousel-controls button:disabled { opacity: .4; cursor: default; }
+.journey-carousel-controls [data-play] { background: #edf4e9; font-size: .75rem; }
+.carousel-position { font: 500 .8rem system-ui, sans-serif; color: #617a69; }
+body.lectio-page.adventure[data-world='jardin'] { --world: #3b7051; --world-deep: #244b33; --world-soft: #e5eed9; --world-ink: #244b33; background: radial-gradient(ellipse at 10% 70%, #bdd4ac88, transparent 45%), radial-gradient(ellipse at 90% 15%, #e9ce9188, transparent 40%), #f6faee; }
+body.lectio-page.adventure[data-world='reloj'] { --world: #675747; --world-deep: #413a35; --world-soft: #e8dfcf; --world-ink: #413a35; background: repeating-linear-gradient(90deg, transparent 0 100px, #a59a8915 100px 102px), radial-gradient(ellipse at 90% 0, #c1b5a2, transparent 60%), #f3efe5; }
+body.lectio-page.adventure[data-world='isla'] { --world: #246c77; --world-deep: #174b54; --world-soft: #dbefe9; --world-ink: #174b54; background: radial-gradient(ellipse at 85% 80%, #acd9cf66, transparent 45%), radial-gradient(ellipse at 10% 0, #f0dbab99, transparent 50%), #f0f9f5; }
+body.adventure[data-world='jardin'] .portada { background-image: url('/img/cover-jardin.svg'); }
+body.adventure[data-world='reloj'] .portada { background-image: url('/img/cover-reloj.svg'); }
+body.adventure[data-world='isla'] .portada { background-image: url('/img/cover-isla.svg'); }
+@media(max-width:950px) { body.adventure .journey-carousel { grid-auto-columns: calc((100% - 22px) / 2); } }
+@media(max-width:600px) { body.adventure .journey-carousel { grid-auto-columns: 88%; gap: 16px; }.journey-carousel-controls { gap: 8px; }.journey-carousel-controls [data-play] { flex-basis: 100%; max-width: 260px; } }
+
+body.lectio-page.adventure[data-world='jardin'] {background: #f6faee url('/img/world-jardin.svg') center 76px / cover fixed no-repeat;}
+body.lectio-page.adventure[data-world='reloj'] {background: #f3efe5 url('/img/world-reloj.svg') center 76px / cover fixed no-repeat;}
+body.lectio-page.adventure[data-world='isla'] {background: #f0f9f5 url('/img/world-isla.svg') center 76px / cover fixed no-repeat;}
+@media(max-width:600px){body.lectio-page.adventure[data-world] {background-attachment:scroll;}}

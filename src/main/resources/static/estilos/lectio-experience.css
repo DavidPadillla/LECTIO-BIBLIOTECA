@@ -1,0 +1,80 @@
+/* Complete editorial shell, independent from each page's older header styles. */
+:root { --ease: cubic-bezier(.22,1,.36,1); }
+body.lectio-page .experience-nav {
+    position: fixed; inset: 0 0 auto; width: 100%; min-height: 76px; padding: 0;
+    z-index: 500; color: #0d2b1d; background: #fffffffa;
+    border-bottom: 1px solid #d4e5d9; box-shadow: 0 3px 20px #0d2b1d06;
+    font-family: 'Inter', sans-serif; animation: shell-arrive .55s ease both;
+}
+/* An inherited backdrop-filter would make the mobile drawer relative to the header. */
+body.lectio-page #nav.experience-nav { backdrop-filter: none; -webkit-backdrop-filter: none; z-index: 500; background: #fffffffa; }
+.experience-nav .experience-bar {
+    width: 100%; max-width: 1600px; margin: auto; padding: 16px 28px;
+    min-height: 76px; display: flex; align-items: center; gap: 24px;
+}
+.experience-nav .experience-brand {
+    display: inline-flex; align-items: center; gap: 10px; flex-shrink: 0;
+    font: 600 .8rem 'Inter', sans-serif; letter-spacing: .12em;
+    text-decoration: none; color: #0d2b1d; white-space: nowrap;
+}
+.experience-brand::before { content: ''; width: 11px; height: 11px; background: #34a06c; rotate: 45deg; transition: rotate .4s ease; }
+.experience-brand:hover::before { rotate: 135deg; }
+.experience-brand small { font-size: .65rem; color: #1a6b45; font-weight: 400; }
+.experience-nav .experience-links {
+    display: flex; flex: 1; align-items: center; justify-content: center; gap: clamp(8px, 1.2vw, 22px);
+    margin: 0; padding: 0; width: auto; max-width: none; height: auto;
+    position: static; background: none; box-shadow: none; transform: none;
+}
+.experience-links a {
+    display: inline-flex; align-items: center; min-height: 44px; color: #355947;
+    font: 500 .87rem 'Inter', sans-serif; line-height: 1.4; text-decoration: none;
+    position: relative; white-space: nowrap; transition: color .2s ease;
+}
+.experience-links a::after { content: ''; position: absolute; bottom: 4px; left: 0; right: 0; height: 2px; background: #34a06c; transform: scaleX(0); transform-origin: left; transition: transform .3s var(--ease); }
+.experience-links a:hover::after, .experience-links a[aria-current='page']::after { transform: scaleX(1); }
+.experience-links a[aria-current='page'] { color: #0f4a2e; }
+.experience-links .experience-challenge { padding: 10px 14px; border-radius: 8px; background: #eef7f1; color: #1a6b45; gap: 6px; }
+.experience-nav .experience-account { display: flex; align-items: center; gap: 12px; flex-shrink: 0; }
+.experience-account form { margin: 0; }
+.experience-account p { font: 400 .8rem 'Inter', sans-serif; color: #355947; margin: 0; max-width: 12ch; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.experience-account button { min-height: 42px; padding: 8px 12px; background: white; border: 1px solid #bcd8c6; color: #1a6b45; border-radius: 6px; cursor: pointer; font: 500 .8rem 'Inter', sans-serif; transition: background .2s, color .2s; }
+.experience-account button:hover { background: #1a6b45; color: white; }
+.experience-nav .experience-toggle { display: none; width: 44px; height: 44px; padding: 10px; border: 1px solid #d4e5d9; border-radius: 8px; background: white; color: #1a6b45; cursor: pointer; }
+.experience-toggle svg { width: 22px; height: 22px; fill: none; stroke: currentColor; stroke-width: 2; }
+.experience-toggle[aria-expanded='true'] .menu-line-middle { opacity: 0; }
+.experience-toggle[aria-expanded='true'] .menu-line-top { d: path('M5 5L19 19'); }
+.experience-toggle[aria-expanded='true'] .menu-line-bottom { d: path('M5 19L19 5'); }
+body.lectio-page .experience-old-header, body.lectio-page .experience-old-sidebar { display: none !important; }
+body.lectio-page[data-page='formulario'], body.lectio-page[data-page='resultado'] { padding-top: 76px; }
+.lectio-page[data-page='formulario'] .hero-opt, .lectio-page[data-page='resultado'] .hero-res {
+    padding: 64px max(24px, calc((100vw - 1120px) / 2)); background: #eef7f1;
+    color: #0d2b1d; border-bottom: 1px solid #d4e5d9;
+}
+.lectio-page[data-page='formulario'] .hero-opt h2, .lectio-page[data-page='resultado'] .hero-res h2 { color: #0d2b1d; font-size: clamp(2.25rem, 4vw, 3.75rem); }
+.lectio-page[data-page='formulario'] .hero-opt h2 span, .lectio-page[data-page='resultado'] .hero-res h2 span { color: #1a6b45; }
+.lectio-page[data-page='formulario'] .hero-opt p, .lectio-page[data-page='resultado'] .hero-res p { color: #536c5e; }
+.lectio-page[data-page='formulario'] .hero-badge, .lectio-page[data-page='resultado'] .hero-badge { color: #1a6b45; border-color: #bcd8c6; }
+.lectio-page[data-page='formulario'] .page-content, .lectio-page[data-page='resultado'] .page-content { width: min(100%, 960px); padding: 36px 24px 64px; }
+@keyframes shell-arrive { from { opacity: 0; } to { opacity: 1; } }
+@media(max-width: 1280px) {
+    .experience-nav .experience-bar { padding: 12px 20px; gap: 14px; }
+    .experience-nav .experience-toggle { display: grid; place-items: center; flex-shrink: 0; }
+    .experience-nav .experience-account { margin-left: auto; }
+    .experience-nav .experience-links {
+        position: fixed; top: 76px; right: 0; bottom: 0; width: min(360px, 92vw); height: calc(100dvh - 76px);
+        display: flex; flex-direction: column; align-items: stretch; justify-content: flex-start;
+        gap: 4px; padding: 24px; background: white; border-left: 1px solid #d4e5d9;
+        overflow-y: auto; visibility: hidden; transform: translateX(100%);
+        transition: transform .3s var(--ease), visibility .3s; box-shadow: -20px 16px 40px #0d2b1d18;
+    }
+    .experience-nav .experience-links.is-open { visibility: visible; transform: translateX(0); }
+    .experience-links a { min-height: 50px; padding: 10px 4px; font-size: 1rem; }
+}
+@media(max-width: 560px) {
+    .experience-brand small, .experience-account p { display: none; }
+    .experience-nav .experience-bar { gap: 10px; padding-inline: 16px; }
+    .experience-nav .experience-brand { font-size: .78rem; }
+    .experience-account button { font-size: .73rem; padding: 8px; }
+    .lectio-page[data-page='formulario'] .hero-opt, .lectio-page[data-page='resultado'] .hero-res { padding: 36px 20px; }
+}
+@media(prefers-reduced-motion: reduce) { .experience-nav, .experience-nav * { animation: none !important; transition: none !important; } }

@@ -11,6 +11,8 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
+import org.springframework.security.web.savedrequest.HttpSessionRequestCache;
+import org.springframework.security.web.savedrequest.SavedRequest;
 
 @Configuration
 @EnableWebSecurity
@@ -37,6 +39,7 @@ public class SecurityConfig {
         http
                 .csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests(auth -> auth
+                        .dispatcherTypeMatchers(jakarta.servlet.DispatcherType.ASYNC).permitAll()
                         .requestMatchers(
                                 "/",
                                 "/intro",
@@ -47,18 +50,26 @@ public class SecurityConfig {
                                 "/js/**",
                                 "/img/**",
                                 "/login",
-                                "/api/librosVirtuales"
+                                "/api/librosVirtuales",
+                                "/api/muestras/**",
+                                "/api/terminos", "/api/privacidad"
                         ).permitAll()
 
-                        .requestMatchers("/api/admin/**").hasRole("ADMIN")
+                        .requestMatchers(
+                                "/api/admin/**", "/api/dashboard", "/api/usuariosAdmin",
+                                "/api/addBook", "/api/agregarLibro", "/api/addLibroF", "/api/agregarLibroF",
+                                "/api/reservaAdmin", "/api/devolucion", "/api/procesar-devolucion",
+                                "/api/multasAdmin", "/api/multas/pagar/**", "/api/resenasAdmin",
+                                "/api/modeloPredictivo", "/api/noAdminConfig"
+                        ).hasRole("ADMIN")
                         .requestMatchers("/api/logiado/**").hasRole("USER")
                         .anyRequest().authenticated()
                 )
                 .formLogin(form -> form
-                        .loginPage("/login")
+                        .loginPage("/api/login")
                         .loginProcessingUrl("/api/login")
                         .successHandler(authenticationSuccessHandler())
-                        .failureUrl("/login?error=true")
+                        .failureUrl("/api/login?error=true")
                         .permitAll()
                 )
                 .logout(logout -> logout
@@ -76,6 +87,18 @@ public class SecurityConfig {
     @Bean
     public AuthenticationSuccessHandler authenticationSuccessHandler() {
         return (request, response, authentication) -> {
+            HttpSessionRequestCache requestCache = new HttpSessionRequestCache();
+            SavedRequest saved = requestCache.getRequest(request, response);
+            if (saved != null) {
+                String path = java.net.URI.create(saved.getRedirectUrl()).getPath();
+                String context = request.getContextPath();
+                String localPath = path.startsWith(context) ? path.substring(context.length()) : path;
+                if (localPath.matches("/api/lecturas/(hadas|grimm|poe|aventura|conocimiento|universo|civilizaciones)")) {
+                    requestCache.removeRequest(request, response);
+                    response.sendRedirect(context + localPath);
+                    return;
+                }
+            }
             if (authentication.getAuthorities().stream()
                     .anyMatch(grantedAuthority -> grantedAuthority.getAuthority().equals("ROLE_ADMIN"))) {
                 response.sendRedirect("/api/admin");

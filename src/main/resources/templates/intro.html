@@ -65,83 +65,39 @@
             z-index: 10;
         }
     </style>
-</head>
-<body>
+    <link rel="stylesheet" href="/estilos/lectio-ui.css">
+    <script src="/js/lectio-ui.js" defer></script>
+    <link rel="stylesheet" href="/estilos/lectio-responsive.css">
+<link rel="stylesheet" href="/estilos/lectio-experience.css">
+<link rel="stylesheet" href="/estilos/lectio-motion.css">
+<script src="/js/lectio-experience.js" defer></script>
+<link rel="stylesheet" href="/estilos/lectio-polish.css">
+<link rel="icon" type="image/svg+xml" href="/img/lectio-logo.svg">
+<link rel="stylesheet" href="/estilos/lectio-library.css">
+<script src="/js/lectio-intro.js" defer></script>
+<link rel="stylesheet" href="/estilos/lectio-menu.css">
+<script src="/js/lectio-menu.js" defer></script>
+<link rel="stylesheet" href="/estilos/lectio-privacy.css">
+<script src="/js/lectio-privacy.js" defer></script></head>
+<body class="lectio-page" data-page="intro">
 
 <div class="loading" id="loading">Cargando...</div>
 
 <div class="video-container">
-    <video id="intro-video" autoplay muted playsinline>
+    <video id="intro-video" muted playsinline preload="none">
         <!-- Se selecciona automáticamente el video correcto -->
     </video>
 </div>
 
-<button class="skip-btn" id="skip-btn">Saltar Introducción</button>
+<section class="mobile-expedition" aria-labelledby="expedition-title">
+ <a href="/api/index" class="expedition-brand"><img src="/img/lectio-logo.svg" width="44" height="44" alt=""> LECTIO</a>
+ <div class="expedition-cloud cloud-one" aria-hidden="true"></div><div class="expedition-cloud cloud-two" aria-hidden="true"></div>
+ <div class="expedition-scene" aria-hidden="true"><div class="expedition-hill"></div><img src="/img/lio-explorador.svg" class="expedition-owl" alt=""><span class="found-book">Una historia encontrada</span></div>
+ <div class="expedition-copy"><span class="expedition-kicker">Una aventura con Lio</span><h1 id="expedition-title">Las historias perdidas<br>nos están esperando.</h1><p>Un mapa, un par de alas y mil mundos por descubrir. ¿Vienes?</p><div class="expedition-timeline" aria-hidden="true"><span></span></div></div>
+</section>
+<a class="skip-btn" id="skip-btn" href="/api/index">Ir a la biblioteca</a>
 
-<script>
-    document.addEventListener('DOMContentLoaded', function() {
-        const video = document.getElementById('intro-video');
-        const skipBtn = document.getElementById('skip-btn');
-        const loading = document.getElementById('loading');
 
-        // Determinar qué video usar según dispositivo
-        const isMobile = window.innerWidth <= 768;
-        const videoSource = isMobile ? '/img/cel.mp4' : '/img/NUEVO2.mp4';
-
-        console.log('Dispositivo:', isMobile ? 'Móvil/Tablet' : 'Computadora');
-        console.log('Usando video:', videoSource);
-
-        // Configurar el video
-        video.innerHTML = `<source src="${videoSource}" type="video/mp4">`;
-
-        // Cuando el video se carga
-        video.addEventListener('loadeddata', function() {
-            loading.style.display = 'none';
-            console.log('Video cargado correctamente');
-        });
-
-        // Manejo de errores al cargar el video
-        video.addEventListener('error', function() {
-            console.error('Error cargando el video:', videoSource);
-            loading.textContent = 'Error cargando el video. Redirigiendo...';
-            setTimeout(() => {
-                window.location.href = "/api/index";
-            }, 2000);
-        });
-
-        // Cuando termina el video
-        video.addEventListener('ended', function() {
-            console.log('Video terminado, redirigiendo...');
-            window.location.href = "/api/index";
-        });
-
-        // Botón de saltar introducción
-        skipBtn.addEventListener('click', function() {
-            console.log('Saltando introducción...');
-            window.location.href = "/api/index";
-        });
-
-        // También se puede saltar con Escape o barra espaciadora
-        document.addEventListener('keydown', function(e) {
-            if (e.key === 'Escape' || e.key === ' ') {
-                window.location.href = "/api/index";
-            }
-        });
-
-        // Redirección automática de respaldo después de 30 segundos
-        setTimeout(function() {
-            if (!video.ended) {
-                console.log('Redirección automática por timeout');
-                window.location.href = "/api/index";
-            }
-        }, 30000);
-
-        // Intentar reproducir el video
-        video.play().catch(function(error) {
-            console.log('Reproducción automática fallida:', error);
-        });
-    });
-</script>
 
 </body>
 </html>

@@ -1,0 +1,80 @@
+/* Editorial design for the remaining forms, confirmations and utility pages. */
+.lectio-legacy {
+    margin: 0; min-height: 100dvh; background: #f7faf8; color: #0d2b1d;
+    font-family: 'Inter', sans-serif; line-height: 1.6;
+}
+.lectio-legacy :is(input, select, textarea, button, a, p, label, li) { font-family: inherit; }
+.lectio-legacy :is(h1, h2, h3) {
+    font-family: 'Instrument Serif', Georgia, serif; font-weight: 400;
+    color: #0d2b1d; letter-spacing: -.02em; line-height: 1.15; text-shadow: none;
+}
+.lectio-legacy > header { position: sticky; top: 0; background: white; padding: 0; border-bottom: 1px solid #d4e5d9; box-shadow: none; }
+.lectio-legacy > header nav {
+    display: flex; align-items: center; justify-content: space-between; gap: 24px;
+    width: 100%; max-width: 1320px; margin: 0 auto; padding: 20px 32px;
+}
+.lectio-legacy .logo h1 { margin: 0; font-size: 1.75rem; color: #0d2b1d; letter-spacing: -.02em; }
+.lectio-legacy .logo span { color: #1a6b45; }
+.lectio-legacy > header .nav-links {
+    display: flex; position: static; flex-wrap: wrap; gap: 8px 20px; margin: 0; padding: 0;
+    width: auto; height: auto; list-style: none; background: transparent;
+    visibility: visible; opacity: 1; transform: none; box-shadow: none;
+}
+.lectio-legacy > header .nav-links li { margin: 0; }
+.lectio-legacy > header .nav-links a { display: inline-flex; align-items: center; min-height: 44px; padding: 8px 0; color: #2d4a3a; font-size: .9rem; text-decoration: none; }
+.lectio-legacy > header .nav-links a:hover { color: #1a6b45; background: transparent; }
+.lectio-legacy > :is(.container, .section, .multas-container, .formulario, .pagina-no-disponible) {
+    width: calc(100% - 64px); max-width: 1120px; margin: 48px auto; padding: 32px;
+    background: white; border: 1px solid #d4e5d9; border-radius: 6px; box-shadow: none;
+}
+.lectio-legacy :is(.section-title, h1) { font-size: clamp(2rem, 5vw, 3rem); margin-bottom: 24px; }
+.lectio-legacy :is(.mensaje-confirmacion, .pagina-no-disponible) { min-height: 0; height: auto; background: transparent; }
+.lectio-legacy .mensaje-confirmacion { padding: 48px 24px; }
+.lectio-legacy .mensaje-container { width: 100%; max-width: 640px; padding: 32px; border: 1px solid #d4e5d9; border-radius: 6px; box-shadow: none; background: white; }
+.lectio-legacy :is(.reserva-container, .form-nueva-reserva) { padding: 0; margin: 0; background: transparent; box-shadow: none; width: 100%; }
+.lectio-legacy .form-nueva-reserva form, .lectio-legacy[data-page="addMulta"] form { display: grid; gap: 12px; max-width: 640px; margin-inline: auto; }
+.lectio-legacy :is(input:not([type="hidden"]):not([type="checkbox"]):not([type="radio"]), select, textarea) {
+    width: 100%; padding: 12px 14px; color: #0d2b1d; background: #fff;
+    border: 1px solid #bcd8c6; border-radius: 4px; font-size: 1rem;
+}
+.lectio-legacy label { color: #2d4a3a; font-weight: 500; margin-top: 12px; }
+.lectio-legacy :is(.btn, .btn-volver, button[type="submit"]) {
+    display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+    padding: 12px 20px; min-height: 48px; margin-top: 16px; background: #1a6b45;
+    color: #fff; border: 1px solid #1a6b45; border-radius: 4px; text-decoration: none; box-shadow: none;
+}
+.lectio-legacy .btn-eliminar { background: #a33639; border-color: #a33639; }
+.lectio-legacy .mensaje-no-disponible { padding: 24px; border: 1px solid #d4e5d9; background: #eef7f1; border-radius: 4px; }
+.lectio-legacy .tabla-multas { border-collapse: collapse; border-radius: 0; box-shadow: none; }
+.lectio-legacy .tabla-multas th { background: #eef7f1; color: #0d2b1d; text-align: left; }
+.lectio-legacy .tabla-multas td { border-bottom: 1px solid #d4e5d9; }
+.lectio-legacy footer { background: #0f4a2e; color: #e3efe7; padding: 24px; text-align: center; margin-top: 48px; }
+.lectio-legacy footer p { margin: 0; }
+.lectio-legacy[data-page="MensajeR"] .formulario { max-width: 640px; }
+.lectio-legacy[data-page="addMulta"] .container { max-width: 700px; }
+
+/* Bring the other administration cards and fields into the same palette. */
+.lectio-theme :is(.form-card, .filters-card, .results-card, .table-card, .stats-card, .multa-card, .review-card) {
+    border: 1px solid #d4e5d9; border-radius: 6px; box-shadow: none; background: #fff;
+}
+.lectio-theme :is(.form-header, .card-header, .results-header, .table-header) {
+    background: #eef7f1; color: #0d2b1d; border-bottom: 1px solid #d4e5d9;
+}
+.lectio-theme :is(.form-header, .card-header, .results-header, .table-header) :is(h2, h3, i) { color: inherit; }
+.lectio-theme :is(.form-group, .field-group) :is(input, select, textarea) { border-color: #bcd8c6; border-radius: 4px; }
+.lectio-theme .info-box { background: #eef7f1; color: #2d4a3a; border-color: #bcd8c6; border-radius: 4px; }
+.lectio-theme .modal-content { background: white; color: #0d2b1d; border: 1px solid #d4e5d9; border-radius: 6px; box-shadow: 0 16px 48px #0d2b1d20; }
+.lectio-challenge .modal-content h3 { color: #1a6b45; }
+.lectio-challenge .modal-content button { background: #1a6b45; color: white; min-height: 44px; }
+.lectio-page[data-page="intro"] .skip-btn { min-height: 48px; padding: 12px 24px; background: #fff; color: #0d2b1d; border: 1px solid #d4e5d9; border-radius: 4px; text-decoration: none; bottom: max(24px, env(safe-area-inset-bottom)); }
+
+@media (max-width: 768px) {
+    .lectio-legacy > header { position: relative; }
+    .lectio-legacy > header nav { flex-direction: column; align-items: flex-start; gap: 12px; padding: 16px 20px; }
+    .lectio-legacy > header .nav-links { width: 100%; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 4px 16px; }
+    .lectio-legacy > header .nav-links a { width: 100%; border-bottom: 1px solid #d4e5d9; line-height: 1.4; }
+    .lectio-legacy > :is(.container, .section, .multas-container, .formulario, .pagina-no-disponible) { width: calc(100% - 32px); margin: 24px auto; padding: 24px 20px; }
+    .lectio-legacy .mensaje-confirmacion { padding: 24px 16px; }
+    .lectio-legacy .mensaje-container { padding: 24px 20px; }
+    .lectio-page[data-page="access-denied"] main, .lectio-page[data-page="Pago"] main { margin: 48px auto !important; padding: 24px !important; }
+}

@@ -2,9 +2,9 @@
 <html lang="es">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Historia del Pensamiento - Lectio</title>
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;500;700&display=swap" rel="stylesheet" />
+  <link data-consent-font="https://fonts.googleapis.com/css2?family=Poppins:wght@300;500;700&display=swap" rel="stylesheet" />
   <style>
     * {
       margin: 0;
@@ -12,7 +12,7 @@
       box-sizing: border-box;
     }
     body {
-      font-family: 'Poppins', sans-serif;
+      font-family: 'Inter', sans-serif;
       min-height: 100vh;
       color: #2c3e50;
       background: linear-gradient(135deg, #e8f8f5 0%, #fdfdfd 100%);
@@ -23,7 +23,7 @@
     }
 
     header {
-      background: linear-gradient(135deg, #27ae60 0%, #2ecc71 100%);
+      background: linear-gradient(135deg, #1a6b45 0%, #2ecc71 100%);
       color: white;
       padding: 15px 20px;
       position: fixed;
@@ -81,7 +81,7 @@
     }
 
     h1 {
-      color: #27ae60;
+      color: #1a6b45;
       font-size: 2.3rem;
       margin-bottom: 25px;
       text-shadow: 0 2px 6px rgba(0,0,0,0.1);
@@ -141,7 +141,7 @@
     }
     .pensador h3 {
       font-size: 1rem;
-      color: #27ae60;
+      color: #1a6b45;
       margin-bottom: 5px;
     }
     .pensador p {
@@ -153,7 +153,7 @@
     /* Sidebar */
     aside {
       width: 270px;
-      background: linear-gradient(180deg, #2ecc71, #27ae60);
+      background: linear-gradient(180deg, #2ecc71, #1a6b45);
       padding: 30px 25px;
       display: flex;
       flex-direction: column;
@@ -255,11 +255,11 @@
       user-select: text;
     }
     .modal-content h3 {
-      color: #27ae60;
+      color: #1a6b45;
       margin-bottom: 15px;
     }
     .modal-content button {
-      background: #27ae60;
+      background: #1a6b45;
       color: #fff;
       border: none;
       border-radius: 8px;
@@ -268,7 +268,7 @@
       transition: all 0.3s ease;
     }
     .modal-content button:hover {
-      background: #219150;
+      background: #0f4a2e;
     }
 
     /* Inspirational message */
@@ -277,7 +277,7 @@
       bottom: 20px;
       left: 50%;
       transform: translateX(-50%);
-      background: #27ae60;
+      background: #1a6b45;
       color: #fff;
       padding: 12px 25px;
       border-radius: 8px;
@@ -302,7 +302,7 @@
         top: 60px;
         right: 0;
         position: fixed;
-        background: linear-gradient(180deg, #2ecc71, #27ae60);
+        background: linear-gradient(180deg, #2ecc71, #1a6b45);
         padding: 25px 20px;
         transform: translateX(100%);
         transition: transform 0.3s ease;
@@ -327,10 +327,43 @@
       }
     }
   </style>
-</head>
-<body>
+    <link rel="stylesheet" href="/estilos/lectio-ui.css">
+    <script src="/js/lectio-ui.js" defer></script>
+    <link rel="stylesheet" href="/estilos/lectio-theme.css">
+    <link rel="stylesheet" href="/estilos/lectio-responsive.css">
+<link data-consent-font="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/estilos/lectio-experience.css">
+<link rel="stylesheet" href="/estilos/lectio-adventure.css">
+<link rel="stylesheet" href="/estilos/lectio-motion.css">
+<script src="/js/lectio-experience.js" defer></script>
+<link rel="stylesheet" href="/estilos/lectio-polish.css">
+<link rel="icon" type="image/svg+xml" href="/img/lectio-logo.svg">
+<link rel="stylesheet" href="/estilos/lectio-menu.css">
+<script src="/js/lectio-menu.js" defer></script>
+<link rel="stylesheet" href="/estilos/lectio-privacy.css">
+<script src="/js/lectio-privacy.js" defer></script></head>
+<body class="adventure lectio-theme lectio-reading lectio-page" data-page="historia_pensamiento" data-world="library">
+<header class="experience-nav" id="nav">
+  <div class="experience-bar">
+    <a href="/api/logiado" class="experience-brand"><img class="lectio-logo" src="/img/lectio-logo.svg" alt="" width="44" height="44">LECTIO <small>/ BIBLIOTECA</small></a>
+    <nav class="experience-links" id="experienceLinks" aria-label="Navegación principal">
+      <a href="/api/logiado">Inicio</a><a href="/api/logiado#coleccion">Colección</a>
+      <a href="/api/logiado#autores">Autores</a><a href="/api/logiado#centro-ayuda">Ayuda</a>
+      <a href="/api/libroVirtualesLog">Libros virtuales</a><a href="/api/reservaLibro">Reserva</a>
+      <a href="/api/optimizador">Optimizador</a>
+      <a href="/api/inicio" class="experience-challenge" aria-current="page">✦ Desafío</a>
+    </nav>
+    <div class="experience-account">
+      <p th:if="${username != null}">Hola, <strong th:text="${username}"></strong></p>
+      <form action="/api/logout" method="post"><button type="submit">Cerrar sesión</button></form>
+    </div>
+    <button type="button" class="experience-toggle" id="experienceToggle" aria-controls="experienceLinks" aria-expanded="false" aria-label="Abrir menú">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path class="menu-line-top" d="M4 6H20"/><path class="menu-line-middle" d="M4 12H20"/><path class="menu-line-bottom" d="M4 18H20"/></svg>
+    </button>
+  </div>
+</header>
 
-<header>
+<header class="experience-old-header">
   <h1>Historia del Pensamiento</h1>
   <button aria-label="Abrir menú" aria-expanded="false" aria-controls="sidebar" class="menu-toggle" id="menu-toggle" type="button">
     <span></span>
@@ -371,9 +404,9 @@
   <div class="burbuja" style="width:90px; height:90px; left:85%; animation-delay:3s;"></div>
 </main>
 
-<aside id="sidebar" role="navigation" aria-label="Navegación principal" class="hide">
+<aside id="sidebar" role="navigation" aria-label="Navegación principal" class="experience-old-sidebar hide">
   <div>
-    <h2>LECTIO</h2>
+    <h2><img class="lectio-logo" src="/img/lectio-logo.svg" alt="" width="44" height="44">LECTIO</h2>
     <ul>
       <li tabindex="0" role="button" onclick="showModal('categorias')">📚 Categorías</li>
       <li tabindex="0" role="button" onclick="showModal('reto')">🎯 Reto Filosófico</li>
@@ -381,7 +414,7 @@
       <li tabindex="0" role="link" onclick="window.location.href='libros'">⬅ Regresar</li>
     </ul>
   </div>
-  <div class="footer">© 2025 Lectio</div>
+  <div class="footer">© 2026 Lectio</div>
 </aside>
 
 <div id="modal" class="modal" onclick="closeModal(event)" role="dialog" aria-modal="true" aria-labelledby="modal-title" aria-describedby="modal-text">

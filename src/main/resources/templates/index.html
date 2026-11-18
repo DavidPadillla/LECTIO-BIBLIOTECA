@@ -8,9 +8,9 @@
     <meta name="keywords" content="libros, biblioteca, virtual, lectura, autores" />
     <title>Lectio — Biblioteca Virtual</title>
 
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+    
+    
+    <link data-consent-font="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
 
     <style>
@@ -957,14 +957,25 @@
             html{scroll-behavior:auto}
         }
     </style>
-</head>
-<body>
+    <link rel="stylesheet" href="/estilos/lectio-ui.css">
+    <script src="/js/lectio-ui.js" defer></script>
+    <link rel="stylesheet" href="/estilos/lectio-responsive.css">
+<link rel="stylesheet" href="/estilos/lectio-experience.css">
+<link rel="stylesheet" href="/estilos/lectio-motion.css">
+<script src="/js/lectio-experience.js" defer></script>
+<link rel="stylesheet" href="/estilos/lectio-polish.css">
+<link rel="icon" type="image/svg+xml" href="/img/lectio-logo.svg">
+<link rel="stylesheet" href="/estilos/lectio-menu.css">
+<script src="/js/lectio-menu.js" defer></script>
+<link rel="stylesheet" href="/estilos/lectio-privacy.css">
+<script src="/js/lectio-privacy.js" defer></script><link rel="stylesheet" href="/estilos/lectio-public-nav.css"></head>
+<body class="lectio-page" data-page="index">
 
 <!-- NAV -->
 <header class="nav" id="nav">
     <div class="wrap nav-inner">
-        <a href="#inicio" class="brand">
-            <span class="sq"></span>
+        <a href="#inicio" class="brand"><img class="lectio-logo" src="/img/lectio-logo.svg" alt="" width="44" height="44">
+            
             LECTIO <small>/ BIBLIOTECA</small>
         </a>
 
@@ -974,6 +985,7 @@
             <a href="#autores">Autores</a>
             <a href="#ayuda">Ayuda</a>
             <a href="/api/librosVirtuales">Libros Virtuales</a>
+            <a href="/api/login" class="nav-mobile-login">Iniciar sesión</a>
         </nav>
 
         <a href="/api/login" class="nav-cta">
@@ -988,7 +1000,7 @@
 
 <!-- HERO con VIDEO FULL SCREEN -->
 <section class="hero" id="inicio">
-    <video src="/img/Video3.mp4" autoplay muted loop playsinline aria-label="Video de fondo con libros animados">
+    <video src="/img/Video3.mp4" preload="auto" autoplay muted loop playsinline aria-label="Video de fondo con libros animados">
         <p>Tu navegador no soporta el elemento video. <a href="/img/Video3.mp4">Enlace al video</a>.</p>
     </video>
 
@@ -996,16 +1008,10 @@
         <div class="hero-grid">
 
             <div class="hero-copy">
-                <div class="hero-top">
-                    <span><span class="dot"></span> En línea · Bogotá</span>
-                    <span>N° 001 — Est. 2010</span>
-                </div>
-
                 <span class="eyebrow">Bienvenido a Lectio</span>
                 <h1 class="hero-title">Explora nuestra <em>colección</em> virtual.</h1>
                 <p class="hero-lede">
-                    Accede a miles de libros y recursos de tus autores favoritos desde la comodidad
-                    de tu hogar. Un catálogo curado, siempre disponible.
+                    Explora el catálogo, encuentra tu próxima lectura y guarda tu progreso.
                 </p>
                 <div class="hero-actions">
                     <a href="#coleccion" class="btn btn-solid">
@@ -1019,44 +1025,11 @@
 
             <div class="hero-side">
                 <div class="hero-card">
-                    <div class="hc-head">
-                        <span class="t">Rec · 001</span>
-                        <span class="num">01 / 04</span>
-                    </div>
-                    <h4>Biblioteca <em>en vivo</em></h4>
-                    <p>Miles de libros, autores y recursos, disponibles las 24 horas desde cualquier lugar.</p>
-                    <div class="hc-meta">
-                        <div>
-                            <div class="k">Libros</div>
-                            <div class="v">12.500<em>+</em></div>
-                        </div>
-                        <div>
-                            <div class="k">Autores</div>
-                            <div class="v">480<em>+</em></div>
-                        </div>
-                    </div>
+                    <div class="reading-card-art" aria-hidden="true"><img src="/img/lio.svg" alt=""></div><span class="reading-card-label">Tu próxima historia empieza aquí</span><h4>Un libro, <em>a tu ritmo</em></h4>
+                    <p>Un capítulo antes de dormir. Una aventura para el fin de semana. Encuentra ese libro que te acompaña.</p><a class="reading-card-link" href="/api/login">Encuentra tu próxima lectura <span aria-hidden="true">→</span></a>
                 </div>
             </div>
 
-        </div>
-
-        <div class="hero-meta-strip">
-            <div class="hero-meta">
-                <div class="k">Libros</div>
-                <div class="v">12.500<em>+</em></div>
-            </div>
-            <div class="hero-meta">
-                <div class="k">Autores</div>
-                <div class="v">480<em>+</em></div>
-            </div>
-            <div class="hero-meta">
-                <div class="k">Acceso</div>
-                <div class="v">24<em>/7</em></div>
-            </div>
-            <div class="hero-meta">
-                <div class="k">Trayectoria</div>
-                <div class="v">15<em>años</em></div>
-            </div>
         </div>
     </div>
 
@@ -1111,7 +1084,7 @@
                     <p>Exploración profunda de los temas más importantes de la literatura universal.</p>
                     <div class="book-foot">
                         <span class="author">Anónimo</span>
-                        <a href="https://www.gutenberg.org/cache/epub/11036/pg11036-images.html" class="book-link" target="_blank" rel="noopener">
+                        <a href="/api/muestras/hadas" class="book-link">
                             Leer <i class="fas fa-arrow-right"></i>
                         </a>
                     </div>
@@ -1134,7 +1107,7 @@
                     <p>Una guía fascinante sobre los cuentos populares alemanes.</p>
                     <div class="book-foot">
                         <span class="author">Hnos. Grimm</span>
-                        <a href="https://www.gutenberg.org/cache/epub/2591/pg2591-images.html" class="book-link" target="_blank" rel="noopener">
+                        <a href="/api/muestras/grimm" class="book-link">
                             Leer <i class="fas fa-arrow-right"></i>
                         </a>
                     </div>
@@ -1157,7 +1130,7 @@
                     <p>Relatos impresionantes sobre lo macabro y lo humano.</p>
                     <div class="book-foot">
                         <span class="author">E. A. Poe</span>
-                        <a href="https://www.gutenberg.org/cache/epub/1064/pg1064-images.html" class="book-link" target="_blank" rel="noopener">
+                        <a href="/api/muestras/poe" class="book-link">
                             Leer <i class="fas fa-arrow-right"></i>
                         </a>
                     </div>
@@ -1180,7 +1153,7 @@
                     <p>Grandes viajes y exploraciones narrados por sus protagonistas.</p>
                     <div class="book-foot">
                         <span class="author">Varios</span>
-                        <a href="https://www.gutenberg.org/" class="book-link" target="_blank" rel="noopener">
+                        <a href="/api/muestras/aventura" class="book-link">
                             Leer <i class="fas fa-arrow-right"></i>
                         </a>
                     </div>
@@ -1213,11 +1186,6 @@
                     <div class="author-role">Realismo mágico</div>
                     <p class="author-desc">Autor de "Cien Años de Soledad", premio Nobel de Literatura 1982.</p>
                 </div>
-                <div class="author-social">
-                    <a href="#" aria-label="Facebook"><i class="fab fa-facebook-f"></i></a>
-                    <a href="#" aria-label="Twitter"><i class="fab fa-twitter"></i></a>
-                    <a href="#" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
-                </div>
             </article>
 
             <article class="author">
@@ -1226,11 +1194,6 @@
                 <div>
                     <div class="author-role">Narrativa contemporánea</div>
                     <p class="author-desc">Autora de "La Casa de los Espíritus", una de las voces más leídas en español.</p>
-                </div>
-                <div class="author-social">
-                    <a href="#" aria-label="Facebook"><i class="fab fa-facebook-f"></i></a>
-                    <a href="#" aria-label="Twitter"><i class="fab fa-twitter"></i></a>
-                    <a href="#" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
                 </div>
             </article>
 
@@ -1241,40 +1204,7 @@
                     <div class="author-role">Literatura fantástica</div>
                     <p class="author-desc">Autor de "Ficciones", maestro del cuento y de la literatura especulativa.</p>
                 </div>
-                <div class="author-social">
-                    <a href="#" aria-label="Facebook"><i class="fab fa-facebook-f"></i></a>
-                    <a href="#" aria-label="Twitter"><i class="fab fa-twitter"></i></a>
-                    <a href="#" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
-                </div>
             </article>
-        </div>
-    </div>
-</section>
-
-<!-- STATS -->
-<section class="section no-border" style="padding:0">
-    <div class="wrap">
-        <div class="stats reveal">
-            <div class="stat">
-                <div class="idx">01 <span class="sq"></span></div>
-                <div class="num"><span data-count="12500">0</span><sup>+</sup></div>
-                <div class="lbl">Libros disponibles</div>
-            </div>
-            <div class="stat">
-                <div class="idx">02 <span class="sq"></span></div>
-                <div class="num"><span data-count="480">0</span><sup>+</sup></div>
-                <div class="lbl">Autores destacados</div>
-            </div>
-            <div class="stat">
-                <div class="idx">03 <span class="sq"></span></div>
-                <div class="num"><span data-count="24">0</span><sup>/7</sup></div>
-                <div class="lbl">Horas de acceso</div>
-            </div>
-            <div class="stat">
-                <div class="idx">04 <span class="sq"></span></div>
-                <div class="num"><span data-count="15">0</span><sup>+</sup></div>
-                <div class="lbl">Años de trayectoria</div>
-            </div>
         </div>
     </div>
 </section>
@@ -1322,15 +1252,10 @@
 <section class="cta">
     <div class="wrap cta-inner">
         <div class="reveal">
-            <h2>Recibe nuestras <em>novedades</em>.</h2>
-            <p>Suscríbete y obtén acceso anticipado a nuevos títulos, autores y recursos exclusivos de la biblioteca.</p>
+            <h2>Tu próxima <em>lectura</em>.</h2>
+            <p>Crea una cuenta para reservar libros y guardar tu progreso de lectura.</p>
         </div>
-        <form class="cta-form reveal" onsubmit="event.preventDefault(); this.reset(); alert('¡Gracias por suscribirte!');">
-            <input type="email" placeholder="tu@correo.com" required aria-label="Correo electrónico">
-            <button type="submit">
-                Suscribirme <i class="fas fa-arrow-right"></i>
-            </button>
-        </form>
+        <div class="cta-actions reveal"><a class="btn btn-solid" href="/api/register">Crear una cuenta <i class="fas fa-arrow-right"></i></a></div>
     </div>
 </section>
 
@@ -1339,17 +1264,11 @@
     <div class="wrap">
         <div class="foot-top">
             <div class="foot-brand">
-                <a href="#inicio" class="brand">
-                    <span class="sq"></span>
+                <a href="#inicio" class="brand"><img class="lectio-logo" src="/img/lectio-logo.svg" alt="" width="44" height="44">
+                    
                     LECTIO <small>/ BIBLIOTECA</small>
                 </a>
-                <p>Tu biblioteca virtual de confianza. Miles de libros y recursos digitales al alcance de un clic.</p>
-                <div class="foot-social">
-                    <a href="#" aria-label="Facebook"><i class="fab fa-facebook-f"></i></a>
-                    <a href="#" aria-label="Twitter"><i class="fab fa-twitter"></i></a>
-                    <a href="#" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
-                    <a href="#" aria-label="YouTube"><i class="fab fa-youtube"></i></a>
-                </div>
+                <p>Libros, desafíos de lectura y reservas en un mismo lugar.</p>
             </div>
 
             <div class="foot-col">
@@ -1381,11 +1300,11 @@
         </div>
 
         <div class="foot-bot">
-            <span>© 2025 Lectio Biblioteca · Todos los derechos reservados</span>
+            <span>© 2026 Lectio Biblioteca · Todos los derechos reservados</span>
             <span>Hecho con <i class="fas fa-heart"></i> para lectores</span>
         </div>
     </div>
-</footer>
+<a href="/api/privacidad" class="privacy-footer-link">Privacidad y preferencias</a></footer>
 
 <button class="to-top" id="toTop" aria-label="Volver arriba">
     <i class="fas fa-arrow-up"></i>
@@ -1429,42 +1348,10 @@
         });
     }, { passive:true });
 
-    const io = new IntersectionObserver((entries) => {
-        entries.forEach(e => {
-            if (e.isIntersecting){
-                e.target.classList.add('in');
-                io.unobserve(e.target);
-            }
-        });
-    }, { threshold:0.15, rootMargin:'0px 0px -60px 0px' });
-    document.querySelectorAll('.reveal, .stagger').forEach(el => io.observe(el));
+    // Entrance motion is managed by lectio-ui.js.
 
-    const counterIO = new IntersectionObserver((entries) => {
-        entries.forEach(e => {
-            if (!e.isIntersecting) return;
-            const el = e.target;
-            const target = +el.dataset.count;
-            const start = performance.now();
-            const duration = 1700;
-            function tick(now){
-                const p = Math.min((now - start) / duration, 1);
-                const eased = 1 - Math.pow(1 - p, 3);
-                el.textContent = Math.floor(eased * target).toLocaleString('es-CO');
-                if (p < 1) requestAnimationFrame(tick);
-            }
-            requestAnimationFrame(tick);
-            counterIO.unobserve(el);
-        });
-    }, { threshold:0.5 });
-    document.querySelectorAll('[data-count]').forEach(c => counterIO.observe(c));
 
-    const video = document.querySelector('.hero video');
-    if (video){
-        const vIO = new IntersectionObserver((entries) => {
-            entries.forEach(e => e.isIntersecting ? video.play().catch(()=>{}) : video.pause());
-        }, { threshold:0.3 });
-        vIO.observe(video);
-    }
+
 </script>
 </body>
 </html>

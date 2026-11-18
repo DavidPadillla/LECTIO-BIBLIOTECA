@@ -2,9 +2,9 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>Biblioteca - Lectio</title>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;500;700&display=swap" rel="stylesheet" />
+    <link data-consent-font="https://fonts.googleapis.com/css2?family=Poppins:wght@300;500;700&display=swap" rel="stylesheet" />
     <style>
         * {
           margin: 0;
@@ -12,7 +12,7 @@
           box-sizing: border-box;
         }
         body {
-          font-family: 'Poppins', sans-serif;
+          font-family: 'Inter', sans-serif;
           background: linear-gradient(135deg, #e8f8f5 0%, #fdfdfd 100%);
           color: #2c3e50;
           min-height: 100vh;
@@ -20,7 +20,7 @@
           flex-direction: column;
         }
         header {
-          background: #27ae60;
+          background: #1a6b45;
           color: #fff;
           padding: 15px 20px;
           display: flex;
@@ -59,7 +59,7 @@
           right: 0;
           width: 270px;
           height: calc(100vh - 60px);
-          background: linear-gradient(180deg, #2ecc71, #27ae60);
+          background: linear-gradient(180deg, #2ecc71, #1a6b45);
           box-shadow: -4px 0 20px rgba(0, 0, 0, 0.08);
           border-radius: 25px 0 0 25px;
           padding: 30px 25px;
@@ -118,7 +118,7 @@
           position: relative;
         }
         h1 {
-          color: #27ae60;
+          color: #1a6b45;
           font-size: 2.4rem;
           margin-bottom: 40px;
           text-shadow: 0 1px 3px rgba(0,0,0,0.1);
@@ -149,7 +149,7 @@
           box-shadow: 0 12px 30px rgba(0,0,0,0.12);
         }
         .libro.completado {
-          border: 4px solid #27ae60;
+          border: 4px solid #1a6b45;
         }
         .libro img {
           width: 100%;
@@ -168,7 +168,7 @@
           position: absolute;
           top: 10px;
           right: 10px;
-          background: #27ae60;
+          background: #1a6b45;
           color: white;
           padding: 6px 16px;
           border-radius: 25px;
@@ -186,10 +186,10 @@
           position: relative;
           z-index: 2;
           backdrop-filter: blur(10px);
-          border: 2px solid #27ae60;
+          border: 2px solid #1a6b45;
         }
         .progreso-title {
-          color: #27ae60;
+          color: #1a6b45;
           font-size: 1.8rem;
           margin-bottom: 30px;
           font-weight: 700;
@@ -201,7 +201,7 @@
           margin-bottom: 35px;
         }
         .stat-card {
-          background: linear-gradient(135deg,#27ae60,#2ecc71);
+          background: linear-gradient(135deg,#1a6b45,#2ecc71);
           color: white;
           padding: 25px;
           border-radius: 15px;
@@ -228,7 +228,7 @@
           box-shadow: 0 6px 20px rgba(0,0,0,0.06);
         }
         .table-header {
-          background: #27ae60;
+          background: #1a6b45;
           color: white;
           padding: 18px;
           font-weight: 600;
@@ -275,7 +275,7 @@
           margin-right: 12px;
         }
         .progress-bar {
-          background: linear-gradient(90deg,#27ae60,#2ecc71);
+          background: linear-gradient(90deg,#1a6b45,#2ecc71);
           height: 100%;
           border-radius: 12px;
           transition: width 0.5s ease;
@@ -290,7 +290,7 @@
           white-space: nowrap;
         }
         .status-completado {
-          background: #27ae60;
+          background: #1a6b45;
           color: white;
         }
         .status-en-progreso {
@@ -384,9 +384,42 @@
           }
         }
     </style>
-</head>
-<body>
-<header>
+    <link rel="stylesheet" href="/estilos/lectio-ui.css">
+    <script src="/js/lectio-ui.js" defer></script>
+    <link rel="stylesheet" href="/estilos/lectio-theme.css">
+    <link rel="stylesheet" href="/estilos/lectio-responsive.css">
+<link data-consent-font="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/estilos/lectio-experience.css">
+<link rel="stylesheet" href="/estilos/lectio-adventure.css">
+<link rel="stylesheet" href="/estilos/lectio-motion.css">
+<script src="/js/lectio-experience.js" defer></script>
+<link rel="stylesheet" href="/estilos/lectio-polish.css">
+<link rel="icon" type="image/svg+xml" href="/img/lectio-logo.svg">
+<link rel="stylesheet" href="/estilos/lectio-menu.css">
+<script src="/js/lectio-menu.js" defer></script>
+<link rel="stylesheet" href="/estilos/lectio-privacy.css">
+<script src="/js/lectio-privacy.js" defer></script><link rel="stylesheet" href="/estilos/lectio-carousel.css"><script src="/js/lectio-carousel.js" defer></script></head>
+<body class="adventure lectio-theme lectio-reading lectio-page" data-page="libros" data-world="library">
+<header class="experience-nav" id="nav">
+  <div class="experience-bar">
+    <a href="/api/logiado" class="experience-brand"><img class="lectio-logo" src="/img/lectio-logo.svg" alt="" width="44" height="44">LECTIO <small>/ BIBLIOTECA</small></a>
+    <nav class="experience-links" id="experienceLinks" aria-label="Navegación principal">
+      <a href="/api/logiado">Inicio</a><a href="/api/logiado#coleccion">Colección</a>
+      <a href="/api/logiado#autores">Autores</a><a href="/api/logiado#centro-ayuda">Ayuda</a>
+      <a href="/api/libroVirtualesLog">Libros virtuales</a><a href="/api/reservaLibro">Reserva</a>
+      <a href="/api/optimizador">Optimizador</a>
+      <a href="/api/inicio" class="experience-challenge" aria-current="page">✦ Desafío</a>
+    </nav>
+    <div class="experience-account">
+      <p th:if="${username != null}">Hola, <strong th:text="${username}"></strong></p>
+      <form action="/api/logout" method="post"><button type="submit">Cerrar sesión</button></form>
+    </div>
+    <button type="button" class="experience-toggle" id="experienceToggle" aria-controls="experienceLinks" aria-expanded="false" aria-label="Abrir menú">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path class="menu-line-top" d="M4 6H20"/><path class="menu-line-middle" d="M4 12H20"/><path class="menu-line-bottom" d="M4 18H20"/></svg>
+    </button>
+  </div>
+</header>
+<header class="experience-old-header">
     <h1>Biblioteca</h1>
     <button aria-label="Abrir menú" class="menu-toggle" id="menu-toggle">
         <span></span>
@@ -395,9 +428,9 @@
     </button>
 </header>
 
-<aside id="sidebar" aria-label="Navegación principal" class="hide">
+<aside id="sidebar" aria-label="Navegación principal" class="experience-old-sidebar hide">
     <div>
-        <h2>LECTIO</h2>
+        <h2><img class="lectio-logo" src="/img/lectio-logo.svg" alt="" width="44" height="44">LECTIO</h2>
         <ul>
             <li onclick="window.location.href='/api/index'">
                 <svg class="icon" viewBox="0 0 24 24" aria-hidden="true" width="22" height="22" fill="white" style="margin-right:8px;">
@@ -419,29 +452,24 @@
             </li>
         </ul>
     </div>
-    <div class="footer">© 2025 Lectio</div>
+    <div class="footer">© 2026 Lectio</div>
 </aside>
 
 <main>
+<nav class="journey-shortcuts" aria-label="Tu aventura"><a href="/api/inicio">← Desafíos</a><a href="/api/libros">Libros y progreso</a><a href="/api/historia_pensamiento">Pensadores</a></nav>
     <h1>Selecciona un libro</h1>
     <div class="libros-grid">
-        <div class="libro" data-libro="principito" tabindex="0" role="button" aria-label="Seleccionar El Principito" onclick="window.location.href='/api/desafio_principito'">
-            <img src="/img/principito.jpg" alt="El Principito" />
-            <h3>El Principito</h3>
-        </div>
-        <div class="libro" data-libro="1984" tabindex="0" role="button" aria-label="Seleccionar 1984" onclick="window.location.href='/api/desafio_1984'">
-            <img src="/img/1984.jpg" alt="1984" />
-            <h3>1984</h3>
-        </div>
-        <div class="libro" data-libro="harrypotter" tabindex="0" role="button" aria-label="Seleccionar Harry Potter" onclick="window.location.href='/api/desafio_harrypotter'">
-            <img src="/img/harrypotter.jpg" alt="Harry Potter" />
-            <h3>Harry Potter</h3>
-        </div>
+        <a class="libro journey-world" data-libro="principito" href="/api/desafio_principito"><div class="world-cover"><img src="/img/principito.jpg" alt="El Principito" /></div><h3>El Principito</h3><p>Retoma tu aventura y completa sus cinco capítulos.</p><span class="world-enter">Continuar la historia →</span></a>
+        <a class="libro journey-world" data-libro="1984" href="/api/desafio_1984"><div class="world-cover"><img src="/img/1984.jpg" alt="1984" /></div><h3>1984</h3><p>Retoma tu aventura y completa sus cinco capítulos.</p><span class="world-enter">Continuar la historia →</span></a>
+        <a class="libro journey-world" data-libro="harrypotter" href="/api/desafio_harrypotter"><div class="world-cover"><img src="/img/harrypotter.jpg" alt="Harry Potter" /></div><h3>Harry Potter</h3><p>Retoma tu aventura y completa sus cinco capítulos.</p><span class="world-enter">Continuar la historia →</span></a>
+<a class="libro journey-world" data-libro="jardin" href="/api/desafio_jardin"><div class="world-cover"><img src="/img/cover-jardin.svg" alt="La llave de las estaciones"></div><h3>La llave de las estaciones</h3><p>Una llave diminuta, cuatro estaciones y un jardín que aprende a despertar.</p><span class="world-enter">Comenzar →</span></a>
+<a class="libro journey-world" data-libro="reloj" href="/api/desafio_reloj"><div class="world-cover"><img src="/img/cover-reloj.svg" alt="La habitación del último reloj"></div><h3>La habitación del último reloj</h3><p>Una casa silenciosa. Una hora detenida. Un secreto que espera ser escuchado.</p><span class="world-enter">Comenzar →</span></a>
+<a class="libro journey-world" data-libro="isla" href="/api/desafio_isla"><div class="world-cover"><img src="/img/cover-isla.svg" alt="La isla que cambiaba de nombre"></div><h3>La isla que cambiaba de nombre</h3><p>Sigue un mapa cambiante y descubre una isla que guarda más preguntas que tesoros.</p><span class="world-enter">Comenzar →</span></a>
     </div>
 
     <div class="progreso-section" id="progreso-section" aria-live="polite" aria-atomic="true">
         <h2 class="progreso-title">
-            <svg class="icon" viewBox="0 0 24 24" aria-hidden="true" width="28" height="28" fill="#27ae60" style="vertical-align: middle; margin-right:6px;">
+            <svg class="icon" viewBox="0 0 24 24" aria-hidden="true" width="28" height="28" fill="#1a6b45" style="vertical-align: middle; margin-right:6px;">
                 <path d="M3 13h2v-2H3v2zm4 4h2v-2H7v2zm-4 2h2v-2H3v2zm4-8h2V7H7v4zm4 8h2v-2h-2v2zm-4-4h2v-2H7v2zm4-8h2V7h-2v4zm4 8h2v-2h-2v2zm-4-4h2v-2h-2v2zm4-8h2V7h-2v4zM3 3h18v2H3V3z"/>
             </svg>
             Tu Progreso de Lectura
@@ -466,13 +494,17 @@
     const LIBROS_INFO = {
       'principito': { nombre: 'El Principito', icono: '⭐', capitulos: 5 },
       '1984': { nombre: '1984', icono: '👁️', capitulos: 5 },
-      'harrypotter': { nombre: 'Harry Potter', icono: '⚡', capitulos: 5 }
+      'harrypotter': { nombre: 'Harry Potter', icono: '⚡', capitulos: 5 },
+'jardin': { nombre: 'La llave de las estaciones', icono: '📖', capitulos: 3 },
+'reloj': { nombre: 'La habitación del último reloj', icono: '📖', capitulos: 3 },
+'isla': { nombre: 'La isla que cambiaba de nombre', icono: '📖', capitulos: 3 }
     };
 
     async function cargarProgreso() {
       try {
         const response = await fetch('/api/progreso/mi-progreso', {
           method: 'GET',
+          cache: 'no-store',
           credentials: 'include'
         });
 
@@ -610,6 +642,7 @@
     }
 
     window.onload = cargarProgreso;
+    window.addEventListener('pageshow', event => { if (event.persisted) cargarProgreso(); });
 
     // Menu toggle logic
     const menuToggle = document.getElementById('menu-toggle');

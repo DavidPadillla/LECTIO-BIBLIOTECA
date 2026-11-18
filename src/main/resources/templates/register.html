@@ -6,9 +6,9 @@
     <meta name="description" content="Lectio - Crea tu cuenta en la biblioteca virtual" />
     <title>Crear Cuenta — Lectio Biblioteca</title>
 
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    
+    
+    <link data-consent-font="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
 
     <style>
@@ -394,8 +394,19 @@
             *{animation-duration:.01ms!important;transition-duration:.01ms!important}
         }
     </style>
-</head>
-<body>
+    <link rel="stylesheet" href="/estilos/lectio-ui.css">
+    <script src="/js/lectio-ui.js" defer></script>
+    <link rel="stylesheet" href="/estilos/lectio-responsive.css">
+<link rel="stylesheet" href="/estilos/lectio-experience.css">
+<link rel="stylesheet" href="/estilos/lectio-motion.css">
+<script src="/js/lectio-experience.js" defer></script>
+<link rel="stylesheet" href="/estilos/lectio-polish.css">
+<link rel="icon" type="image/svg+xml" href="/img/lectio-logo.svg">
+<link rel="stylesheet" href="/estilos/lectio-menu.css">
+<script src="/js/lectio-menu.js" defer></script>
+<link rel="stylesheet" href="/estilos/lectio-privacy.css">
+<script src="/js/lectio-privacy.js" defer></script></head>
+<body class="lectio-page" data-page="register">
 
 <main class="login-page">
 
@@ -405,14 +416,14 @@
             <span></span><span></span><span></span>
         </div>
 
-        <a href="/api/index" class="bp-brand">
-            <span class="sq"></span>
+        <a href="/api/index" class="bp-brand"><img class="lectio-logo" src="/img/lectio-logo.svg" alt="" width="44" height="44">
+            
             LECTIO
         </a>
 
         <h2 class="bp-quote">Empieza tu <em>viaje</em> como lector.</h2>
 
-        <div class="bp-foot">En línea</div>
+        <div class="bp-foot">Biblioteca digital</div>
     </section>
 
     <!-- PANEL DERECHO — FORMULARIO -->
@@ -435,7 +446,7 @@
                 <div>
                     <div class="input-wrap" id="usernameWrap">
                         <i class="fas fa-user"></i>
-                        <input type="text" name="username" id="username" placeholder="Usuario" required autocomplete="username">
+                        <input type="text" name="username" id="username" placeholder="Usuario" aria-label="Usuario" required autocomplete="username">
                     </div>
                     <span class="field-error" id="usernameError">Usuario requerido</span>
                 </div>
@@ -443,7 +454,7 @@
                 <div>
                     <div class="input-wrap" id="passwordWrap">
                         <i class="fas fa-lock"></i>
-                        <input type="password" name="password" id="password" placeholder="Contraseña" required autocomplete="new-password">
+                        <input type="password" name="password" id="password" placeholder="Contraseña" aria-label="Contraseña" required autocomplete="new-password">
                         <button type="button" class="toggle-pass" id="togglePass" aria-label="Mostrar contraseña">
                             <i class="fas fa-eye"></i>
                         </button>
@@ -454,7 +465,7 @@
                 <div>
                     <div class="input-wrap" id="confirmPasswordWrap">
                         <i class="fas fa-lock"></i>
-                        <input type="password" id="confirmPassword" placeholder="Confirmar contraseña" required autocomplete="new-password">
+                        <input type="password" id="confirmPassword" placeholder="Confirmar contraseña" aria-label="Confirmar contraseña" required autocomplete="new-password">
                         <button type="button" class="toggle-pass" id="togglePass2" aria-label="Mostrar contraseña">
                             <i class="fas fa-eye"></i>
                         </button>
@@ -462,7 +473,8 @@
                     <span class="field-error" id="confirmPasswordError">Confirma tu contraseña</span>
                 </div>
 
-                <button type="submit" class="btn btn-solid">
+                <label class="terms-accept"><input type="checkbox" name="aceptaTerminos" value="true" required> <span>He leído y acepto los <a href="/api/terminos" target="_blank" rel="noopener">términos y condiciones</a> de Lectio.</span></label>
+<button type="submit" class="btn btn-solid">
                     <span>Crear cuenta</span> <i class="fas fa-arrow-right"></i>
                 </button>
             </form>
@@ -532,6 +544,9 @@
 
         // Validación al enviar
         registerForm.addEventListener('submit', (e) => {
+            if (!registerForm.querySelector('[name="aceptaTerminos"]').checked) {
+                e.preventDefault(); showAlert("Debes aceptar los términos y condiciones para crear tu cuenta.", "error"); return;
+            }
             let isValid = true;
 
             usernameError.classList.remove('show');
@@ -573,7 +588,11 @@
 
         function showAlert(message, type) {
             const icon = type === 'error' ? 'fa-circle-exclamation' : 'fa-circle-check';
-            alertBox.innerHTML = `<div class="alert alert-${type}"><i class="fas ${icon}"></i> ${message}</div>`;
+            const alert = document.createElement('div');
+            alert.className = 'alert alert-' + type;
+            alert.setAttribute('role', 'alert');
+            alert.textContent = message;
+            alertBox.replaceChildren(alert);
             setTimeout(() => alertBox.innerHTML = '', 5000);
         }
     });

@@ -1,0 +1,298 @@
+/* Shared layout only. Keeps every existing form action, ID and visibility state. */
+body.lectio-page {
+    overflow-x: hidden;
+    -webkit-text-size-adjust: 100%;
+}
+.lectio-page {
+    --lectio-ink: #0d2b1d;
+    --lectio-green: #1a6b45;
+    --lectio-line: #d4e5d9;
+    --lectio-paper: #f7faf8;
+    -webkit-text-size-adjust: 100%;
+    overflow-wrap: break-word;
+}
+.lectio-page *, .lectio-page *::before, .lectio-page *::after { box-sizing: border-box; }
+.lectio-page :is(main, section, article, form, .wrap, .container, .page-content, .card, .form-card,
+    .card-body, .card-content, .book-body, .user-details, .title-block, .hero-copy,
+    .navbar, .nav-inner, .reserva-container, .filters-card, .results-card, .table-card) { min-width: 0; }
+.lectio-page :is(img, video, iframe, canvas) { max-width: 100%; }
+.lectio-page :is(input, select, textarea) { min-width: 0; max-width: 100%; }
+.lectio-page textarea { resize: vertical; }
+.lectio-page :is(button, a, input, select, textarea) { touch-action: manipulation; }
+.lectio-page :is(p, h1, h2, h3, h4, label, td, th, .username, .user-id, .author-name) { overflow-wrap: anywhere; }
+.lectio-page .lectio-table-scroll {
+    width: 100%; max-width: 100%; overflow-x: auto; overscroll-behavior-x: contain;
+    -webkit-overflow-scrolling: touch;
+}
+.lectio-page .lectio-table-scroll table { width: 100%; margin: 0; }
+.lectio-page :is(.table-container, .table-scroll, .powerbi-container, .chart-wrap) { min-width: 0; max-width: 100%; }
+.lectio-page :is(.table-container, .table-scroll, .table-card) { overflow-x: auto; }
+.lectio-page :is(.modal-content, .modal, .logout-content, .page-error-content) {
+    max-width: calc(100vw - 32px);
+    max-height: calc(100dvh - 32px);
+    overflow-y: auto;
+    overscroll-behavior: contain;
+}
+.lectio-page #formulario-reserva {
+    max-height: calc(100dvh - 32px); overflow-y: auto; overscroll-behavior: contain;
+}
+.lectio-page .chat-window { max-height: calc(100dvh - 100px); max-width: calc(100vw - 32px); }
+.lectio-page .chat-body { min-height: 0; overflow-y: auto; overscroll-behavior: contain; }
+.lectio-page .chat-header-info, .lectio-page .chat-input-wrap { min-width: 0; }
+.lectio-page .chat-bubble-msg { max-width: 100%; min-width: 0; }
+.lectio-page .chat-actions { flex-shrink: 0; }
+.lectio-page .chat-input-wrap input { width: 100%; min-width: 0; }
+.lectio-page .pagination { flex-wrap: wrap; }
+.lectio-page .page-jumper { flex-wrap: wrap; gap: 10px; }
+.lectio-page :is(.btn, .back-btn, .btn-submit, .btn-confirmar, .logout-btn) { white-space: normal; }
+
+/* Editorial navigation: all pages share one tablet breakpoint. */
+@media (max-width: 1100px) {
+    .lectio-page .nav .nav-inner {
+        display: flex; align-items: center; justify-content: space-between;
+        gap: 12px; min-height: 64px; position: relative;
+    }
+    .lectio-page .nav .brand { flex-shrink: 0; }
+    .lectio-page .nav .nav-toggle { display: grid; position: relative; z-index: 302; flex-shrink: 0; order: 4; }
+    .lectio-page .nav .nav-links {
+        position: fixed; inset: 0 0 0 auto; display: flex; flex-direction: column;
+        align-items: stretch; justify-content: flex-start; width: min(360px, 90vw);
+        height: 100dvh; max-height: 100dvh; padding: 88px 24px 32px;
+        gap: 4px; margin: 0; background: #fff; border-left: 1px solid var(--lectio-line);
+        overflow-y: auto; overscroll-behavior: contain; z-index: 301;
+        transform: translateX(100%); visibility: hidden;
+        transition: transform .22s ease, visibility .22s;
+        box-shadow: -16px 0 48px #0d2b1d18;
+    }
+    .lectio-page .nav .nav-links.open, .lectio-page .nav .nav-links.active {
+        transform: translateX(0); visibility: visible;
+    }
+    .lectio-page .nav .nav-links > a {
+        display: flex; align-items: center; min-height: 48px; width: 100%;
+        padding: 12px 8px; margin: 0; font-family: var(--sans, 'Inter', sans-serif);
+        font-size: 1rem; line-height: 1.4; letter-spacing: 0; color: var(--lectio-ink);
+        border-bottom: 1px solid var(--lectio-line);
+    }
+    .lectio-page .nav .nav-links .nav-mobile-login { display: flex; }
+    .lectio-page .nav .nav-cta { display: none; }
+    .lectio-page .nav .user-info {
+        position: static !important; top: auto !important; left: auto !important;
+        transform: none !important; order: 2; min-width: 0; margin-left: auto;
+        display: flex; align-items: center; gap: 8px;
+    }
+    .lectio-page .nav .user-info p { max-width: 14ch; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .lectio-page .nav .user-info .btn-salir { min-height: 40px; padding: 8px 12px; }
+    .lectio-page .hero-grid { grid-template-columns: minmax(0, 1fr); gap: 32px; }
+    .lectio-page .hero-side { max-width: 560px; width: 100%; }
+    .lectio-page :is(.content-grid, .main-grid, .forecast-grid, .model-grid) { grid-template-columns: minmax(0, 1fr); }
+    .lectio-page :is(.books, .books-grid, .lista-libros, .cards-grid, .reviews-grid) {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+    .lectio-page :is(.stats-grid, .kpis, .metric-grid) { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .lectio-page .foot-top { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 32px; }
+    .lectio-page .sec-head { grid-template-columns: minmax(0, 1fr); gap: 20px; padding-bottom: 26px; margin-bottom: 44px; }
+    .lectio-page .sec-head .kicker { flex-direction: row; align-items: baseline; gap: 18px; }
+}
+
+@media (max-width: 768px) {
+    .lectio-page { font-size: 16px; line-height: 1.6; }
+    .lectio-page .wrap { padding-inline: 20px; }
+    .lectio-page :is(.container, .page-content) {
+        width: calc(100% - 32px); max-width: 100%; margin: 28px auto; padding-inline: 20px;
+    }
+    .lectio-page > .multas-container {
+        width: calc(100% - 32px); max-width: 100%; margin: 24px auto; padding-inline: 20px;
+    }
+    .lectio-page .section { padding-block: 40px; }
+    .lectio-page :is(.section h2, .page-title, .section-title) { font-size: clamp(1.8rem, 6vw, 2.6rem); line-height: 1.15; }
+    .lectio-page :is(.sec-head, .page-header, .card-header, .table-header, .table-head,
+        .results-header, .form-header, .multa-header, .section-header, .section-title-wrapper) {
+        flex-wrap: wrap; align-items: flex-start; gap: 16px;
+    }
+    .lectio-page .sec-head { display: grid; grid-template-columns: minmax(0, 1fr); margin-bottom: 28px; }
+    .lectio-page .title-block { max-width: 100%; }
+    .lectio-page .hero { min-height: auto; padding: 104px 0 48px; }
+    .lectio-page .hero-inner { padding-block: 0; }
+    .lectio-page .hero-title { max-width: 100%; font-size: clamp(2.5rem, 10vw, 4rem); line-height: 1.06; }
+    .lectio-page .hero-lede { max-width: 100%; font-size: 1rem; line-height: 1.7; }
+    .lectio-page .hero-actions { flex-wrap: wrap; gap: 12px; }
+    .lectio-page .hero-actions .btn { flex: 1 1 200px; min-height: 48px; height: auto; padding: 14px 18px; justify-content: center; }
+    .lectio-page .hero-card { max-width: none; padding: 22px; }
+    .lectio-page .page-hero { padding: 100px 0 36px; }
+    .lectio-page .page-hero h1 { font-size: clamp(2.25rem, 8vw, 3.2rem); max-width: 100%; line-height: 1.1; }
+    .lectio-page :is(.hero-section, .hero-opt, .hero-res) { padding: 44px 20px 48px; }
+    .lectio-page :is(.hero-section, .hero-opt, .hero-res) h1,
+    .lectio-page :is(.hero-opt, .hero-res) h2 { font-size: 2.15rem; line-height: 1.15; }
+    .lectio-page :is(.hero-section, .hero-opt, .hero-res) p { font-size: 1rem; }
+    .lectio-page :is(.books, .books-grid, .lista-libros, .cards-grid, .reviews-grid,
+        .help-grid, .content-grid, .main-grid, .forecast-grid, .model-grid,
+        .form-grid, .filters-grid, .search-grid, .r-grid, .filtros-buscador) {
+        grid-template-columns: minmax(0, 1fr); gap: 20px;
+    }
+    .lectio-page .book-card { width: 100%; min-width: 0; }
+    .lectio-page :is(.book-media, .book img) { max-width: 100%; }
+    .lectio-page .author { display: grid; grid-template-columns: minmax(0, 1fr); gap: 12px; padding: 24px 0; }
+    .lectio-page .author-desc { display: block; }
+    .lectio-page .author-num { margin: 0; }
+    .lectio-page .toolbar { display: flex; flex-direction: column; align-items: stretch; gap: 16px; }
+    .lectio-page :is(.search, .search-box, .search-input, .filter-select, .buscador-multas) { width: 100%; max-width: 100%; }
+    .lectio-page .search-box { min-width: 0; }
+    .lectio-page .search-filters { flex-wrap: wrap; justify-content: flex-start; gap: 12px; }
+    .lectio-page .filter-option { min-height: 44px; display: inline-flex; align-items: center; }
+    .lectio-page :is(.card-body, .card-content, .form-card, .filters-card, .results-card, .search-bar) { padding: 20px; }
+    .lectio-page :is(.form-group, .form-grupo, .field-group) { min-width: 0; }
+    .lectio-page :is(.form-grid, .filters-grid) .form-group { grid-column: auto; }
+    .lectio-page :is(input:not([type="checkbox"]):not([type="radio"]):not([type="hidden"]), select, textarea) {
+        font-size: 16px; /* Prevent automatic form zoom on iOS. */
+    }
+    .lectio-page :is(input:not([type="checkbox"]):not([type="radio"]):not([type="hidden"]), select) { min-height: 48px; }
+    .lectio-page :is(.btn, .btn-submit, .back-btn, .logout-btn, .btn-salir, .btn-seleccionar,
+        .btn-confirmar, .toggle-btn, .btn-pagar, .btn-eliminar, .btn-volver) { min-height: 44px; }
+    .lectio-page :is(.form-actions, .form-footer, .form-footer-right, .form-footer-left, .actions,
+        .logout-buttons, .modal-actions, .modal-buttons, .btn-container) {
+        flex-wrap: wrap; gap: 12px;
+    }
+    .lectio-page .lectio-table-scroll table { min-width: 620px; }
+    .lectio-page .lectio-table-scroll :is(th, td) { padding: 12px; font-size: .875rem; }
+    .lectio-page .lectio-table-scroll .user-info { width: auto; flex-direction: row; margin: 0; padding: 0; }
+    .lectio-page :is(.table-container, .table-scroll) table { min-width: 620px; }
+    .lectio-page .tabla-multas { min-width: 760px; }
+    .lectio-page .table-card { overflow-x: auto; }
+    .lectio-page .chart-wrap { height: 280px; }
+    .lectio-page .chart-wrap canvas { max-width: 100%; }
+    .lectio-page .powerbi-container { height: 65vh; padding-bottom: 0; min-height: 360px; }
+    .lectio-page .powerbi-container iframe { position: static; width: 100%; height: 100%; }
+    .lectio-page .libro-header { flex-wrap: wrap; gap: 16px; }
+    .lectio-page .libro-stats { flex-wrap: wrap; gap: 16px; }
+    .lectio-page .formula-box { overflow-x: auto; font-size: .8rem; }
+    .lectio-page .cta { padding-block: 40px; }
+    .lectio-page .cta-inner { display: grid; grid-template-columns: minmax(0, 1fr); gap: 24px; }
+    .lectio-page .cta-actions { display: flex; flex-wrap: wrap; gap: 12px; }
+    .lectio-page .cta-actions .btn { flex: 1 1 220px; }
+    .lectio-page .foot-top { grid-template-columns: minmax(0, 1fr); gap: 28px; padding-block: 36px; }
+    .lectio-page .foot-bot { flex-direction: column; align-items: flex-start; gap: 12px; line-height: 1.7; }
+    .lectio-page .foot-col a { display: inline-block; padding-block: 6px; }
+    .lectio-page :is(.modal-content, .modal, .logout-content, .page-error-content) { width: calc(100vw - 32px); padding: 24px; }
+    .lectio-page #formulario-reserva { width: calc(100vw - 32px); max-width: 520px; padding: 24px 20px; }
+    .lectio-page #formulario-reserva::before, .lectio-page #formulario-reserva::after { display: none; }
+    .lectio-page .chat-window { width: calc(100vw - 24px); right: 12px; bottom: 84px; max-width: none; max-height: calc(100dvh - 108px); }
+    .lectio-page .chat-bubble { right: 16px; bottom: max(16px, env(safe-area-inset-bottom)); width: 52px; height: 52px; }
+    .lectio-page .chat-tooltip { display: none; }
+    .lectio-page .chat-suggestions { overflow-x: auto; flex-wrap: nowrap; }
+    .lectio-page .suggestion-chip { flex-shrink: 0; min-height: 36px; }
+    .lectio-page :is(.to-top, .scroll-to-top) { right: 16px; bottom: 88px; width: 44px; height: 44px; }
+    .lectio-page :is(.mensaje-exito, #mensaje-reserva) { max-width: calc(100vw - 32px); overflow-wrap: anywhere; }
+    .lectio-page .nav .brand small { display: none; }
+    .lectio-page .nav .brand { font-size: .78rem; }
+    .lectio-page .nav .user-info p { display: none; }
+    .lectio-page .nav .user-info .btn-salir { font-size: .72rem; }
+    .lectio-page .navbar {
+        flex-wrap: wrap; gap: 12px; padding: 14px 20px;
+        position: sticky; top: 0; z-index: 50;
+    }
+    .lectio-page .navbar .logo h1 { font-size: 1.35rem; }
+    .lectio-page .navbar > a, .lectio-page .navbar > form { flex-shrink: 0; }
+    .lectio-page :is(.multa-info, .info-grid, .details-grid) { grid-template-columns: minmax(0, 1fr); }
+    .lectio-page .multa-actions, .lectio-page .multa-actions form { width: 100%; }
+    .lectio-page .multa-actions .btn { width: 100%; justify-content: center; }
+    .lectio-page .libro-item { min-height: 0; padding: 22px 18px 18px; }
+    .lectio-page .libro-item h3 { padding-right: 0; }
+    .lectio-page .stock-badge { top: 10px; right: 10px; }
+    .lectio-page .btn-seleccionar { min-height: 48px; }
+    .lectio-page .page-jumper input { width: 100%; max-width: 160px; }
+    .lectio-page .page-jumper button { min-height: 44px; }
+    .lectio-page .pagination button { min-width: 44px; min-height: 44px; }
+    .lectio-page .info-box { padding: 16px; }
+
+    /* Access forms stay near the top rather than below a full-height decoration. */
+    .lectio-page .login-page { min-height: 100dvh; grid-template-columns: minmax(0, 1fr); grid-template-rows: auto 1fr; }
+    .lectio-page .brand-panel { min-height: 280px; height: auto; padding: 30px 20px; gap: 20px; }
+    .lectio-page .brand-panel::before { font-size: 10rem; bottom: -3rem; }
+    .lectio-page .bp-quote-wrap { min-height: 0; }
+    .lectio-page .bp-quote { position: static; max-width: 100%; margin: 0; font-size: 1.65rem; line-height: 1.2; }
+    .lectio-page .bp-quote-wrap .bp-quote:not(.active) { display: none; }
+    .lectio-page .bp-foot { display: none; }
+    .lectio-page .form-panel { align-items: flex-start; padding: 28px 20px 40px; }
+    .lectio-page .form-panel::before, .lectio-page .form-panel::after { display: none; }
+    .lectio-page .login-page .form-card { max-width: 480px; padding: 0; margin-inline: auto; }
+    .lectio-page .fc-back { margin-bottom: 24px; }
+    .lectio-page .fc-head h1 { font-size: 2.4rem; }
+    .lectio-page .input-wrap input { width: 100%; }
+    .lectio-page .toggle-pass { flex-shrink: 0; min-width: 44px; min-height: 44px; }
+    .lectio-page .fc-links { margin-top: 24px; font-size: .75rem; line-height: 1.7; }
+    .lectio-page .link-btn { white-space: normal; text-align: center; }
+    .lectio-page .success-card { max-width: calc(100vw - 40px); }
+    .lectio-page[data-page="conocerte"] .page-wrapper { padding: 20px 16px; align-items: flex-start; }
+    .lectio-page[data-page="conocerte"] .section { padding: 24px 20px; }
+    .lectio-page[data-page="conocerte"] #userForm { grid-template-columns: minmax(0, 1fr); }
+    .lectio-page[data-page="intro"] .skip-btn {
+        min-height: 48px; padding: 12px 24px; background: #fff; color: #0d2b1d;
+        border: 1px solid #d4e5d9; border-radius: 4px;
+        bottom: max(24px, env(safe-area-inset-bottom));
+    }
+}
+
+/* Reading screens retain their existing show/hide sidebar states. */
+@media (max-width: 900px) {
+    .lectio-page.lectio-reading header, .lectio-page.lectio-challenge header {
+        min-height: 64px; padding: 12px 20px; gap: 16px; flex-wrap: wrap;
+    }
+    .lectio-page.lectio-reading header h1, .lectio-page.lectio-challenge header h1 { font-size: 1.4rem; line-height: 1.2; }
+    .lectio-page.lectio-reading .menu-toggle, .lectio-page.lectio-challenge .menu-toggle { flex-shrink: 0; }
+    .lectio-page.lectio-reading main { width: 100%; max-width: 100%; margin: 0; padding: 96px 20px 40px; }
+    .lectio-page.lectio-reading .contenido { width: 100%; padding: 28px 20px; }
+    .lectio-page.lectio-reading :is(aside, .sidebar), .lectio-page.lectio-challenge .sidebar {
+        top: 64px; width: min(320px, 88vw); height: calc(100dvh - 64px);
+        padding: 24px 20px; overflow-y: auto; border-radius: 0; z-index: 200;
+    }
+    .lectio-page.lectio-reading :is(aside, .sidebar).hide,
+    .lectio-page.lectio-challenge .sidebar.hide { visibility: hidden; }
+    .lectio-page.lectio-reading :is(aside, .sidebar).show,
+    .lectio-page.lectio-challenge .sidebar.show { visibility: visible; }
+    .lectio-page.lectio-reading :is(.libros-grid, .pensadores-grid) {
+        display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 20px;
+    }
+    .lectio-page.lectio-reading :is(.libro, .pensador) { width: 100%; min-width: 0; padding: 12px; }
+    .lectio-page.lectio-reading .stats-cards { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
+    .lectio-page.lectio-reading .progreso-section { padding: 20px; margin-top: 32px; }
+    .lectio-page.lectio-challenge .layout { padding-right: 0; margin-right: 0; }
+    .lectio-page.lectio-challenge .center { width: 100%; padding: 96px 20px 32px; min-width: 0; }
+    .lectio-page.lectio-challenge .portada { width: 160px; height: 224px; }
+    .lectio-page.lectio-challenge .capitulos { width: 100%; padding-bottom: 32px; margin-bottom: 24px; }
+    .lectio-page.lectio-challenge .mensaje-motivacional { width: calc(100vw - 32px); max-width: 480px; padding: 16px; }
+}
+
+@media (max-width: 480px) {
+    .lectio-page .wrap { padding-inline: 16px; }
+    .lectio-page :is(.container, .page-content) { padding-inline: 16px; }
+    .lectio-page > .multas-container { width: calc(100% - 24px); padding-inline: 16px; }
+    .lectio-page .nav .brand { font-size: .72rem; gap: 7px; }
+    .lectio-page .nav .user-info p { display: none; }
+    .lectio-page .nav .btn-salir { padding: 8px 10px; font-size: .68rem; }
+    .lectio-page :is(.stats-grid, .kpis, .metric-grid, .stats-cards) { grid-template-columns: minmax(0, 1fr); }
+    .lectio-page .stat-card { padding: 20px; }
+    .lectio-page .stat-number { font-size: 2rem; }
+    .lectio-page .section-title-wrapper { align-items: flex-start; gap: 12px; }
+    .lectio-page .section-icon { flex-shrink: 0; }
+    .lectio-page :is(.form-actions, .actions, .btn-container) { flex-direction: column; align-items: stretch; }
+    .lectio-page :is(.form-actions, .actions, .btn-container) > :is(a, button) { width: 100%; justify-content: center; }
+    .lectio-page .hero-card { padding: 20px 18px; }
+    .lectio-page .hero-actions .btn { flex-basis: 100%; }
+    .lectio-page .auth-actions > *, .lectio-page .fc-links .link-btn { width: 100%; justify-content: center; }
+    .lectio-page .fc-head h1 { font-size: 2rem; }
+    .lectio-page .navbar { flex-direction: column; align-items: stretch; }
+    .lectio-page .navbar > a, .lectio-page .navbar > form, .lectio-page .navbar .back-btn { width: 100%; justify-content: center; }
+    .lectio-page .lectio-table-scroll table { min-width: 560px; }
+    .lectio-page :is(.table-container, .table-scroll) table { min-width: 560px; }
+    .lectio-page .page-jumper { align-items: stretch; }
+    .lectio-page.lectio-reading :is(.libros-grid, .pensadores-grid) { grid-template-columns: minmax(0, 1fr); }
+    .lectio-page.lectio-reading :is(.libro, .pensador) { max-width: 360px; margin-inline: auto; padding: 20px; }
+    .lectio-page.lectio-reading .libro img { height: auto; max-height: 360px; object-fit: contain; }
+    .lectio-page.lectio-reading .pensador img { height: 260px; }
+}
+
+@media (hover: none) {
+    .lectio-page :is(.book, .book-card, .libro-item, .multa-card, .review-card, .admin-card, .pensador, .libro):hover {
+        transform: none; box-shadow: none;
+    }
+}

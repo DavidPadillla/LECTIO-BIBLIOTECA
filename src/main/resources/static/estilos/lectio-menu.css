@@ -1,0 +1,66 @@
+body.lectio-page .lectio-menu-trigger { display: none; }
+.lectio-mobile-menu {
+    box-sizing: border-box; position: fixed; inset: 12px 12px 12px auto;
+    width: min(380px, calc(100vw - 24px)); max-width: none;
+    height: calc(100dvh - 24px); max-height: none; margin: 0;
+    padding: 24px; border: 1px solid #dce5dc; border-radius: 26px;
+    background: #fcfbf6; color: #205469; box-shadow: 0 20px 70px #102e3b40;
+    overflow-y: auto; overscroll-behavior: contain;
+    font-family: 'Inter', system-ui, sans-serif;
+}
+.lectio-mobile-menu[open] { display: flex; flex-direction: column; gap: 24px; }
+.lectio-mobile-menu::backdrop { background: #142e3b80; backdrop-filter: blur(4px); }
+.lectio-mobile-menu[open] { animation: lectio-menu-in .36s cubic-bezier(.16,1,.3,1) both; }
+.lectio-mobile-menu[open]::backdrop { animation: lectio-menu-shade-in .3s ease both; }
+.lectio-mobile-menu[open] .mobile-menu-options a { animation: lectio-menu-link-in .38s cubic-bezier(.16,1,.3,1) var(--menu-delay, 0ms) backwards; }
+.lectio-mobile-menu[open].is-closing { animation: lectio-menu-out .22s cubic-bezier(.4,0,1,1) both; }
+.lectio-mobile-menu[open].is-closing::backdrop { animation: lectio-menu-shade-out .22s ease both; }
+@keyframes lectio-menu-in { from { opacity: 0; transform: translateX(48px) scale(.98); } to { opacity: 1; transform: none; } }
+@keyframes lectio-menu-out { from { opacity: 1; transform: none; } to { opacity: 0; transform: translateX(40px) scale(.98); } }
+@keyframes lectio-menu-link-in { from { opacity: 0; translate: 12px 0; } to { opacity: 1; translate: 0 0; } }
+@keyframes lectio-menu-shade-in { from { opacity: 0; } to { opacity: 1; } }
+@keyframes lectio-menu-shade-out { from { opacity: 1; } to { opacity: 0; } }
+.mobile-menu-heading { display: flex; align-items: center; justify-content: space-between; gap: 14px; }
+.mobile-menu-eyebrow { display: block; font-size: .7rem; color: #9b602e; font-weight: 600; margin-bottom: 8px; }
+.mobile-menu-heading h2 { margin: 0; font: 400 1.8rem/1.15 Georgia, serif; color: #205469; }
+.mobile-menu-close { flex: 0 0 44px; width: 44px; height: 44px; border: 1px solid #d4dfd8; border-radius: 14px; background: white; color: #205469; font: 400 1.6rem/1 system-ui, sans-serif; cursor: pointer; }
+.mobile-menu-options { display: flex; flex-direction: column; gap: 8px; }
+.mobile-menu-options a { display: flex; gap: 13px; align-items: center; min-height: 58px; padding: 10px 12px; border: 1px solid transparent; border-radius: 16px; text-decoration: none; color: #294f58; font: 500 .9rem/1.4 'Inter', system-ui, sans-serif; transition: background .2s, border-color .2s; }
+.mobile-menu-icon { display: grid; place-items: center; width: 34px; height: 34px; flex: 0 0 34px; background: #edf2e9; border-radius: 11px; color: #446a62; }
+.mobile-menu-icon svg { width: 19px; height: 19px; fill: none; stroke: currentColor; stroke-width: 1.6; stroke-linejoin: round; }
+.mobile-menu-options a:hover { background: #eef3ed; }
+.mobile-menu-options a[aria-current] { background: #205469; color: white; box-shadow: 0 4px 10px #20546914; }
+.mobile-menu-options a[aria-current] .mobile-menu-icon { color: #f1c385; background: #ffffff18; }
+.mobile-menu-foot { display: flex; gap: 12px; align-items: center; margin-top: auto; padding-top: 20px; border-top: 1px solid #e0e5db; }
+.mobile-menu-foot > span { font-size: .75rem; letter-spacing: .1em; font-weight: 700; }
+.mobile-menu-foot small { display: block; font-size: .7rem; font-weight: 400; color: #73857d; letter-spacing: 0; margin-top: 5px; }
+@media(max-width:1280px) {
+    body.lectio-page .lectio-menu-trigger {
+        display: inline-grid; place-items: center; position: relative; flex: 0 0 44px;
+        width: 44px; height: 44px; min-height: 44px; padding: 10px; margin: 0;
+        border: 1px solid #cbdcd6; border-radius: 14px; background: #f0f5ee; color: #205469;
+        cursor: pointer; box-shadow: 0 3px 0 #e0e8dc;
+    }
+    body.lectio-page .lectio-menu-trigger > :is(i, svg) { display: none; }
+    .menu-strokes { display: grid; gap: 5px; width: 20px; }
+    .menu-strokes span { display: block; height: 2px; border-radius: 2px; background: #205469; }
+    .menu-strokes span:nth-child(2) { width: 14px; margin-left: auto; }
+    body.lectio-page .uses-shared-mobile-menu { display: none !important; }
+    body.lectio-page .nav .nav-cta { display: none; }
+    body.lectio-page .has-mobile-menu {
+        display: flex; align-items: center; justify-content: space-between; flex-direction: row;
+        flex-wrap: nowrap; gap: 10px; padding: 16px; min-height: 76px;
+    }
+    body.lectio-page .has-mobile-menu .logo { margin: 0; min-width: 0; }
+    body.lectio-page .has-mobile-menu .logo h1 { margin: 0; font-size: 1.15rem; white-space: nowrap; }
+    body.lectio-page .has-mobile-menu .logo h1 span { display: none; }
+    body.lectio-page .has-mobile-menu .lectio-logo { width: 34px; height: 34px; margin-right: 5px; }
+    body.lectio-page .has-mobile-menu > form { width: auto; margin: 0 0 0 auto; padding: 0; }
+    body.lectio-page .has-mobile-menu > form button { width: auto; padding: 10px; font-size: .72rem; min-height: 42px; }
+    body.lectio-page .has-mobile-menu > .back-btn { display: none; }
+}
+@media(prefers-reduced-motion:reduce) {
+    .mobile-menu-options a { transition: none; }
+    .lectio-mobile-menu[open], .lectio-mobile-menu[open]::backdrop,
+    .lectio-mobile-menu[open] .mobile-menu-options a { animation: none !important; }
+}

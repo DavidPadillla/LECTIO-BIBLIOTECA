@@ -4,16 +4,16 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Modelo Predictivo - Lectio Admin</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    
+    <link data-consent-font="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.4/dist/chart.umd.min.js"></script>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
 
         body {
-            font-family: 'Poppins', sans-serif;
+            font-family: 'Inter', sans-serif;
             background-color: #f5f6fa;
             color: #2c3e50;
             min-height: 100vh;
@@ -31,18 +31,18 @@
             z-index: 1000;
         }
         .logo h1 { font-size: 1.5rem; font-weight: 700; color: #2c3e50; }
-        .logo span { color: #27ae60; font-weight: 600; }
+        .logo span { color: #1a6b45; font-weight: 600; }
 
         .btn {
             border: none;
-            background: #27ae60;
+            background: #1a6b45;
             color: #fff;
             padding: 10px 22px;
             border-radius: 30px;
             cursor: pointer;
             font-weight: 500;
             font-size: 13px;
-            font-family: 'Poppins', sans-serif;
+            font-family: 'Inter', sans-serif;
             transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
             display: inline-flex;
             align-items: center;
@@ -50,7 +50,7 @@
             text-decoration: none;
         }
         .btn:hover {
-            background: #219150;
+            background: #0f4a2e;
             transform: translateY(-2px) scale(1.03);
             box-shadow: 0 8px 20px rgba(39,174,96,.4);
         }
@@ -64,7 +64,7 @@
         .page-header { margin-bottom: 24px; }
         .page-title { font-size: 24px; font-weight: 700; color: #2c3e50; margin-bottom: 5px; }
         .page-subtitle { font-size: 14px; color: #7f8c8d; }
-        .page-subtitle span { color: #27ae60; font-weight: 500; }
+        .page-subtitle span { color: #1a6b45; font-weight: 500; }
 
         .error {
             display: none;
@@ -89,7 +89,7 @@
         .card:hover {
             transform: translateY(-6px);
             box-shadow: 0 12px 24px rgba(39,174,96,0.15);
-            border-color: #27ae60;
+            border-color: #1a6b45;
         }
 
         .card-head {
@@ -106,7 +106,7 @@
 
         .tag {
             font-size: 10px;
-            color: #27ae60;
+            color: #1a6b45;
             background: #eafaf1;
             border: 1px solid #b7e4c7;
             border-radius: 20px;
@@ -133,7 +133,7 @@
             width: 34px; height: 34px;
             border-radius: 10px;
             background: #eafaf1;
-            color: #27ae60;
+            color: #1a6b45;
             display: grid; place-items: center;
             font-size: 15px;
         }
@@ -174,13 +174,13 @@
         .bar > span {
             display: block;
             height: 100%;
-            background: linear-gradient(90deg, #27ae60, #2ecc71);
+            background: linear-gradient(90deg, #1a6b45, #2ecc71);
             border-radius: 20px;
             transition: width .8s ease;
         }
         .category-count {
             text-align: right;
-            color: #27ae60;
+            color: #1a6b45;
             font-weight: 600;
             font-variant-numeric: tabular-nums;
         }
@@ -213,7 +213,7 @@
             font-size: 10px;
             font-weight: 500;
         }
-        .metric small i { color: #27ae60; margin-right: 4px; }
+        .metric small i { color: #1a6b45; margin-right: 4px; }
         .metric b {
             display: block;
             font-size: 15px;
@@ -241,14 +241,14 @@
             max-width: 320px;
             width: 100%;
             font-size: 13px;
-            font-family: 'Poppins', sans-serif;
+            font-family: 'Inter', sans-serif;
             cursor: pointer;
             transition: all .3s ease;
         }
-        .select:hover { border-color: #27ae60; }
+        .select:hover { border-color: #1a6b45; }
         .select:focus {
             outline: none;
-            border-color: #27ae60;
+            border-color: #1a6b45;
             box-shadow: 0 0 0 3px rgba(39,174,96,.15);
         }
 
@@ -272,11 +272,11 @@
             align-items: center;
             gap: 6px;
         }
-        .stat-label i { color: #27ae60; font-size: 11px; }
+        .stat-label i { color: #1a6b45; font-size: 11px; }
         .stat-value {
             font-size: 28px;
             font-weight: 700;
-            color: #27ae60;
+            color: #1a6b45;
             line-height: 1;
             letter-spacing: -0.02em;
         }
@@ -333,7 +333,7 @@
             color: #1e6b45;
             background: #eafaf1;
             padding: 12px 16px;
-            border-left: 3px solid #27ae60;
+            border-left: 3px solid #1a6b45;
             border-radius: 6px;
             line-height: 1.55;
         }
@@ -357,7 +357,7 @@
         thead {
             position: sticky;
             top: 0;
-            background: #27ae60;
+            background: #1a6b45;
             z-index: 1;
         }
         th {
@@ -387,7 +387,7 @@
         }
         .risk.high { background: #fdecec; color: #c0392b; }
         .risk.medium { background: #fff8e6; color: #b8860b; }
-        .risk.low { background: #eafaf1; color: #27ae60; }
+        .risk.low { background: #eafaf1; color: #1a6b45; }
         .risk.na { background: #f0f0f0; color: #7f8c8d; }
 
         .muted { color: #7f8c8d; }
@@ -419,16 +419,22 @@
             .forecast-stats { grid-template-columns: 1fr; gap: 16px; }
         }
     </style>
-</head>
-<body>
-<header class="navbar">
-    <div class="logo">
-        <h1>Lectio <span>Admin</span></h1>
-    </div>
-    <a href="/api/admin" class="btn">
-        <i class="fas fa-arrow-left"></i> Volver al Panel
-    </a>
-</header>
+    <link rel="stylesheet" href="/estilos/lectio-ui.css">
+    <script src="/js/lectio-ui.js" defer></script>
+    <link rel="stylesheet" href="/estilos/lectio-theme.css">
+    <link rel="stylesheet" href="/estilos/lectio-responsive.css">
+<link rel="stylesheet" href="/estilos/lectio-experience.css">
+<link rel="stylesheet" href="/estilos/lectio-motion.css">
+<script src="/js/lectio-experience.js" defer></script>
+<link rel="stylesheet" href="/estilos/lectio-polish.css">
+<link rel="icon" type="image/svg+xml" href="/img/lectio-logo.svg">
+<link rel="stylesheet" href="/estilos/lectio-menu.css">
+<script src="/js/lectio-menu.js" defer></script>
+<link rel="stylesheet" href="/estilos/lectio-admin.css">
+<link rel="stylesheet" href="/estilos/lectio-privacy.css">
+<script src="/js/lectio-privacy.js" defer></script></head>
+<body class="lectio-theme lectio-page admin-design" data-page="modeloPredictivo">
+<header class="experience-nav" id="nav"><div class="experience-bar"><a href="/api/admin" class="experience-brand"><img class="lectio-logo" src="/img/lectio-logo.svg" alt="" width="44" height="44">LECTIO <small>/ ADMIN</small></a><nav class="experience-links" id="experienceLinks" aria-label="Administración"><a href="/api/admin">Panel</a><a href="/api/usuariosAdmin">Usuarios</a><a href="/api/addBook">Libros virtuales</a><a href="/api/addLibroF">Libros físicos</a><a href="/api/reservaAdmin">Reservas</a><a href="/api/dashboard">Análisis</a><details class="admin-more"><summary>Más</summary><div><a href="/api/devolucion">Devoluciones</a><a href="/api/multasAdmin">Multas</a><a href="/api/resenasAdmin">Reseñas</a><a href="/api/modeloPredictivo">Modelo predictivo</a></div></details></nav><div class="experience-account"><form action="/api/logout" method="post"><button type="submit">Cerrar sesión</button></form></div><button type="button" class="experience-toggle" id="experienceToggle" aria-controls="experienceLinks" aria-expanded="false" aria-label="Abrir menú"><svg viewBox="0 0 24 24" aria-hidden="true"><path class="menu-line-top" d="M4 6H20"/><path class="menu-line-middle" d="M4 12H20"/><path class="menu-line-bottom" d="M4 18H20"/></svg></button></div></header>
 
 <div class="container" id="app">
     <div class="page-header">
@@ -630,8 +636,8 @@
 </div>
 
 <footer>
-    <p>&copy; 2025 Lectio Biblioteca. Todos los derechos reservados.</p>
-</footer>
+    <p>&copy; 2026 Lectio Biblioteca. Todos los derechos reservados.</p>
+<a href="/api/privacidad" class="privacy-footer-link">Privacidad y preferencias</a></footer>
 
 <script>
     (() => {
@@ -711,10 +717,10 @@
                         bodyColor: '#fff',
                         padding: 12,
                         cornerRadius: 8,
-                        borderColor: '#27ae60',
+                        borderColor: '#1a6b45',
                         borderWidth: 1,
-                        titleFont: {family: "'Poppins', sans-serif", size: 12, weight: '600'},
-                        bodyFont: {family: "'Poppins', sans-serif", size: 12}
+                        titleFont: {family: "'Inter', sans-serif", size: 12, weight: '600'},
+                        bodyFont: {family: "'Inter', sans-serif", size: 12}
                     }
                 },
                 scales: {
@@ -722,7 +728,7 @@
                         grid: {display: false},
                         ticks: {
                             color: '#7f8c8d',
-                            font: {family: "'Poppins', sans-serif", size: 11}
+                            font: {family: "'Inter', sans-serif", size: 11}
                         }
                     },
                     y: {
@@ -730,7 +736,7 @@
                         grid: {color: '#e9ecef', drawBorder: false},
                         ticks: {
                             color: '#7f8c8d',
-                            font: {family: "'Poppins', sans-serif", size: 11}
+                            font: {family: "'Inter', sans-serif", size: 11}
                         }
                     }
                 },
@@ -753,7 +759,7 @@
                     datasets: [{
                         data: values,
                         backgroundColor: gradient,
-                        borderColor: '#27ae60',
+                        borderColor: '#1a6b45',
                         borderWidth: 1,
                         borderRadius: 8,
                         maxBarThickness: 40
@@ -924,12 +930,12 @@
                         labels,
                         datasets: [{
                             data: vals,
-                            borderColor: "#27ae60",
+                            borderColor: "#1a6b45",
                             backgroundColor: "rgba(39,174,96,0.12)",
                             fill: true,
                             tension: .35,
                             pointRadius: 5,
-                            pointBackgroundColor: "#27ae60",
+                            pointBackgroundColor: "#1a6b45",
                             pointBorderColor: "#fff",
                             pointBorderWidth: 2,
                             borderWidth: 3

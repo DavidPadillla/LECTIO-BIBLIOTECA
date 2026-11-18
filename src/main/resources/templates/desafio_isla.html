@@ -1,0 +1,684 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Desafío - La isla que cambiaba de nombre</title>
+  <link data-consent-font="https://fonts.googleapis.com/css2?family=Poppins:wght@300;500;700&display=swap" rel="stylesheet" />
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    body {
+      font-family: 'Poppins', sans-serif;
+      min-height: 100vh;
+      color: #EAEAEA;
+      background: linear-gradient(to bottom, #1b2735 0%, #0d121c 100%);
+      position: relative;
+      overflow-x: hidden;
+      display: flex;
+      flex-direction: column;
+      padding-right: 0;
+    }
+
+    .background-stars {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: 0;
+      overflow: hidden;
+    }
+
+    .estrella {
+      position: absolute;
+      width: 3px;
+      height: 3px;
+      background: #FFECB3;
+      border-radius: 50%;
+      opacity: 0;
+      animation: brillar 12s linear infinite;
+      box-shadow: 0 0 5px rgba(255, 236, 179, 0.8);
+      z-index: 1;
+    }
+
+    .estrella.planeta {
+      width: 20px;
+      height: 20px;
+      background: radial-gradient(#FBC02D, #FF8A65);
+      opacity: 0.7;
+      animation: flotar-planeta 25s linear infinite;
+      box-shadow: 0 0 15px rgba(251, 192, 45, 0.8);
+    }
+
+    @keyframes brillar {
+      0% { transform: translate(0,0); opacity: 0; }
+      50% { opacity: 1; }
+      100% { transform: translate(100vw, -100vh); opacity: 0; }
+    }
+
+    @keyframes flotar-planeta {
+      0% { transform: translate(-50px, 50px) rotate(0deg); opacity: 0.5; }
+      50% { transform: translate(50px, -100px) rotate(180deg); opacity: 0.9; }
+      100% { transform: translate(-50px, 50px) rotate(360deg); opacity: 0.5; }
+    }
+
+    .layout {
+      width: 100%;
+      z-index: 2;
+      display: flex;
+      flex: 1;
+      position: relative;
+    }
+
+    .center {
+      flex: 1;
+      padding: 100px 40px 40px 40px;
+      text-align: center;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      color: #EAEAEA;
+      position: relative;
+      max-width: 700px;
+      margin: 0 auto;
+    }
+
+    h1 {
+      color: #FBC02D;
+      margin-bottom: 10px;
+      text-shadow: 0 0 10px rgba(251, 192, 45, 0.7);
+      position: relative;
+      z-index: 2;
+      font-size: 2.6rem;
+      letter-spacing: 1.2px;
+      font-weight: 700;
+    }
+
+    .portada {
+      width: 200px;
+      height: 280px;
+      border-radius: 6px;
+      box-shadow: 0 8px 20px rgba(0,0,0,0.5);
+      background-image: url('/img/cover-isla.svg');
+      background-size: cover;
+      background-position: center;
+      margin-bottom: 15px;
+      border: 3px solid #FF8A65;
+      position: relative;
+      z-index: 2;
+      flex-shrink: 0;
+    }
+
+    p {
+      max-width: 700px;
+      line-height: 1.6;
+      color: #CFCFCF;
+      font-size: 1rem;
+      position: relative;
+      z-index: 2;
+      margin-bottom: 32px;
+    }
+
+    .capitulos {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 18px;
+      margin-top: 30px;
+      margin-bottom: 60px;
+      padding-bottom: 100px;
+      position: relative;
+      z-index: 2;
+    }
+
+    .capitulo-nodo {
+      width: 85px;
+      height: 85px;
+      border-radius: 50%;
+      background: #FF8A65;
+      border: 3px solid #FBC02D;
+      color: #fff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+      box-shadow: 0 0 15px rgba(255, 138, 101, 0.5);
+      cursor: pointer;
+      transition: all 0.3s ease;
+      position: relative;
+      font-size: 1.2rem;
+      user-select: none;
+    }
+
+    .capitulo-nodo.locked {
+      opacity: 0.6;
+      cursor: not-allowed;
+      background: #2980b9;
+      border-color: #A0A0A0;
+    }
+
+    .capitulo-nodo.locked::after {
+      content: "🌌";
+      position: absolute;
+      font-size: 1.2rem;
+      opacity: 0.8;
+    }
+
+    .capitulo-nodo.leido {
+      background: #FBC02D;
+      color: #333;
+      transform: scale(1.1);
+      box-shadow: 0 0 20px #FBC02D;
+    }
+
+    .flecha {
+      color: #FBC02D;
+      margin: 6px 0;
+      font-size: 1.2rem;
+      opacity: 0.8;
+      animation: arrow-pulse 1s infinite alternate;
+      user-select: none;
+    }
+
+    @keyframes arrow-pulse {
+      from { opacity: 0.5; }
+      to { opacity: 1; }
+    }
+
+    .sidebar {
+      width: 270px;
+      background: linear-gradient(to bottom, #1b2735 0%, #0d121c 100%);
+      box-shadow: -4px 0 20px rgba(0, 0, 0, 0.4);
+      border-radius: 25px 0 0 25px;
+      padding: 30px 25px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      color: #fff;
+      position: fixed;
+      top: 60px;
+      right: 0;
+      height: calc(100vh - 60px);
+      z-index: 90;
+      transition: transform 0.35s ease;
+      user-select: none;
+      transform: translateX(0);
+    }
+    .sidebar.hide {
+      transform: translateX(100%);
+    }
+    .sidebar h2 {
+      text-align: center;
+      color: #FBC02D;
+      font-weight: 700;
+      font-size: 1.8rem;
+      letter-spacing: 1px;
+      margin-bottom: 35px;
+      user-select: none;
+      text-shadow: 0 0 8px rgba(251, 192, 45, 0.5);
+    }
+    .sidebar ul {
+      list-style: none;
+      padding: 0;
+    }
+    .sidebar li {
+      color: #EAEAEA;
+      font-weight: 600;
+      font-size: 1.1rem;
+      padding: 12px 20px;
+      margin: 18px 0;
+      border-radius: 14px;
+      background: rgba(255, 255, 255, 0.1);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      transition: background 0.3s ease, transform 0.3s ease;
+      user-select: none;
+    }
+    .sidebar li:hover {
+      background: rgba(255, 255, 255, 0.25);
+      transform: translateX(-6px);
+    }
+    .footer {
+      color: #7f8c8d;
+      font-size: 0.85rem;
+      text-align: center;
+      margin-top: 20px;
+      opacity: 0.8;
+      user-select: none;
+    }
+
+    header {
+      background: linear-gradient(to bottom, #1b2735 0%, #0d121c 100%);
+      color: #fff;
+      padding: 15px 20px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      position: fixed;
+      width: 100%;
+      top: 0;
+      left: 0;
+      z-index: 100;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.4);
+      user-select: none;
+    }
+    header h1 {
+      font-weight: 700;
+      font-size: 1.5rem;
+    }
+    .menu-toggle {
+      background: none;
+      border: none;
+      cursor: pointer;
+      width: 28px;
+      height: 28px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      padding: 0;
+    }
+    .menu-toggle span {
+      display: block;
+      height: 3px;
+      background: white;
+      border-radius: 2px;
+      transition: all 0.3s ease;
+    }
+    .menu-toggle.open span:nth-child(1) {
+      transform: rotate(45deg) translate(5px, 5px);
+    }
+    .menu-toggle.open span:nth-child(2) {
+      opacity: 0;
+    }
+    .menu-toggle.open span:nth-child(3) {
+      transform: rotate(-45deg) translate(6px, -6px);
+    }
+
+    .modal {
+      display: none;
+      position: fixed;
+      z-index: 200;
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0,0,0,0.8);
+      justify-content: center;
+      align-items: center;
+    }
+    .modal-content {
+      background: #F8F8F8;
+      padding: 25px;
+      border-radius: 10px;
+      max-width: 600px;
+      text-align: left;
+      box-shadow: 0 8px 24px rgba(0,0,0,0.3);
+      max-height: 80vh;
+      overflow-y: auto;
+      color: #222;
+    }
+    .modal-content h3 {
+      color: #FF8A65;
+      margin-bottom: 15px;
+      text-align: center;
+    }
+    .modal-content button {
+      background: #FF8A65;
+      color: #fff;
+      border: none;
+      border-radius: 4px;
+      padding: 10px 18px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      margin-top: 15px;
+      display: block;
+      margin-left: auto;
+      margin-right: auto;
+    }
+    .modal-content button:hover {
+      background: #FF7043;
+    }
+
+    .mensaje-motivacional {
+      display: none;
+      position: fixed;
+      bottom: 30px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: #FF8A65;
+      color: #FBC02D;
+      padding: 15px 25px;
+      border-radius: 10px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+      z-index: 210;
+      font-weight: 600;
+      opacity: 0;
+      transition: opacity 0.5s ease;
+      border: 2px solid #FBC02D;
+    }
+    .mensaje-motivacional.show {
+      display: block;
+      opacity: 1;
+    }
+
+    @media (max-width: 900px) {
+      header h1 {
+        font-size: 1.3rem;
+      }
+      .sidebar {
+        width: 220px;
+        height: calc(100vh - 60px);
+        border-radius: 0 0 0 25px;
+        box-shadow: 0 -4px 20px rgba(0,0,0,0.4);
+        top: 60px;
+        right: 0;
+        position: fixed;
+        background: linear-gradient(to bottom, #1b2735 0%, #0d121c 100%);
+        padding: 25px 20px;
+        transform: translateX(100%);
+        transition: transform 0.3s ease;
+        user-select: none;
+      }
+      .sidebar.show {
+        transform: translateX(0);
+        z-index: 200;
+      }
+      .layout {
+        flex-direction: column;
+        padding-right: 0;
+      }
+      .center {
+        padding: 80px 20px 40px 20px;
+        max-width: 100%;
+        width: 100%;
+      }
+      .capitulo-nodo {
+        width: 70px;
+        height: 70px;
+        font-size: 1rem;
+      }
+      .flecha {
+        font-size: 1rem;
+        margin: 4px 0;
+      }
+      p {
+        max-width: 100%;
+      }
+    }
+  </style>
+    <link rel="stylesheet" href="/estilos/lectio-ui.css">
+    <script src="/js/lectio-ui.js" defer></script>
+    <link rel="stylesheet" href="/estilos/lectio-theme.css">
+    <link rel="stylesheet" href="/estilos/lectio-responsive.css">
+<link data-consent-font="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/estilos/lectio-experience.css">
+<link rel="stylesheet" href="/estilos/lectio-adventure.css">
+<link rel="stylesheet" href="/estilos/lectio-motion.css">
+<script src="/js/lectio-experience.js" defer></script>
+<link rel="stylesheet" href="/estilos/lectio-polish.css">
+<link rel="icon" type="image/svg+xml" href="/img/lectio-logo.svg">
+<link rel="stylesheet" href="/estilos/lectio-menu.css">
+<script src="/js/lectio-menu.js" defer></script>
+<link rel="stylesheet" href="/estilos/lectio-privacy.css">
+<script src="/js/lectio-privacy.js" defer></script><link rel="stylesheet" href="/estilos/lectio-carousel.css"></head>
+<body class="adventure lectio-theme lectio-challenge lectio-page" data-page="desafio_isla" data-world="isla">
+
+<header class="experience-nav" id="nav">
+  <div class="experience-bar">
+    <a href="/api/logiado" class="experience-brand"><img class="lectio-logo" src="/img/lectio-logo.svg" alt="" width="44" height="44">LECTIO <small>/ BIBLIOTECA</small></a>
+    <nav class="experience-links" id="experienceLinks" aria-label="Navegación principal">
+      <a href="/api/logiado">Inicio</a><a href="/api/logiado#coleccion">Colección</a>
+      <a href="/api/logiado#autores">Autores</a><a href="/api/logiado#centro-ayuda">Ayuda</a>
+      <a href="/api/libroVirtualesLog">Libros virtuales</a><a href="/api/reservaLibro">Reserva</a>
+      <a href="/api/optimizador">Optimizador</a>
+      <a href="/api/inicio" class="experience-challenge" aria-current="page">✦ Desafío</a>
+    </nav>
+    <div class="experience-account">
+      <p th:if="${username != null}">Hola, <strong th:text="${username}"></strong></p>
+      <form action="/api/logout" method="post"><button type="submit">Cerrar sesión</button></form>
+    </div>
+    <button type="button" class="experience-toggle" id="experienceToggle" aria-controls="experienceLinks" aria-expanded="false" aria-label="Abrir menú">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path class="menu-line-top" d="M4 6H20"/><path class="menu-line-middle" d="M4 12H20"/><path class="menu-line-bottom" d="M4 18H20"/></svg>
+    </button>
+  </div>
+</header>
+
+<header class="challenge-old-header">
+  <h1>La isla que cambiaba de nombre</h1>
+  <button aria-label="Abrir menú" aria-expanded="false" aria-controls="sidebar" class="menu-toggle" id="menu-toggle" type="button">
+    <span></span>
+    <span></span>
+    <span></span>
+  </button>
+</header>
+
+<div class="background-stars" aria-hidden="true">
+  <div class="estrella" style="top: 10%; left: 30%; animation-delay: 1s;"></div>
+  <div class="estrella" style="top: 50%; left: 80%; animation-delay: 3s;"></div>
+  <div class="estrella" style="top: 90%; left: 10%; animation-delay: 5s;"></div>
+  <div class="estrella" style="top: 5%; left: 50%; animation-delay: 2s;"></div>
+  <div class="estrella" style="top: 85%; left: 70%; animation-delay: 4s;"></div>
+  <div class="estrella planeta" style="top: 30%; left: 60%; animation-delay: 7s;"></div>
+  <div class="estrella planeta" style="top: 70%; left: 40%; animation-delay: 10s; width:15px; height:15px;"></div>
+</div>
+
+<div class="layout">
+  <main class="center" role="main">
+<nav class="journey-shortcuts" aria-label="Tu aventura"><a href="/api/inicio">← Desafíos</a><a href="/api/libros">Libros y progreso</a><a href="/api/historia_pensamiento">Pensadores</a></nav>
+    <div class="portada" aria-label="Portada del libro La isla que cambiaba de nombre"></div>
+    <h1>La isla que cambiaba de nombre</h1>
+    <p>Sigue un mapa cambiante y descubre una isla que guarda más preguntas que tesoros. Relato original de Lectio · 3 capítulos · 100 puntos.</p>
+    <div class="capitulos" id="capitulosList"></div>
+  </main>
+
+  <aside id="sidebar" class="experience-old-sidebar sidebar hide" role="navigation" aria-label="Menú principal">
+    <div>
+      <h2><img class="lectio-logo" src="/img/lectio-logo.svg" alt="" width="44" height="44">LECTIO</h2>
+      <ul>
+        <li onclick="location.href='/api/inicio'" tabindex="0" role="link" aria-label="Inicio">🏠 Inicio</li>
+        <li onclick="location.href='/api/libros'" tabindex="0" role="link" aria-label="Biblioteca">📚 Biblioteca</li>
+        <li onclick="location.href='/api/historia_pensamiento'" tabindex="0" role="link" aria-label="Historia del Pensamiento">💡 Historia del Pensamiento</li>
+        <li onclick="location.href='/api/logiado'" tabindex="0" role="link" aria-label="Volver a Lectio">🏠 Volver a Lectio</li>
+      </ul>
+    </div>
+    <div class="footer">© 2026 Lectio</div>
+  </aside>
+</div>
+
+<div id="modal" class="modal" onclick="if(event.target===this)closeModal()" role="dialog" aria-modal="true" aria-labelledby="modal-title" aria-describedby="modal-body">
+  <div class="modal-content">
+    <button class="chapter-close" type="button" onclick="closeModal()" aria-label="Cerrar lectura">×</button>
+    <h3 id="modal-title">Capítulo</h3>
+    <div id="modal-body" style="white-space:pre-wrap;color:#333"></div>
+    <button id="modal-button" type="button" onclick="handleModalButtonClick()">Completar</button>
+  </div>
+</div>
+
+<div id="mensaje" class="mensaje-motivacional" role="alert" aria-live="assertive" aria-atomic="true"></div>
+
+<script>
+  const menuToggle = document.getElementById('menu-toggle');
+  const sidebar = document.getElementById('sidebar');
+
+  function toggleMenu() {
+    const isOpen = sidebar.classList.toggle('show');
+    sidebar.classList.toggle('hide', !isOpen);
+    menuToggle.classList.toggle('open', isOpen);
+    menuToggle.setAttribute('aria-expanded', isOpen.toString());
+    if (isOpen) {
+      sidebar.focus();
+    }
+  }
+
+  menuToggle.addEventListener('click', toggleMenu);
+
+  document.addEventListener('click', (e) => {
+    if (!sidebar.contains(e.target) && !menuToggle.contains(e.target)) {
+      if (sidebar.classList.contains('show')) {
+        sidebar.classList.remove('show');
+        sidebar.classList.add('hide');
+        menuToggle.classList.remove('open');
+        menuToggle.setAttribute('aria-expanded', 'false');
+      }
+    }
+  });
+
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && sidebar.classList.contains('show')) {
+      sidebar.classList.remove('show');
+      sidebar.classList.add('hide');
+      menuToggle.classList.remove('open');
+      menuToggle.setAttribute('aria-expanded', 'false');
+      menuToggle.focus();
+    }
+  });
+
+  const capitulos = [
+  "La tinta azul\n\nMara encontró la isla en un mapa que su padre utilizaba para envolver herramientas. Tenía forma de hoja y un nombre escrito con tinta azul. A la mañana siguiente, el nombre era distinto. Reunió a dos amigos, revisó el bote y preparó provisiones para un viaje corto. No iban a buscar oro: querían averiguar qué estaba pasando.\n\nEl primer día navegaron siguiendo la costa. Al caer la tarde, una niebla suave escondió los acantilados. Mara propuso continuar, pero Leo señaló las nubes. Decidieron pasar la noche en una ensenada. Esperar no les pareció una gran hazaña, aunque al amanecer vieron las olas romper con fuerza fuera del refugio.",
+  "La bahía de los ecos\n\nLlegaron a la isla cuando salió el sol. En la playa había huellas, pero no encontraron a nadie. Cada uno escuchaba algo diferente entre las rocas: Mara oía campanas; Leo, el rumor de una ciudad; Inés, una canción que su madre cantaba. El nombre del mapa volvió a cambiar.\n\nSubieron hasta una meseta. Allí descubrieron una piedra cubierta de marcas de antiguos visitantes. Cada viajero había escrito el nombre de aquello que esperaba encontrar. La isla no cambiaba: cambiaba la mirada de quienes llegaban. Inés sacó un cuaderno y dibujó la bahía tal como la veía, sin intentar ponerle un nombre definitivo.",
+  "Un espacio en blanco\n\nAntes de partir, los tres dejaron una nota bajo una piedra: «Trae agua, cuida el camino y escucha a tus compañeros». No escribieron una promesa de tesoros. Habían encontrado algo mejor que un lugar vacío para conquistar: un lugar que podían conocer sin convertirlo en suyo.\n\nEn el viaje de vuelta, Mara borró el nombre de la isla del mapa y dejó un pequeño espacio en blanco. Al lado dibujó una hoja y la ensenada que los había protegido. Cuando le preguntaron dónde estaba su gran descubrimiento, mostró el cuaderno de Inés. Había mapas que servían para llegar y otros que servían para recordar cómo habíamos aprendido a hacerlo."
+];
+
+  const mensajesMotivacionales = ['Un capítulo más, una nueva pista. ¡Sigue explorando!', 'Tu aventura avanza. El final ya está cerca.', 'Cada historia deja algo contigo. ¡Bien hecho!'];
+
+  const LIBRO_ID = 'isla';
+  const cont = document.getElementById('capitulosList');
+  let currentReadingChapterIndex = -1;
+  let capitulosLeidos = [];
+
+  let progresoCargado = false;
+  let guardandoProgreso = false;
+  function aplicarProgreso(data) {
+    let mapa = data.capitulosPorLibro;
+    if (typeof mapa === 'string') mapa = JSON.parse(mapa);
+    const numeros = mapa?.[LIBRO_ID] || [];
+    if (!Array.isArray(numeros)) throw new Error('Progreso no válido');
+    // The API stores chapter numbers (1-based); the UI uses array indices.
+    capitulosLeidos = [...new Set(numeros.map(Number).filter(n => Number.isInteger(n) && n >= 1 && n <= capitulos.length).map(n => n - 1))];
+  }
+  async function cargarProgreso() {
+    if (guardandoProgreso) return;
+    try {
+      const response = await fetch('/api/progreso/mi-progreso', { credentials: 'include', cache: 'no-store' });
+      if (!response.ok) throw new Error('No se pudo cargar el progreso');
+      aplicarProgreso(await response.json());
+      progresoCargado = true;
+      desbloquearSiguientes();
+    } catch (error) {
+      mostrarMensaje('No pudimos cargar tu progreso. Vuelve a entrar al desafío para reintentarlo.');
+    }
+  }
+  async function guardarProgreso(capituloIndex) {
+    const response = await fetch('/api/progreso/guardar-capitulo', {
+      method: 'POST', credentials: 'include', keepalive: true,
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ libroId: LIBRO_ID, capitulo: capituloIndex + 1, totalCapitulos: capitulos.length })
+    });
+    if (!response.ok) throw new Error('No se pudo guardar');
+    const data = await response.json();
+    aplicarProgreso(data.progreso);
+    if (!capitulosLeidos.includes(capituloIndex)) throw new Error('Guardado no confirmado');
+  }
+
+  function renderChapters() {
+    capitulos.forEach((txt, i) => {
+      const nodo = document.createElement('div');
+      nodo.className = 'capitulo-nodo locked';
+      nodo.textContent = i + 1;
+      nodo.tabIndex = 0;
+      nodo.setAttribute('role', 'button');
+      nodo.setAttribute('aria-label', `Capítulo ${i + 1}`);
+      nodo.onclick = () => openModal(i);
+      nodo.onkeypress = (e) => { if(e.key === 'Enter' || e.key === ' ') openModal(i); };
+      cont.appendChild(nodo);
+
+      if (i < capitulos.length - 1) {
+        const f = document.createElement('div');
+        f.className = 'flecha';
+        f.innerHTML = '↓';
+        cont.appendChild(f);
+      }
+    });
+  }
+
+  function desbloquearSiguientes() {
+    document.querySelectorAll('.capitulo-nodo').forEach((n, i) => {
+      const leido = capitulosLeidos.includes(i);
+      const disponible = progresoCargado && (i === 0 || leido || capitulosLeidos.includes(i - 1));
+      n.classList.toggle('locked', !disponible);
+      n.classList.toggle('leido', leido);
+      n.setAttribute('aria-disabled', String(!disponible));
+      n.setAttribute('aria-label', 'Capítulo ' + (i + 1) + (leido ? ', completado' : disponible ? ', disponible' : ', bloqueado'));
+    });
+  }
+
+  function openModal(i) {
+    const nodo = document.querySelectorAll('.capitulo-nodo')[i];
+    if (nodo.classList.contains('locked')) return;
+
+    document.getElementById('modal-title').innerText = `Capítulo ${i + 1}`;
+    document.getElementById('modal-body').innerText = capitulos[i].replace(/\*\*/g, '');
+    const modalButton = document.getElementById('modal-button');
+    if (capitulosLeidos.includes(i)) {
+      modalButton.innerText = 'Cerrar';
+      modalButton.onclick = () => closeModal();
+    } else {
+      modalButton.innerText = 'Completar';
+      modalButton.onclick = () => handleModalButtonClick();
+    }
+
+    document.getElementById('modal').style.display = 'flex';
+    currentReadingChapterIndex = i;
+  }
+
+  async function handleModalButtonClick() {
+    if (guardandoProgreso) return;
+    const i = currentReadingChapterIndex;
+    if (i < 0 || capitulosLeidos.includes(i)) { closeModal(); return; }
+    const button = document.getElementById('modal-button');
+    guardandoProgreso = true;
+    button.disabled = true;
+    button.textContent = 'Guardando…';
+    try {
+      await guardarProgreso(i);
+      desbloquearSiguientes();
+      mostrarMensaje(capitulosLeidos.length === capitulos.length ? '¡Libro completado! Tu progreso está guardado. +100 puntos' : mensajesMotivacionales[i % mensajesMotivacionales.length]);
+      guardandoProgreso = false;
+      closeModal();
+    } catch (error) {
+      mostrarMensaje('No se pudo guardar la lectura. Comprueba tu conexión y pulsa Completar para reintentarlo.');
+    } finally {
+      guardandoProgreso = false;
+      button.disabled = false;
+      button.textContent = 'Completar';
+    }
+  }
+  function closeModal() {
+    if (guardandoProgreso) return;
+    document.getElementById('modal').style.display = 'none';
+    currentReadingChapterIndex = -1;
+  }
+  window.addEventListener('pageshow', event => { if (event.persisted) cargarProgreso(); });
+
+  function mostrarMensaje(text) {
+    const mensaje = document.getElementById('mensaje');
+    mensaje.textContent = text;
+    mensaje.classList.add('show');
+    setTimeout(() => { mensaje.classList.remove('show'); }, 4000);
+  }
+
+  window.onload = () => {
+    renderChapters();
+    cargarProgreso();
+  };
+</script>
+
+</body>
+</html>

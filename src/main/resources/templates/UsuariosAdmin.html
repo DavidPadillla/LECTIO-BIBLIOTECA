@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Lectio Admin</title>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link data-consent-font="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         * {
@@ -14,7 +14,7 @@
         }
 
         body {
-            font-family: 'Poppins', sans-serif;
+            font-family: 'Inter', sans-serif;
             background-color: #f5f6fa;
             color: #2c3e50;
         }
@@ -39,12 +39,12 @@
         }
 
         .logo span {
-            color: #27ae60;
+            color: #1a6b45;
             font-weight: 600;
         }
 
         .back-btn {
-            background: #27ae60;
+            background: #1a6b45;
             color: #fff;
             padding: 10px 25px;
             border: none;
@@ -60,7 +60,7 @@
         }
 
         .back-btn:hover {
-            background: #219150;
+            background: #0f4a2e;
             transform: translateY(-3px);
             box-shadow: 0 8px 20px rgba(39, 174, 96, 0.4);
         }
@@ -108,7 +108,7 @@
 
         .search-input:focus {
             outline: none;
-            border-color: #27ae60;
+            border-color: #1a6b45;
             box-shadow: 0 0 0 3px rgba(39, 174, 96, 0.1);
         }
 
@@ -121,7 +121,7 @@
         }
 
         .table-header {
-            background: linear-gradient(135deg, #27ae60 0%, #229954 100%);
+            background: linear-gradient(135deg, #1a6b45 0%, #229954 100%);
             color: white;
             padding: 20px 25px;
             display: flex;
@@ -190,7 +190,7 @@
         .user-avatar {
             width: 40px;
             height: 40px;
-            background: linear-gradient(135deg, #27ae60 0%, #229954 100%);
+            background: linear-gradient(135deg, #1a6b45 0%, #229954 100%);
             border-radius: 50%;
             display: flex;
             align-items: center;
@@ -301,17 +301,23 @@
             margin-top: 60px;
         }
     </style>
-</head>
-<body>
+    <link rel="stylesheet" href="/estilos/lectio-ui.css">
+    <script src="/js/lectio-ui.js" defer></script>
+    <link rel="stylesheet" href="/estilos/lectio-theme.css">
+    <link rel="stylesheet" href="/estilos/lectio-responsive.css">
+<link rel="stylesheet" href="/estilos/lectio-experience.css">
+<link rel="stylesheet" href="/estilos/lectio-motion.css">
+<script src="/js/lectio-experience.js" defer></script>
+<link rel="stylesheet" href="/estilos/lectio-polish.css">
+<link rel="icon" type="image/svg+xml" href="/img/lectio-logo.svg">
+<link rel="stylesheet" href="/estilos/lectio-menu.css">
+<script src="/js/lectio-menu.js" defer></script>
+<link rel="stylesheet" href="/estilos/lectio-admin.css">
+<link rel="stylesheet" href="/estilos/lectio-privacy.css">
+<script src="/js/lectio-privacy.js" defer></script></head>
+<body class="lectio-theme lectio-page admin-design" data-page="UsuariosAdmin">
 <!-- Header -->
-<header class="navbar">
-    <div class="logo">
-        <h1>Lectio <span>Admin</span></h1>
-    </div>
-    <a href="/api/admin" class="back-btn">
-        <i class="fas fa-arrow-left"></i> Volver al Panel
-    </a>
-</header>
+<header class="experience-nav" id="nav"><div class="experience-bar"><a href="/api/admin" class="experience-brand"><img class="lectio-logo" src="/img/lectio-logo.svg" alt="" width="44" height="44">LECTIO <small>/ ADMIN</small></a><nav class="experience-links" id="experienceLinks" aria-label="Administración"><a href="/api/admin">Panel</a><a href="/api/usuariosAdmin" aria-current="page">Usuarios</a><a href="/api/addBook">Libros virtuales</a><a href="/api/addLibroF">Libros físicos</a><a href="/api/reservaAdmin">Reservas</a><a href="/api/dashboard">Análisis</a><details class="admin-more"><summary>Más</summary><div><a href="/api/devolucion">Devoluciones</a><a href="/api/multasAdmin">Multas</a><a href="/api/resenasAdmin">Reseñas</a><a href="/api/modeloPredictivo">Modelo predictivo</a></div></details></nav><div class="experience-account"><form action="/api/logout" method="post"><button type="submit">Cerrar sesión</button></form></div><button type="button" class="experience-toggle" id="experienceToggle" aria-controls="experienceLinks" aria-expanded="false" aria-label="Abrir menú"><svg viewBox="0 0 24 24" aria-hidden="true"><path class="menu-line-top" d="M4 6H20"/><path class="menu-line-middle" d="M4 12H20"/><path class="menu-line-bottom" d="M4 18H20"/></svg></button></div></header>
 
 <!-- Container -->
 <div class="container">
@@ -340,7 +346,7 @@
         </div>
 
         <!-- Tabla -->
-        <div th:if="${usuarios != null && !usuarios.isEmpty()}">
+        <div class="lectio-table-scroll" th:if="${usuarios != null && !usuarios.isEmpty()}">
             <table id="usuariosTable">
                 <thead>
                 <tr>
@@ -370,8 +376,8 @@
                                 </span>
                     </td>
                     <td>
-                        <i class="fas fa-circle" style="color: #27ae60; font-size: 10px;"></i>
-                        <span style="color: #27ae60; font-weight: 600; font-size: 13px;">Activo</span>
+                        <i class="fas fa-circle" style="color: #1a6b45; font-size: 10px;"></i>
+                        <span style="color: #1a6b45; font-weight: 600; font-size: 13px;">Activo</span>
                     </td>
                 </tr>
                 </tbody>
@@ -389,8 +395,8 @@
 
 <!-- Footer -->
 <footer>
-    <p>&copy; 2025 Lectio Biblioteca. Todos los derechos reservados.</p>
-</footer>
+    <p>&copy; 2026 Lectio Biblioteca. Todos los derechos reservados.</p>
+<a href="/api/privacidad" class="privacy-footer-link">Privacidad y preferencias</a></footer>
 
 <script>
     // Búsqueda en tiempo real

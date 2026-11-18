@@ -1,9 +1,10 @@
+<!DOCTYPE html>
 <html lang="es">
 <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>Lectio - Desafío de Lectura</title>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;500;700&display=swap" rel="stylesheet" />
+    <link data-consent-font="https://fonts.googleapis.com/css2?family=Poppins:wght@300;500;700&display=swap" rel="stylesheet" />
     <style>
         * {
         margin: 0;
@@ -11,7 +12,7 @@
         box-sizing: border-box;
         }
         body {
-        font-family: 'Poppins', sans-serif;
+        font-family: 'Inter', sans-serif;
         background: linear-gradient(135deg, #e8f8f5 0%, #fdfdfd 100%);
         color: #2c3e50;
         min-height: 100vh;
@@ -20,7 +21,7 @@
         }
         /* Header with hamburger button for mobile */
         header {
-        background: #27ae60;
+        background: #1a6b45;
         color: #fff;
         padding: 15px 20px;
         display: flex;
@@ -61,7 +62,7 @@
         right: 0;
         width: 270px;
         height: calc(100vh - 60px);
-        background: linear-gradient(180deg, #2ecc71, #27ae60);
+        background: linear-gradient(180deg, #2ecc71, #1a6b45);
         box-shadow: -4px 0 20px rgba(0, 0, 0, 0.08);
         border-radius: 25px 0 0 25px;
         padding: 30px 25px;
@@ -134,7 +135,7 @@
         box-shadow: 0 20px 40px rgba(0,0,0,0.15);
         }
         h1 {
-        color: #27ae60;
+        color: #1a6b45;
         font-size: 2.6rem;
         letter-spacing: 1.2px;
         margin-bottom: 16px;
@@ -163,12 +164,12 @@
         border: none;
         cursor: pointer;
         box-shadow: 0 6px 15px rgba(39, 174, 96, 0.3);
-        background: #27ae60;
+        background: #1a6b45;
         color: white;
         transition: background 0.3s ease, transform 0.3s ease, box-shadow 0.3s ease;
         }
         button.btn:hover {
-        background: #219150;
+        background: #0f4a2e;
         transform: translateY(-4px);
         box-shadow: 0 8px 22px rgba(39, 174, 96, 0.4);
         }
@@ -269,49 +270,73 @@
         }
         }
     </style>
-</head>
-<body>
-<header>
-    <h1>Lectio</h1>
-    <button aria-label="Abrir menú" class="menu-toggle" id="menu-toggle">
-        <span></span>
-        <span></span>
-        <span></span>
-    </button>
-</header>
-
-<aside id="sidebar" aria-label="Navegación principal" class="hide">
-    <div>
-        <h2>LECTIO</h2>
-        <ul>
-            <li onclick="location.href='/api/libros'">
-                <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M19 2H9a2 2 0 0 0-2 2v16c0 .55.45 1 1 1h12a2 2 0 0 0 2-2V4c0-1.1-.9-2-2-2zM9 20V4h10v16H9zm-6 0h2V8H3v12zm0-16v2h2V4H3z"/></svg>
-                Biblioteca
-            </li>
-            <li onclick="location.href='/api/historia_pensamiento'">
-                <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2a7 7 0 0 0-7 7c0 2.76 2.24 5 5 5 .13 0 .26 0 .39-.02l-.08.28-1.52 3.45 2.5-1.01.5.62c.89.35 1.81.55 2.81.55a7 7 0 0 0 0-14z"/></svg>
-                Historia del Pensamiento
-            </li>
-            <li onclick="location.href='/api/inicio'">
-                <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M10 17l5-5-5-5v10z"/></svg>
-                Volver a Inicio
-            </li>
-        </ul>
+    <link rel="stylesheet" href="/estilos/lectio-ui.css">
+    <script src="/js/lectio-ui.js" defer></script>
+    <link rel="stylesheet" href="/estilos/lectio-theme.css">
+    <link rel="stylesheet" href="/estilos/lectio-responsive.css">
+    <style>
+        #nav { position: fixed; inset: 0 0 auto; z-index: 300; background: rgba(255,255,255,.82); backdrop-filter: blur(18px); border-bottom: 1px solid #d4e5d9; }
+        #nav .nav-inner { max-width: 1240px; margin: auto; padding: 18px 28px; display: grid; grid-template-columns: auto 1fr auto; align-items: center; gap: 28px; }
+        #nav .brand { display:flex; align-items:center; gap:10px; color:#173b29; font:700 .85rem monospace; letter-spacing:.1em; text-decoration:none; }
+        #nav .brand .sq { width:10px; height:10px; background:#34a06c; display:inline-block; transform:rotate(45deg); }
+        #nav .brand small { color:#34a06c; font-weight:500; }
+        #nav .nav-links { display:flex; justify-content:center; gap:22px; flex-wrap:wrap; }
+        #nav .nav-links a { color:#385846; text-decoration:none; font-size:.86rem; padding:6px 0; transition:color .3s ease, transform .3s ease; }
+        #nav .nav-links a:hover { color:#1a6b45; transform:translateY(-2px); }
+        #nav .user-info { display:flex; align-items:center; gap:12px; color:#2d4a3a; white-space:nowrap; }
+        #nav .user-info p { margin:0; font-size:.85rem; }
+        #nav .user-info form { margin:0; }
+        #nav .btn-salir { padding:8px 12px; color:#1a6b45; background:#fff; border:1px solid #bcd8c6; border-radius:4px; cursor:pointer; }
+        #nav .nav-toggle { display:none; }
+        body > main { padding-top:82px; }
+        @media (max-width:1250px) {
+            #nav .nav-inner { display:flex; justify-content:space-between; }
+            #nav .nav-toggle { display:grid; place-items:center; width:42px; height:42px; border:1px solid #c9ded0; background:#fff; color:#173b29; }
+            #nav .nav-links { position:fixed; inset:0 0 0 auto; width:min(340px,88vw); padding:90px 28px 30px; background:#fff; flex-direction:column; justify-content:flex-start; gap:8px; transform:translateX(100%); transition:transform .35s ease; box-shadow:-18px 0 40px rgba(13,43,29,.16); }
+            #nav .nav-links.open { transform:none; }
+            #nav .user-info { margin-left:auto; }
+        }
+        @media (max-width:560px) { #nav .brand small, #nav .user-info p { display:none; } #nav .user-info { margin-left:auto; } .contenido { padding:32px 22px; } .contenido h1 { font-size:2rem; } }
+    </style>
+<link data-consent-font="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/estilos/lectio-experience.css">
+<link rel="stylesheet" href="/estilos/lectio-adventure.css">
+<link rel="stylesheet" href="/estilos/lectio-motion.css">
+<script src="/js/lectio-experience.js" defer></script>
+<link rel="stylesheet" href="/estilos/lectio-polish.css">
+<link rel="icon" type="image/svg+xml" href="/img/lectio-logo.svg">
+<link rel="stylesheet" href="/estilos/lectio-menu.css">
+<script src="/js/lectio-menu.js" defer></script>
+<link rel="stylesheet" href="/estilos/lectio-privacy.css">
+<script src="/js/lectio-privacy.js" defer></script><link rel="stylesheet" href="/estilos/lectio-carousel.css"><script src="/js/lectio-carousel.js" defer></script></head>
+<body class="adventure lectio-theme lectio-reading lectio-page" data-page="inicio" data-world="library">
+<header class="experience-nav" id="nav">
+  <div class="experience-bar">
+    <a href="/api/logiado" class="experience-brand"><img class="lectio-logo" src="/img/lectio-logo.svg" alt="" width="44" height="44">LECTIO <small>/ BIBLIOTECA</small></a>
+    <nav class="experience-links" id="experienceLinks" aria-label="Navegación principal">
+      <a href="/api/logiado">Inicio</a><a href="/api/logiado#coleccion">Colección</a>
+      <a href="/api/logiado#autores">Autores</a><a href="/api/logiado#centro-ayuda">Ayuda</a>
+      <a href="/api/libroVirtualesLog">Libros virtuales</a><a href="/api/reservaLibro">Reserva</a>
+      <a href="/api/optimizador">Optimizador</a>
+      <a href="/api/inicio" class="experience-challenge" aria-current="page">✦ Desafío</a>
+    </nav>
+    <div class="experience-account">
+      <p th:if="${username != null}">Hola, <strong th:text="${username}"></strong></p>
+      <form action="/api/logout" method="post"><button type="submit">Cerrar sesión</button></form>
     </div>
-    <div class="footer">© 2025 Lectio</div>
-</aside>
-
+    <button type="button" class="experience-toggle" id="experienceToggle" aria-controls="experienceLinks" aria-expanded="false" aria-label="Abrir menú">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path class="menu-line-top" d="M4 6H20"/><path class="menu-line-middle" d="M4 12H20"/><path class="menu-line-bottom" d="M4 18H20"/></svg>
+    </button>
+  </div>
+</header>
 <main>
-    <div class="contenido" role="main">
-        <h1>Desafío de Lectura
-            <svg class="icon" viewBox="0 0 24 24" aria-hidden="true" style="vertical-align: middle;">
-                <path d="M19 2H9a2 2 0 0 0-2 2v16c0 .55.45 1 1 1h12a2 2 0 0 0 2-2V4c0-1.1-.9-2-2-2zM9 20V4h10v16H9zm-6 0h2V8H3v12zm0-16v2h2V4H3z"/>
-            </svg>
-        </h1>
+<section class="journey-welcome">
+    <div class="contenido">
+<span class="journey-label">✦ Tu aventura lectora</span>
+        <h1>Grandes historias.<br>Pequeños pasos.</h1>
         <p>
-            Sumérgete en nuevas historias, descubre perspectivas únicas y haz de la lectura un hábito inspirador.
-            Aquí comienza tu viaje literario: cada página es una puerta hacia un mundo distinto,
-            y cada historia, una forma de crecer y soñar.
+            Elige un libro, completa los capítulos y consulta tu progreso de lectura.
+            Puedes retomar cada desafío donde lo dejaste.
         </p>
         <div class="btn-container">
             <button class="btn" onclick="location.href='/api/libros'" aria-label="Explorar Libros">
@@ -325,6 +350,41 @@
         </div>
     </div>
 
+<div class="journey-art" aria-hidden="true">
+<svg viewBox="0 0 460 380" xmlns="http://www.w3.org/2000/svg">
+ <ellipse cx="230" cy="338" rx="165" ry="20" fill="#dfeef4"/>
+ <circle cx="230" cy="177" r="145" fill="#eff6f9"/>
+ <circle cx="342" cy="83" r="28" fill="#f8d8af"/>
+ <g class="art-star" fill="#de8b3f"><path d="M82 81l6 15 16 5-16 6-6 16-5-16-16-6 16-5z"/><path d="M366 225l5 12 13 4-13 5-5 13-4-13-13-5 13-4z"/></g>
+ <g class="art-star" fill="#8fc2d7"><circle cx="127" cy="51" r="5"/><circle cx="386" cy="143" r="6"/><circle cx="68" cy="242" r="5"/></g>
+ <path class="art-draw" pathLength="1" d="M73 293C16 204 130 139 170 88S312 41 373 111" fill="none" stroke="#bad9e7" stroke-width="3" stroke-linecap="round"/>
+ <g class="art-float">
+  <path d="M104 277l113-22 145 25-8 35-135-18-108 18z" fill="#44768b"/>
+  <path d="M111 271l106-28 137 27v35l-137-18-106 17z" fill="#fff" stroke="#bcd9e5" stroke-width="3"/>
+  <path d="M217 243v44m-94-8 79-19m-79 29 79-18m30-12 105 20m-105-9 105 19" fill="none" stroke="#cfe5ee" stroke-width="3"/>
+  <path d="M219 287v15" stroke="#a3cddf" stroke-width="4"/>
+  <path d="M153 161l-15-39 42 15M282 160l16-40-43 17" fill="#7db6ce" stroke="#50879e" stroke-width="3" stroke-linejoin="round"/>
+  <path d="M148 172c0-65 139-67 139 0v37c0 60-139 61-139 0z" fill="#7db6ce"/>
+  <path d="M148 186c-32 4-36 39-14 56l21-18M286 186c32 4 36 39 14 56l-21-18" fill="#5998b3"/>
+  <ellipse cx="218" cy="216" rx="43" ry="38" fill="#b2d5e4"/>
+  <circle cx="189" cy="175" r="31" fill="#fff8ed"/><circle cx="247" cy="175" r="31" fill="#fff8ed"/>
+  <circle cx="195" cy="176" r="11" fill="#29434e"/><circle cx="241" cy="176" r="11" fill="#29434e"/>
+  <circle cx="198" cy="172" r="4" fill="white"/><circle cx="244" cy="172" r="4" fill="white"/>
+  <path d="M207 192l11 15 11-15z" fill="#de8b3f"/>
+  <path d="M200 246l-5 11m15-9-1 10m23-10 1 10m10-12 5 10" stroke="#de8b3f" stroke-width="6" stroke-linecap="round"/>
+  <path class="art-draw" pathLength="1" d="M167 169q21-23 43 0m17 0q21-23 43 0" fill="none" stroke="#43788e" stroke-width="3" stroke-linecap="round"/>
+ </g>
+</svg><p class="journey-art-note">Una página más. Una nueva aventura.</p></div>
+</section>
+<section class="journey-discover" aria-labelledby="worlds-title">
+ <div class="journey-section-head"><div><h2 id="worlds-title">¿A dónde viajamos hoy?</h2><p>Seis historias. Seis mundos por descubrir.</p></div><a href="/api/libros">Ver mi progreso →</a></div>
+ <div class="journey-worlds">
+  <a class="journey-world" href="/api/desafio_principito"><div class="world-cover"><img src="/img/principito.jpg" alt="Portada de El Principito"/></div><h3>El Principito</h3><p>Pequeños planetas, grandes preguntas y una amistad que deja huella.</p><span class="world-enter">Explorar las estrellas →</span></a>
+  <a class="journey-world" href="/api/desafio_1984"><div class="world-cover"><img src="/img/1984.jpg" alt="Portada de 1984"/></div><h3>1984</h3><p>Abre los ojos. Piensa por ti mismo. Atrévete a descubrir la verdad.</p><span class="world-enter">Entrar en la historia →</span></a>
+  <a class="journey-world" href="/api/desafio_harrypotter"><div class="world-cover"><img src="/img/harrypotter.jpg" alt="Portada de Harry Potter"/></div><h3>Harry Potter</h3><p>Una carta inesperada y un mundo de magia al otro lado de la página.</p><span class="world-enter">Comenzar la aventura →</span></a><a class="journey-world" href="/api/desafio_jardin"><div class="world-cover"><img src="/img/cover-jardin.svg" alt="Portada de La llave de las estaciones"></div><h3>La llave de las estaciones</h3><p>Una llave diminuta, cuatro estaciones y un jardín que aprende a despertar.</p><span class="world-enter">Explorar la historia →</span></a><a class="journey-world" href="/api/desafio_reloj"><div class="world-cover"><img src="/img/cover-reloj.svg" alt="Portada de La habitación del último reloj"></div><h3>La habitación del último reloj</h3><p>Una casa silenciosa. Una hora detenida. Un secreto que espera ser escuchado.</p><span class="world-enter">Explorar la historia →</span></a><a class="journey-world" href="/api/desafio_isla"><div class="world-cover"><img src="/img/cover-isla.svg" alt="Portada de La isla que cambiaba de nombre"></div><h3>La isla que cambiaba de nombre</h3><p>Sigue un mapa cambiante y descubre una isla que guarda más preguntas que tesoros.</p><span class="world-enter">Explorar la historia →</span></a>
+ </div>
+</section>
+<nav class="journey-shortcuts" aria-label="Explorar desafíos"><a href="/api/libros">Mi progreso de lectura</a><a href="/api/historia_pensamiento">Historia del pensamiento</a></nav>
     <div class="burbuja" style="width:80px; height:80px; left:10%; animation-delay:1s;"></div>
     <div class="burbuja" style="width:100px; height:100px; left:25%; animation-delay:2.5s;"></div>
     <div class="burbuja" style="width:60px; height:60px; left:45%; animation-delay:1.5s;"></div>
@@ -335,44 +395,14 @@
 </main>
 
 <script>
-    const menuToggle = document.getElementById('menu-toggle');
-    const sidebar = document.getElementById('sidebar');
-
-    menuToggle.addEventListener('click', () => {
-    sidebar.classList.toggle('show');
-    sidebar.classList.toggle('hide');
-    // Animate hamburger to cross
-    menuToggle.classList.toggle('open');
-    });
-
-    // Change hamburger icon to cross when open
-    menuToggle.addEventListener('click', () => {
-    const spans = menuToggle.querySelectorAll('span');
-    if(menuToggle.classList.contains('open')) {
-    spans[0].style.transform = 'rotate(45deg) translate(5px, 5px)';
-    spans[1].style.opacity = '0';
-    spans[2].style.transform = 'rotate(-45deg) translate(6px, -6px)';
-    } else {
-    spans[0].style.transform = 'none';
-    spans[1].style.opacity = '1';
-    spans[2].style.transform = 'none';
+    const navToggle = document.getElementById('navToggle');
+    const navLinks = document.getElementById('navLinks');
+    if (navToggle && navLinks) {
+        navToggle.addEventListener('click', () => {
+            navLinks.classList.toggle('open');
+            navToggle.setAttribute('aria-expanded', navLinks.classList.contains('open'));
+        });
     }
-    });
-
-    // Optional: close sidebar when clicking outside or on link
-    document.addEventListener('click', (e) => {
-    if(!sidebar.contains(e.target) && !menuToggle.contains(e.target)) {
-    if(sidebar.classList.contains('show')) {
-    sidebar.classList.remove('show');
-    sidebar.classList.add('hide');
-    menuToggle.classList.remove('open');
-    const spans = menuToggle.querySelectorAll('span');
-    spans[0].style.transform = 'none';
-    spans[1].style.opacity = '1';
-    spans[2].style.transform = 'none';
-    }
-    }
-    });
 </script>
 </body>
 </html>
